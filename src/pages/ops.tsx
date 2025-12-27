@@ -32,7 +32,7 @@ export default function Operations() {
             suffix="%"
             delta={metrics.aiFilteringDelta}
             icon={Filter}
-            accentColor="cyan"
+            accentColor="teal"
             animationDelay={100}
           />
           <KPICard
@@ -41,7 +41,7 @@ export default function Operations() {
             suffix="%"
             delta={metrics.autoResolutionDelta}
             icon={Sparkles}
-            accentColor="emerald"
+            accentColor="green"
             animationDelay={200}
           />
           <KPICard

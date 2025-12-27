@@ -16,7 +16,7 @@ export default function Document() {
         />
 
         {/* Favicon and meta */}
-        <meta name="theme-color" content="#0a0a14" />
+        <meta name="theme-color" content="#f8f9fc" />
       </Head>
       <body
         className="antialiased"

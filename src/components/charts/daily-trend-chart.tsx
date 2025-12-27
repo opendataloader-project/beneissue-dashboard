@@ -125,7 +125,7 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
           >
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="oklch(0.25 0.02 260 / 0.5)"
+              stroke="oklch(0.80 0.01 260 / 0.6)"
               vertical={false}
             />
 

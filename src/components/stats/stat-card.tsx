@@ -10,7 +10,7 @@ interface StatCardProps {
   suffix?: string;
   icon?: LucideIcon;
   description?: string;
-  accentColor?: 'cyan' | 'amber' | 'emerald' | 'purple';
+  accentColor?: 'teal' | 'amber' | 'green' | 'purple';
   animationDelay?: number;
   className?: string;
 }
@@ -21,7 +21,7 @@ export function StatCard({
   suffix,
   icon: Icon,
   description,
-  accentColor = 'cyan',
+  accentColor = 'teal',
   animationDelay = 0,
   className,
 }: StatCardProps) {
@@ -29,31 +29,27 @@ export function StatCard({
   const [displayValue, setDisplayValue] = useState<string | number>(typeof value === 'number' ? 0 : value);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Accent color mapping
+  // Light theme accent color mapping
   const accentColors = {
-    cyan: {
-      bg: 'bg-[oklch(0.75_0.18_195/0.1)]',
-      border: 'border-[oklch(0.75_0.18_195/0.2)]',
-      text: 'text-[oklch(0.75_0.18_195)]',
-      glow: 'shadow-[0_0_30px_-10px_oklch(0.75_0.18_195/0.4)]',
+    teal: {
+      bg: 'bg-[oklch(0.45_0.12_200/0.08)]',
+      border: 'border-[oklch(0.45_0.12_200/0.15)]',
+      text: 'text-[oklch(0.40_0.12_200)]',
     },
     amber: {
-      bg: 'bg-[oklch(0.78_0.16_75/0.1)]',
-      border: 'border-[oklch(0.78_0.16_75/0.2)]',
-      text: 'text-[oklch(0.78_0.16_75)]',
-      glow: 'shadow-[0_0_30px_-10px_oklch(0.78_0.16_75/0.4)]',
+      bg: 'bg-[oklch(0.72_0.14_70/0.12)]',
+      border: 'border-[oklch(0.72_0.14_70/0.2)]',
+      text: 'text-[oklch(0.55_0.14_70)]',
     },
-    emerald: {
-      bg: 'bg-[oklch(0.70_0.20_145/0.1)]',
-      border: 'border-[oklch(0.70_0.20_145/0.2)]',
-      text: 'text-[oklch(0.70_0.20_145)]',
-      glow: 'shadow-[0_0_30px_-10px_oklch(0.70_0.20_145/0.4)]',
+    green: {
+      bg: 'bg-[oklch(0.50_0.14_155/0.1)]',
+      border: 'border-[oklch(0.50_0.14_155/0.15)]',
+      text: 'text-[oklch(0.45_0.14_155)]',
     },
     purple: {
-      bg: 'bg-[oklch(0.65_0.22_265/0.1)]',
-      border: 'border-[oklch(0.65_0.22_265/0.2)]',
-      text: 'text-[oklch(0.65_0.22_265)]',
-      glow: 'shadow-[0_0_30px_-10px_oklch(0.65_0.22_265/0.4)]',
+      bg: 'bg-[oklch(0.48_0.10_280/0.1)]',
+      border: 'border-[oklch(0.48_0.10_280/0.15)]',
+      text: 'text-[oklch(0.45_0.10_280)]',
     },
   };
 
@@ -112,26 +108,17 @@ export function StatCard({
       ref={cardRef}
       className={cn(
         'relative group',
-        'rounded-xl border bg-card/50 backdrop-blur-sm',
-        'p-6 transition-all duration-500',
-        'hover:bg-card/80',
-        colors.glow,
+        'rounded-xl border bg-card',
+        'p-6 transition-all duration-300',
+        'shadow-[0_1px_2px_oklch(0.20_0.02_250/0.04),0_4px_16px_oklch(0.20_0.02_250/0.06)]',
+        'hover:shadow-[0_4px_6px_oklch(0.20_0.02_250/0.06),0_12px_32px_oklch(0.20_0.02_250/0.10)]',
+        'hover:-translate-y-0.5',
         isVisible
           ? 'opacity-100 translate-y-0'
           : 'opacity-0 translate-y-4',
         className
       )}
     >
-      {/* Accent line at top */}
-      <div
-        className={cn(
-          'absolute top-0 left-6 right-6 h-px',
-          'bg-gradient-to-r from-transparent via-current to-transparent',
-          colors.text,
-          'opacity-30'
-        )}
-      />
-
       {/* Header with icon */}
       <div className="flex items-start justify-between mb-4">
         <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
@@ -140,13 +127,13 @@ export function StatCard({
         {Icon && (
           <div
             className={cn(
-              'p-2 rounded-lg',
+              'p-2.5 rounded-xl',
               colors.bg,
               colors.border,
               'border'
             )}
           >
-            <Icon className={cn('w-4 h-4', colors.text)} />
+            <Icon className={cn('w-5 h-5', colors.text)} />
           </div>
         )}
       </div>
@@ -155,8 +142,7 @@ export function StatCard({
       <div className="flex items-baseline gap-2">
         <span
           className={cn(
-            'text-4xl font-bold tracking-tight tabular-nums',
-            colors.text
+            'text-4xl font-bold tracking-tight tabular-nums text-foreground'
           )}
           style={{ fontFamily: "'Instrument Sans', sans-serif" }}
         >
@@ -165,7 +151,7 @@ export function StatCard({
             : displayValue}
         </span>
         {suffix && (
-          <span className="text-lg text-muted-foreground font-medium">
+          <span className={cn('text-lg font-semibold', colors.text)}>
             {suffix}
           </span>
         )}
@@ -173,23 +159,10 @@ export function StatCard({
 
       {/* Description */}
       {description && (
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-3 text-sm text-muted-foreground">
           {description}
         </p>
       )}
-
-      {/* Hover glow effect */}
-      <div
-        className={cn(
-          'absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100',
-          'transition-opacity duration-500 pointer-events-none',
-          'bg-gradient-to-br from-transparent via-transparent',
-          accentColor === 'cyan' && 'to-[oklch(0.75_0.18_195/0.05)]',
-          accentColor === 'amber' && 'to-[oklch(0.78_0.16_75/0.05)]',
-          accentColor === 'emerald' && 'to-[oklch(0.70_0.20_145/0.05)]',
-          accentColor === 'purple' && 'to-[oklch(0.65_0.22_265/0.05)]'
-        )}
-      />
     </div>
   );
 }

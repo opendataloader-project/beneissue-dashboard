@@ -20,14 +20,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="min-h-screen bg-background relative overflow-hidden">
-        {/* Background effects */}
-        <div className="fixed inset-0 observatory-grid pointer-events-none" />
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="gradient-orb gradient-orb-cyan w-[600px] h-[600px] -top-48 -right-48" />
-          <div className="gradient-orb gradient-orb-amber w-[500px] h-[500px] top-1/2 -left-64" />
-        </div>
-        <div className="scan-line" />
+      <div className="min-h-screen executive-gradient relative">
+        {/* Subtle dot pattern background */}
+        <div className="fixed inset-0 dot-pattern opacity-40 pointer-events-none" />
 
         {/* Content */}
         <div className="relative z-10">
@@ -35,7 +30,7 @@ export default function Home() {
 
           <main className="pt-16">
             {/* Hero Section */}
-            <section className="relative py-24 md:py-32 px-6">
+            <section className="relative py-20 md:py-28 px-6">
               <div className="max-w-7xl mx-auto">
                 {/* Badge */}
                 <div className="flex justify-center mb-8">
@@ -56,7 +51,7 @@ export default function Home() {
                   <span className="block text-foreground">
                     AI-Powered Issue
                   </span>
-                  <span className="block bg-gradient-to-r from-[oklch(0.75_0.18_195)] via-[oklch(0.78_0.16_75)] to-[oklch(0.75_0.18_195)] bg-clip-text text-transparent">
+                  <span className="block bg-gradient-to-r from-[oklch(0.45_0.12_200)] via-[oklch(0.55_0.14_70)] to-[oklch(0.45_0.12_200)] bg-clip-text text-transparent">
                     Automation
                   </span>
                 </h1>
@@ -76,7 +71,7 @@ export default function Home() {
                     suffix="건"
                     icon={FileCheck}
                     description="누적 처리량"
-                    accentColor="cyan"
+                    accentColor="teal"
                     animationDelay={100}
                   />
                   <StatCard
@@ -85,7 +80,7 @@ export default function Home() {
                     suffix="초"
                     icon={Clock}
                     description="첫 응답까지"
-                    accentColor="emerald"
+                    accentColor="green"
                     animationDelay={200}
                   />
                   <StatCard
@@ -114,9 +109,9 @@ export default function Home() {
             </section>
 
             {/* Features/Value Props */}
-            <section className="py-24 px-6 border-t border-border/50">
+            <section className="py-20 px-6 border-t border-border">
               <div className="max-w-7xl mx-auto">
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-3 gap-6">
                   {[
                     {
                       title: '자동 분류',
@@ -139,14 +134,14 @@ export default function Home() {
                       stat: '2시간',
                       statLabel: '절약 / 이슈',
                     },
-                  ].map((feature, index) => (
+                  ].map((feature) => (
                     <div
                       key={feature.title}
-                      className="group relative p-6 rounded-xl border border-border/50 bg-card/30 hover:bg-card/50 transition-all duration-300"
+                      className="group relative p-6 rounded-xl border bg-card shadow-[0_1px_2px_oklch(0.20_0.02_250/0.04),0_4px_16px_oklch(0.20_0.02_250/0.06)] hover:shadow-[0_4px_6px_oklch(0.20_0.02_250/0.06),0_12px_32px_oklch(0.20_0.02_250/0.10)] hover:-translate-y-0.5 transition-all duration-300"
                     >
                       <div className="flex items-baseline justify-between mb-4">
                         <h3
-                          className="text-lg font-semibold"
+                          className="text-lg font-semibold text-foreground"
                           style={{ fontFamily: "'Instrument Sans', sans-serif" }}
                         >
                           {feature.title}
@@ -163,7 +158,7 @@ export default function Home() {
                           </p>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         {feature.description}
                       </p>
                     </div>

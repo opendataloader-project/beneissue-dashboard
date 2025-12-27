@@ -22,16 +22,12 @@ export function DashboardLayout({
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background effects */}
-      <div className="fixed inset-0 observatory-grid pointer-events-none opacity-50" />
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="gradient-orb gradient-orb-cyan w-[400px] h-[400px] -top-32 -right-32 opacity-30" />
-        <div className="gradient-orb gradient-orb-amber w-[300px] h-[300px] bottom-0 -left-32 opacity-20" />
-      </div>
+    <div className="min-h-screen executive-gradient relative overflow-hidden">
+      {/* Background effects - Light theme */}
+      <div className="fixed inset-0 dot-pattern opacity-40 pointer-events-none" />
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/70 border-b border-border/50">
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-card/80 border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-6">
