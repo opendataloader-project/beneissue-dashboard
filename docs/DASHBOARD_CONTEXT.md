@@ -15,8 +15,6 @@ AI 이슈 자동화 성능을 측정하고 시각화하는 웹 대시보드
 
 beneissue의 메트릭을 시각화하는 웹 대시보드.
 
-**URL:** `beneissue.opendataloader.org`
-
 ## 아키텍처
 
 ```
@@ -36,7 +34,7 @@ beneissue의 메트릭을 시각화하는 웹 대시보드.
 
 ## 기술 스택
 
-- **Framework:** Next.js 15 (App Router)
+- **Framework:** Next.js 16 (Page Router)
 - **UI:** shadcn/ui + Tailwind CSS
 - **Charts:** Recharts
 - **DB:** Supabase PostgreSQL (읽기 전용)
