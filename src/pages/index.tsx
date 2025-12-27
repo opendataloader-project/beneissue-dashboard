@@ -4,10 +4,10 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { StatCard } from '@/components/stats/stat-card';
 import { TrendLineChart } from '@/components/charts/trend-line-chart';
-import { mockPublicMetrics } from '@/data/mock';
+import { usePublicMetrics } from '@/hooks/useMetrics';
 
 export default function Home() {
-  const metrics = mockPublicMetrics;
+  const { data: metrics } = usePublicMetrics();
 
   return (
     <>

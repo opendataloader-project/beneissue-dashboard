@@ -4,11 +4,10 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { KPICard } from '@/components/stats/kpi-card';
 import { CostSavingsChart } from '@/components/charts/cost-savings-chart';
 import { DistributionPie } from '@/components/charts/distribution-pie';
-import { mockExecutiveMetrics } from '@/data/mock';
-import { formatCurrencyKRW, formatHours } from '@/lib/format';
+import { useExecutiveMetrics } from '@/hooks/useMetrics';
 
 export default function Dashboard() {
-  const metrics = mockExecutiveMetrics;
+  const { data: metrics } = useExecutiveMetrics();
 
   return (
     <>

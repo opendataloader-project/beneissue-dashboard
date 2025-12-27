@@ -4,11 +4,11 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { KPICard } from '@/components/stats/kpi-card';
 import { DailyTrendChart } from '@/components/charts/daily-trend-chart';
 import { DecisionDistributionChart } from '@/components/charts/decision-distribution';
-import { mockOperationsMetrics } from '@/data/mock';
-import { formatSeconds, formatCurrencyUSD } from '@/lib/format';
+import { useOperationsMetrics } from '@/hooks/useMetrics';
+import { formatSeconds } from '@/lib/format';
 
 export default function Operations() {
-  const metrics = mockOperationsMetrics;
+  const { data: metrics } = useOperationsMetrics();
 
   return (
     <>
