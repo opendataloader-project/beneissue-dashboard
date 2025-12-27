@@ -1,78 +1,181 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Head from 'next/head';
+import { FileCheck, Clock, Sparkles, TrendingUp } from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { StatCard } from '@/components/stats/stat-card';
+import { TrendLineChart } from '@/components/charts/trend-line-chart';
+import { mockPublicMetrics } from '@/data/mock';
 
 export default function Home() {
+  const metrics = mockPublicMetrics;
+
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black`}
-    >
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <Head>
+        <title>Beneissue - AI Issue Automation</title>
+        <meta
+          name="description"
+          content="AI-powered issue automation that saves time and money. Track real-time metrics and ROI."
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the index.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+
+      <div className="min-h-screen bg-background relative overflow-hidden">
+        {/* Background effects */}
+        <div className="fixed inset-0 observatory-grid pointer-events-none" />
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="gradient-orb gradient-orb-cyan w-[600px] h-[600px] -top-48 -right-48" />
+          <div className="gradient-orb gradient-orb-amber w-[500px] h-[500px] top-1/2 -left-64" />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs/pages/getting-started?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="scan-line" />
+
+        {/* Content */}
+        <div className="relative z-10">
+          <Header />
+
+          <main className="pt-16">
+            {/* Hero Section */}
+            <section className="relative py-24 md:py-32 px-6">
+              <div className="max-w-7xl mx-auto">
+                {/* Badge */}
+                <div className="flex justify-center mb-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                    </span>
+                    Live Metrics
+                  </div>
+                </div>
+
+                {/* Headline */}
+                <h1
+                  className="text-center text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+                  style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+                >
+                  <span className="block text-foreground">
+                    AI-Powered Issue
+                  </span>
+                  <span className="block bg-gradient-to-r from-[oklch(0.75_0.18_195)] via-[oklch(0.78_0.16_75)] to-[oklch(0.75_0.18_195)] bg-clip-text text-transparent">
+                    Automation
+                  </span>
+                </h1>
+
+                {/* Subtitle */}
+                <p className="text-center text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-16">
+                  GitHub 이슈를 자동으로 분류하고 분석하고 수정합니다.
+                  <br className="hidden md:block" />
+                  개발자 시간을 절약하고 ROI를 극대화하세요.
+                </p>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
+                  <StatCard
+                    title="총 처리 이슈"
+                    value={metrics.totalIssuesProcessed}
+                    suffix="건"
+                    icon={FileCheck}
+                    description="누적 처리량"
+                    accentColor="cyan"
+                    animationDelay={100}
+                  />
+                  <StatCard
+                    title="평균 응답 시간"
+                    value={metrics.avgResponseTimeSeconds}
+                    suffix="초"
+                    icon={Clock}
+                    description="첫 응답까지"
+                    accentColor="emerald"
+                    animationDelay={200}
+                  />
+                  <StatCard
+                    title="자동 해결율"
+                    value={metrics.autoResolutionRate}
+                    suffix="%"
+                    icon={Sparkles}
+                    description="AI가 직접 수정"
+                    accentColor="purple"
+                    animationDelay={300}
+                  />
+                  <StatCard
+                    title="ROI"
+                    value={metrics.roi}
+                    suffix="%"
+                    icon={TrendingUp}
+                    description="투자 대비 수익"
+                    accentColor="amber"
+                    animationDelay={400}
+                  />
+                </div>
+
+                {/* Chart */}
+                <TrendLineChart data={metrics.monthlyTrend} />
+              </div>
+            </section>
+
+            {/* Features/Value Props */}
+            <section className="py-24 px-6 border-t border-border/50">
+              <div className="max-w-7xl mx-auto">
+                <div className="grid md:grid-cols-3 gap-8">
+                  {[
+                    {
+                      title: '자동 분류',
+                      description:
+                        '이슈가 등록되면 AI가 즉시 유효성을 판단하고 중복 여부를 확인합니다.',
+                      stat: '5분',
+                      statLabel: '절약 / 이슈',
+                    },
+                    {
+                      title: '심층 분석',
+                      description:
+                        '코드베이스를 분석하여 우선순위, 스토리 포인트, 담당자를 자동 지정합니다.',
+                      stat: '30분',
+                      statLabel: '절약 / 이슈',
+                    },
+                    {
+                      title: '자동 수정',
+                      description:
+                        '간단한 버그는 AI가 직접 수정하고 PR을 생성합니다.',
+                      stat: '2시간',
+                      statLabel: '절약 / 이슈',
+                    },
+                  ].map((feature, index) => (
+                    <div
+                      key={feature.title}
+                      className="group relative p-6 rounded-xl border border-border/50 bg-card/30 hover:bg-card/50 transition-all duration-300"
+                    >
+                      <div className="flex items-baseline justify-between mb-4">
+                        <h3
+                          className="text-lg font-semibold"
+                          style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+                        >
+                          {feature.title}
+                        </h3>
+                        <div className="text-right">
+                          <span
+                            className="text-2xl font-bold text-primary tabular-nums"
+                            style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+                          >
+                            {feature.stat}
+                          </span>
+                          <p className="text-xs text-muted-foreground">
+                            {feature.statLabel}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {feature.description}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </main>
+
+          <Footer />
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }

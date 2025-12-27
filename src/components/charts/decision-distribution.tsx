@@ -1,0 +1,186 @@
+'use client';
+
+import { useEffect, useState, useRef } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { cn } from '@/lib/utils';
+import { formatNumber, formatPercent } from '@/lib/format';
+import type { DecisionDistribution } from '@/types/metrics';
+
+interface DecisionDistributionChartProps {
+  data: DecisionDistribution;
+  className?: string;
+}
+
+const COLORS = [
+  'oklch(0.70 0.20 145)', // Emerald - Valid
+  'oklch(0.60 0.20 25)',  // Rose - Invalid
+  'oklch(0.78 0.16 75)',  // Amber - Duplicate
+  'oklch(0.65 0.22 265)', // Purple - Needs Info
+];
+
+const LABELS = {
+  valid: '유효',
+  invalid: '무효',
+  duplicate: '중복',
+  needsInfo: '정보 필요',
+};
+
+function CustomTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: { fill: string; percent: number };
+  }>;
+}) {
+  if (!active || !payload || !payload.length) return null;
+
+  const item = payload[0];
+
+  return (
+    <div className="px-3 py-2 rounded-lg border bg-card/95 backdrop-blur-sm border-border shadow-xl">
+      <div className="flex items-center gap-2">
+        <div
+          className="w-3 h-3 rounded-full"
+          style={{ background: item.payload.fill }}
+        />
+        <span className="text-sm font-medium">
+          {LABELS[item.name as keyof typeof LABELS]}
+        </span>
+      </div>
+      <div className="mt-1 text-sm text-muted-foreground">
+        <span className="tabular-nums">{formatNumber(item.value)}건</span>
+        <span className="mx-1">·</span>
+        <span className="tabular-nums">
+          {formatPercent(item.payload.percent * 100)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function DecisionDistributionChart({
+  data,
+  className,
+}: DecisionDistributionChartProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  const chartData = [
+    { name: 'valid', value: data.valid },
+    { name: 'invalid', value: data.invalid },
+    { name: 'duplicate', value: data.duplicate },
+    { name: 'needsInfo', value: data.needsInfo },
+  ];
+
+  const total = data.valid + data.invalid + data.duplicate + data.needsInfo;
+  const filteringRate = ((data.invalid + data.duplicate) / total) * 100;
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (chartRef.current) {
+      observer.observe(chartRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={chartRef}
+      className={cn(
+        'relative rounded-xl border bg-card/50 backdrop-blur-sm p-6',
+        'transition-all duration-700',
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        className
+      )}
+    >
+      {/* Header */}
+      <div className="mb-6">
+        <h3
+          className="text-lg font-semibold"
+          style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+        >
+          분류 결정 분포
+        </h3>
+        <p className="text-sm text-muted-foreground mt-1">
+          AI 분류 결과별 이슈 비율
+        </p>
+      </div>
+
+      {/* Chart */}
+      <div className="h-[250px] w-full relative">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              cx="50%"
+              cy="50%"
+              innerRadius={55}
+              outerRadius={85}
+              paddingAngle={3}
+              dataKey="value"
+              animationBegin={0}
+              animationDuration={1500}
+            >
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index]}
+                  stroke="transparent"
+                />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+
+        {/* Center label */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center">
+            <p
+              className="text-2xl font-bold text-foreground tabular-nums"
+              style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+            >
+              {formatPercent(filteringRate)}
+            </p>
+            <p className="text-xs text-muted-foreground">필터링율</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        {chartData.map((item, index) => {
+          const percent = (item.value / total) * 100;
+          return (
+            <div key={item.name} className="flex items-center gap-2">
+              <div
+                className="w-3 h-3 rounded-full shrink-0"
+                style={{ background: COLORS[index] }}
+              />
+              <span className="text-sm text-muted-foreground truncate">
+                {LABELS[item.name as keyof typeof LABELS]}
+              </span>
+              <span className="text-sm font-medium tabular-nums ml-auto">
+                {formatPercent(percent)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
