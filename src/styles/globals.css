@@ -23,7 +23,7 @@
   --secondary-foreground: oklch(0.85 0.01 260);
 
   --muted: oklch(0.20 0.015 260);
-  --muted-foreground: oklch(0.60 0.02 260);
+  --muted-foreground: oklch(0.95 0.01 260);
 
   /* Accent - Warm amber for contrast */
   --accent: oklch(0.78 0.16 75);
