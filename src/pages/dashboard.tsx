@@ -41,7 +41,7 @@ export default function Dashboard() {
             suffix="시간"
             delta={metrics.timeSavedDelta}
             icon={Clock}
-            accentColor="teal"
+            accentColor="cyan"
             animationDelay={200}
           />
           <KPICard
@@ -50,7 +50,7 @@ export default function Dashboard() {
             suffix="만원"
             delta={metrics.costSavingsDelta}
             icon={Wallet}
-            accentColor="green"
+            accentColor="emerald"
             animationDelay={300}
           />
           <KPICard

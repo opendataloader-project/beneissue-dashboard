@@ -11,9 +11,8 @@ export function Header({ className }: HeaderProps) {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50',
-        'backdrop-blur-xl bg-background/80',
-        'border-b border-border',
-        'shadow-[0_1px_3px_oklch(0.20_0.02_250/0.04)]',
+        'backdrop-blur-xl bg-background/70',
+        'border-b border-border/50',
         className
       )}
     >
@@ -24,12 +23,13 @@ export function Header({ className }: HeaderProps) {
           className="flex items-center gap-3 group"
         >
           <div className="relative">
-            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:border-primary/30 group-hover:bg-primary/15 transition-all">
+            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:border-primary/40 transition-colors">
               <Activity className="w-5 h-5 text-primary" />
             </div>
+            <div className="absolute inset-0 rounded-lg bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <span
-            className="text-lg font-semibold tracking-tight text-foreground"
+            className="text-lg font-semibold tracking-tight"
             style={{ fontFamily: "'Instrument Sans', sans-serif" }}
           >
             Beneissue
@@ -43,7 +43,7 @@ export function Header({ className }: HeaderProps) {
             className={cn(
               'group flex items-center gap-2 px-4 py-2 rounded-lg',
               'text-sm font-medium text-muted-foreground',
-              'hover:text-foreground hover:bg-secondary',
+              'hover:text-foreground hover:bg-secondary/50',
               'transition-all duration-200'
             )}
           >

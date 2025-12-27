@@ -142,7 +142,7 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
 
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="oklch(0.80 0.01 260 / 0.6)"
+              stroke="oklch(0.25 0.02 260 / 0.5)"
               vertical={false}
             />
 
@@ -183,14 +183,14 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
               stroke="oklch(0.75 0.18 195)"
               strokeWidth={3}
               dot={{
-                fill: 'oklch(1 0 0)',
+                fill: 'oklch(0.08 0.01 260)',
                 stroke: 'oklch(0.75 0.18 195)',
                 strokeWidth: 2,
                 r: 5,
               }}
               activeDot={{
                 fill: 'oklch(0.75 0.18 195)',
-                stroke: 'oklch(1 0 0)',
+                stroke: 'oklch(0.08 0.01 260)',
                 strokeWidth: 2,
                 r: 7,
                 filter: 'url(#glow)',

@@ -3,52 +3,52 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Executive Clarity Theme - Premium light mode for investors & executives */
+/* Data Observatory Theme - Deep space with electric cyan */
 :root {
-  /* Core palette - Light, professional, trustworthy */
-  --background: oklch(0.985 0.002 250);
-  --foreground: oklch(0.20 0.02 250);
+  /* Core palette - Dark mode by default for this dashboard */
+  --background: oklch(0.08 0.01 260);
+  --foreground: oklch(0.95 0.01 260);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.20 0.02 250);
+  --card: oklch(0.12 0.015 260);
+  --card-foreground: oklch(0.95 0.01 260);
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.20 0.02 250);
+  --popover: oklch(0.12 0.015 260);
+  --popover-foreground: oklch(0.95 0.01 260);
 
-  /* Primary - Deep Teal (confidence, growth, trust) */
-  --primary: oklch(0.45 0.12 200);
-  --primary-foreground: oklch(0.98 0 0);
+  /* Primary - Electric Cyan */
+  --primary: oklch(0.75 0.18 195);
+  --primary-foreground: oklch(0.08 0.01 260);
 
-  --secondary: oklch(0.96 0.005 250);
-  --secondary-foreground: oklch(0.30 0.02 250);
+  --secondary: oklch(0.18 0.02 260);
+  --secondary-foreground: oklch(0.85 0.01 260);
 
-  --muted: oklch(0.95 0.005 250);
-  --muted-foreground: oklch(0.45 0.02 250);
+  --muted: oklch(0.20 0.015 260);
+  --muted-foreground: oklch(0.60 0.02 260);
 
-  /* Accent - Warm Amber (success, positive metrics) */
-  --accent: oklch(0.72 0.14 70);
-  --accent-foreground: oklch(0.20 0.02 250);
+  /* Accent - Warm amber for contrast */
+  --accent: oklch(0.78 0.16 75);
+  --accent-foreground: oklch(0.08 0.01 260);
 
-  --destructive: oklch(0.55 0.20 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.60 0.20 25);
+  --destructive-foreground: oklch(0.95 0.01 260);
 
-  --border: oklch(0.92 0.005 250);
-  --input: oklch(0.95 0.005 250);
-  --ring: oklch(0.45 0.12 200);
+  --border: oklch(0.25 0.02 260);
+  --input: oklch(0.18 0.02 260);
+  --ring: oklch(0.75 0.18 195);
 
-  /* Chart colors - Professional, distinct, trustworthy */
-  --chart-1: oklch(0.45 0.12 200); /* Deep Teal */
-  --chart-2: oklch(0.68 0.14 70);  /* Warm Amber */
-  --chart-3: oklch(0.50 0.14 155); /* Forest Green */
-  --chart-4: oklch(0.48 0.10 280); /* Muted Purple */
-  --chart-5: oklch(0.55 0.14 25);  /* Coral */
+  /* Chart colors - Vibrant data visualization */
+  --chart-1: oklch(0.75 0.18 195); /* Cyan */
+  --chart-2: oklch(0.78 0.16 75);  /* Amber */
+  --chart-3: oklch(0.70 0.20 145); /* Emerald */
+  --chart-4: oklch(0.72 0.18 320); /* Magenta */
+  --chart-5: oklch(0.65 0.22 265); /* Purple */
 
   --radius: 0.75rem;
 
-  /* Executive-specific custom properties */
-  --shadow-soft: 0 1px 3px oklch(0.20 0.02 250 / 0.06), 0 4px 12px oklch(0.20 0.02 250 / 0.08);
-  --shadow-card: 0 1px 2px oklch(0.20 0.02 250 / 0.04), 0 4px 16px oklch(0.20 0.02 250 / 0.06);
-  --shadow-elevated: 0 4px 6px oklch(0.20 0.02 250 / 0.06), 0 12px 32px oklch(0.20 0.02 250 / 0.12);
+  /* Observatory-specific custom properties */
+  --glow-cyan: oklch(0.75 0.18 195 / 0.4);
+  --glow-amber: oklch(0.78 0.16 75 / 0.3);
+  --grid-color: oklch(0.25 0.02 260 / 0.5);
 }
 
 @theme inline {
@@ -80,6 +80,10 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Custom colors */
+  --color-glow-cyan: var(--glow-cyan);
+  --color-glow-amber: var(--glow-amber);
 }
 
 @layer base {
@@ -97,34 +101,85 @@
   }
 }
 
-/* Subtle gradient background for pages */
-.executive-gradient {
-  background: linear-gradient(
-    180deg,
-    oklch(0.985 0.002 250) 0%,
-    oklch(0.975 0.008 220) 50%,
-    oklch(0.985 0.002 250) 100%
-  );
+/* Observatory Grid Background */
+.observatory-grid {
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center center;
 }
 
-/* Decorative dot pattern */
-.dot-pattern {
-  background-image: radial-gradient(oklch(0.88 0.01 250) 1px, transparent 1px);
-  background-size: 20px 20px;
+/* Animated gradient orbs */
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  animation: float 20s ease-in-out infinite;
 }
 
-/* Premium card styling */
-.executive-card {
+.gradient-orb-cyan {
+  background: oklch(0.75 0.18 195);
+}
+
+.gradient-orb-amber {
+  background: oklch(0.78 0.16 75);
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% {
+    transform: translate(20px, 10px) scale(1.05);
+  }
+}
+
+/* Glowing card effect */
+.glow-card {
+  position: relative;
   background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
   transition: all 0.3s ease;
 }
 
-.executive-card:hover {
-  box-shadow: var(--shadow-elevated);
-  border-color: oklch(0.88 0.01 250);
-  transform: translateY(-2px);
+.glow-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    oklch(0.75 0.18 195 / 0.3),
+    transparent 50%,
+    oklch(0.78 0.16 75 / 0.2)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glow-card:hover::before {
+  opacity: 1;
+}
+
+.glow-card:hover {
+  border-color: oklch(0.75 0.18 195 / 0.4);
+  box-shadow:
+    0 0 30px -10px oklch(0.75 0.18 195 / 0.3),
+    0 20px 40px -20px oklch(0 0 0 / 0.5);
 }
 
 /* Staggered animation delays */
@@ -133,27 +188,11 @@
 .animate-stagger-3 { animation-delay: 0.3s; }
 .animate-stagger-4 { animation-delay: 0.4s; }
 
-/* Smooth fade in animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
 /* Number counter animation */
 @keyframes countUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -162,66 +201,63 @@
 }
 
 .animate-count-up {
-  animation: countUp 0.5s ease-out forwards;
+  animation: countUp 0.6s ease-out forwards;
 }
 
-/* Subtle pulse for live indicators */
-@keyframes subtlePulse {
+/* Pulse glow for active elements */
+@keyframes pulseGlow {
   0%, 100% {
-    opacity: 1;
+    box-shadow: 0 0 20px -5px oklch(0.75 0.18 195 / 0.4);
   }
   50% {
-    opacity: 0.5;
+    box-shadow: 0 0 30px -5px oklch(0.75 0.18 195 / 0.6);
   }
 }
 
-.animate-subtle-pulse {
-  animation: subtlePulse 2s ease-in-out infinite;
+.pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
 }
 
-/* Custom scrollbar - refined */
+/* Scan line effect for hero */
+@keyframes scanLine {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.75 0.18 195 / 0.5) 50%,
+    transparent
+  );
+  animation: scanLine 8s linear infinite;
+  opacity: 0.3;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--muted);
-  border-radius: 4px;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.82 0.01 250);
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.72 0.01 250);
-}
-
-/* Focus styles */
-:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* Selection styling */
-::selection {
-  background: oklch(0.45 0.12 200 / 0.15);
-}
-
-/* Accent top border for cards */
-.accent-top-border {
-  position: relative;
-}
-
-.accent-top-border::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--muted-foreground);
 }
