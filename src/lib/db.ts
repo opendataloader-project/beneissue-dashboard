@@ -54,28 +54,30 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
   }
 
   // Aggregate the daily data
-  return data.reduce(
-    (acc, day) => ({
-      totalRuns: acc.totalRuns + (day.total_runs || 0),
-      uniqueIssues: acc.uniqueIssues + (day.unique_issues || 0),
-      triageCount: acc.triageCount + (day.triage_count || 0),
-      analyzeCount: acc.analyzeCount + (day.analyze_count || 0),
-      fixCount: acc.fixCount + (day.fix_count || 0),
-      aiFilteredCount: acc.aiFilteredCount + (day.ai_filtered_count || 0),
-      validCount: acc.validCount + (day.valid_count || 0),
-      duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
-      needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
-      fixAttemptedCount: acc.fixAttemptedCount + (day.fix_attempted_count || 0),
-      fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
-      commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
-      totalCostUsd: acc.totalCostUsd + (day.total_input_cost || 0) + (day.total_output_cost || 0),
-      avgResponseSeconds:
-        (acc.avgResponseSeconds * acc.responseCount +
-          (day.avg_first_response_seconds || 0)) /
-        (acc.responseCount + (day.avg_first_response_seconds ? 1 : 0)),
-      responseCount:
-        acc.responseCount + (day.avg_first_response_seconds ? 1 : 0),
-    }),
+  const aggregated = data.reduce(
+    (acc, day) => {
+      const hasResponseTime = day.avg_first_response_seconds != null && day.avg_first_response_seconds > 0;
+      const newResponseCount = acc.responseCount + (hasResponseTime ? 1 : 0);
+      const newTotalResponseSeconds = acc.totalResponseSeconds + (hasResponseTime ? day.avg_first_response_seconds : 0);
+
+      return {
+        totalRuns: acc.totalRuns + (day.total_runs || 0),
+        uniqueIssues: acc.uniqueIssues + (day.unique_issues || 0),
+        triageCount: acc.triageCount + (day.triage_count || 0),
+        analyzeCount: acc.analyzeCount + (day.analyze_count || 0),
+        fixCount: acc.fixCount + (day.fix_count || 0),
+        aiFilteredCount: acc.aiFilteredCount + (day.ai_filtered_count || 0),
+        validCount: acc.validCount + (day.valid_count || 0),
+        duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
+        needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
+        fixAttemptedCount: acc.fixAttemptedCount + (day.fix_attempted_count || 0),
+        fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
+        commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
+        totalCostUsd: acc.totalCostUsd + (day.total_input_cost || 0) + (day.total_output_cost || 0),
+        totalResponseSeconds: newTotalResponseSeconds,
+        responseCount: newResponseCount,
+      };
+    },
     {
       totalRuns: 0,
       uniqueIssues: 0,
@@ -90,10 +92,18 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
       fixSuccessCount: 0,
       commentOnlyCount: 0,
       totalCostUsd: 0,
-      avgResponseSeconds: 0,
+      totalResponseSeconds: 0,
       responseCount: 0,
     }
   );
+
+  return {
+    ...aggregated,
+    avgResponseSeconds:
+      aggregated.responseCount > 0
+        ? aggregated.totalResponseSeconds / aggregated.responseCount
+        : 0,
+  };
 }
 
 /**
