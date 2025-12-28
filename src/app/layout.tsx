@@ -1,8 +1,23 @@
 import type { Metadata, Viewport } from "next";
+import { Figtree, JetBrains_Mono } from "next/font/google";
 
 import "@/styles/globals.css";
 
 import { RootLayout } from "@/components/layout/root-layout";
+
+const figtree = Figtree({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-figtree",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Beneissue - AI Issue Automation",
@@ -16,29 +31,8 @@ export const viewport: Viewport = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
-      <head>
-        {/* Preconnect for faster font loading */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-
-        {/* Instrument Sans for display headings - geometric, technical feel */}
-        {/* Figtree for body text - clean, modern, excellent readability */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body
-        className="antialiased"
-        style={{
-          fontFamily: "'Figtree', system-ui, sans-serif",
-        }}
-      >
+    <html lang="ko" className={`${figtree.variable} ${jetbrainsMono.variable}`}>
+      <body className="antialiased font-sans">
         <RootLayout>{children}</RootLayout>
       </body>
     </html>
