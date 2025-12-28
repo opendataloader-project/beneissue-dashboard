@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { fetchMonthlyTrend, fetchMonthlyAggregates } from '@/lib/db';
+import { fetchMonthlyTrend } from '@/lib/db';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import {
   calculateSavedMinutes,
@@ -7,29 +7,28 @@ import {
   calculateROI,
   calculateDelta,
 } from '@/lib/metrics';
-import { mockExecutiveMetrics } from '@/data/mock';
 import type { ExecutiveMetrics, MonthlyData } from '@/types/metrics';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ExecutiveMetrics>
+  res: NextApiResponse<ExecutiveMetrics | null>
 ) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  // Use mock data if Supabase is not configured
+  // Return null if Supabase is not configured
   if (!isSupabaseConfigured) {
-    return res.status(200).json(mockExecutiveMetrics);
+    return res.status(200).json(null);
   }
 
   try {
     const monthlyTrendRaw = await fetchMonthlyTrend(6);
 
-    // Fallback to mock if no data
+    // Return null if no data
     if (monthlyTrendRaw.length === 0) {
-      return res.status(200).json(mockExecutiveMetrics);
+      return res.status(200).json(null);
     }
 
     // Transform monthly trend data and calculate derived metrics
@@ -91,7 +90,6 @@ export default async function handler(
     res.status(200).json(metrics);
   } catch (error) {
     console.error('Error in executive metrics API:', error);
-    // Fallback to mock data on error
-    res.status(200).json(mockExecutiveMetrics);
+    res.status(200).json(null);
   }
 }

@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   fetchDailyMetrics,
-  fetchTotalMetrics,
   fetchMonthlyAggregates,
   fetchProcessingTimes,
 } from '@/lib/db';
@@ -11,21 +10,20 @@ import {
   calculateAutoResolutionRate,
   calculateDelta,
 } from '@/lib/metrics';
-import { mockOperationsMetrics } from '@/data/mock';
 import type { OperationsMetrics, DailyData } from '@/types/metrics';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<OperationsMetrics>
+  res: NextApiResponse<OperationsMetrics | null>
 ) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  // Use mock data if Supabase is not configured
+  // Return null if Supabase is not configured
   if (!isSupabaseConfigured) {
-    return res.status(200).json(mockOperationsMetrics);
+    return res.status(200).json(null);
   }
 
   try {
@@ -58,9 +56,9 @@ export default async function handler(
       fetchProcessingTimes(),
     ]);
 
-    // Fallback to mock if no data
+    // Return null if no data
     if (!currentMonthData) {
-      return res.status(200).json(mockOperationsMetrics);
+      return res.status(200).json(null);
     }
 
     // Transform daily data
@@ -151,7 +149,6 @@ export default async function handler(
     res.status(200).json(metrics);
   } catch (error) {
     console.error('Error in operations metrics API:', error);
-    // Fallback to mock data on error
-    res.status(200).json(mockOperationsMetrics);
+    res.status(200).json(null);
   }
 }

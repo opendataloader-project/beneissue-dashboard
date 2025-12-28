@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { StatCard } from '@/components/stats/stat-card';
 import { TrendLineChart } from '@/components/charts/trend-line-chart';
+import { EmptyState } from '@/components/empty-state';
 import { usePublicMetrics } from '@/hooks/useMetrics';
 
 export default function Home() {
@@ -69,47 +70,53 @@ export default function Home() {
                 </p>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
-                  <StatCard
-                    title="총 처리 이슈"
-                    value={metrics.totalIssuesProcessed}
-                    suffix="건"
-                    icon={FileCheck}
-                    description="누적 처리량"
-                    accentColor="cyan"
-                    animationDelay={100}
-                  />
-                  <StatCard
-                    title="평균 응답 시간"
-                    value={metrics.avgResponseTimeSeconds}
-                    suffix="초"
-                    icon={Clock}
-                    description="첫 응답까지"
-                    accentColor="emerald"
-                    animationDelay={200}
-                  />
-                  <StatCard
-                    title="자동 해결율"
-                    value={metrics.autoResolutionRate}
-                    suffix="%"
-                    icon={Sparkles}
-                    description="AI가 직접 수정"
-                    accentColor="purple"
-                    animationDelay={300}
-                  />
-                  <StatCard
-                    title="ROI"
-                    value={metrics.roi}
-                    suffix="%"
-                    icon={TrendingUp}
-                    description="투자 대비 수익"
-                    accentColor="amber"
-                    animationDelay={400}
-                  />
-                </div>
+                {metrics ? (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
+                      <StatCard
+                        title="총 처리 이슈"
+                        value={metrics.totalIssuesProcessed}
+                        suffix="건"
+                        icon={FileCheck}
+                        description="누적 처리량"
+                        accentColor="cyan"
+                        animationDelay={100}
+                      />
+                      <StatCard
+                        title="평균 응답 시간"
+                        value={metrics.avgResponseTimeSeconds}
+                        suffix="초"
+                        icon={Clock}
+                        description="첫 응답까지"
+                        accentColor="emerald"
+                        animationDelay={200}
+                      />
+                      <StatCard
+                        title="자동 해결율"
+                        value={metrics.autoResolutionRate}
+                        suffix="%"
+                        icon={Sparkles}
+                        description="AI가 직접 수정"
+                        accentColor="purple"
+                        animationDelay={300}
+                      />
+                      <StatCard
+                        title="ROI"
+                        value={metrics.roi}
+                        suffix="%"
+                        icon={TrendingUp}
+                        description="투자 대비 수익"
+                        accentColor="amber"
+                        animationDelay={400}
+                      />
+                    </div>
 
-                {/* Chart */}
-                <TrendLineChart data={metrics.monthlyTrend} />
+                    {/* Chart */}
+                    <TrendLineChart data={metrics.monthlyTrend} />
+                  </>
+                ) : (
+                  <EmptyState />
+                )}
               </div>
             </section>
 

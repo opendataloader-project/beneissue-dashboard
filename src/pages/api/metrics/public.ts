@@ -7,28 +7,20 @@ import {
   calculateROI,
   calculateAutoResolutionRate,
 } from '@/lib/metrics';
-import { mockPublicMetrics } from '@/data/mock';
 import type { PublicMetrics, MonthlyData } from '@/types/metrics';
-import {
-  TRIAGE_TIME_MINUTES,
-  ANALYZE_TIME_MINUTES,
-  FIX_TIME_MINUTES,
-  DEVELOPER_HOURLY_RATE_KRW,
-  USD_TO_KRW,
-} from '@/lib/constants';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PublicMetrics>
+  res: NextApiResponse<PublicMetrics | null>
 ) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  // Use mock data if Supabase is not configured
+  // Return null if Supabase is not configured
   if (!isSupabaseConfigured) {
-    return res.status(200).json(mockPublicMetrics);
+    return res.status(200).json(null);
   }
 
   try {
@@ -37,9 +29,9 @@ export default async function handler(
       fetchMonthlyTrend(6),
     ]);
 
-    // Fallback to mock if no data
+    // Return null if no data
     if (!totalMetrics || monthlyTrendRaw.length === 0) {
-      return res.status(200).json(mockPublicMetrics);
+      return res.status(200).json(null);
     }
 
     // Calculate derived metrics
@@ -88,7 +80,6 @@ export default async function handler(
     res.status(200).json(metrics);
   } catch (error) {
     console.error('Error in public metrics API:', error);
-    // Fallback to mock data on error
-    res.status(200).json(mockPublicMetrics);
+    res.status(200).json(null);
   }
 }
