@@ -6,62 +6,36 @@ import type {
   DailyData,
 } from '@/types/metrics';
 
-// Generate monthly trend data for the past 6 months
-const generateMonthlyTrend = (): MonthlyData[] => {
-  const months: MonthlyData[] = [];
-  const now = new Date();
+// Fixed monthly trend data for the past 6 months
+const monthlyTrendData: MonthlyData[] = [
+  { month: '2025-07', issuesProcessed: 1650, costSavings: 8750000, timeSavedHours: 198, roi: 880 },
+  { month: '2025-08', issuesProcessed: 1520, costSavings: 8100000, timeSavedHours: 182, roi: 850 },
+  { month: '2025-09', issuesProcessed: 1380, costSavings: 7350000, timeSavedHours: 166, roi: 820 },
+  { month: '2025-10', issuesProcessed: 1240, costSavings: 6600000, timeSavedHours: 149, roi: 790 },
+  { month: '2025-11', issuesProcessed: 1100, costSavings: 5850000, timeSavedHours: 132, roi: 760 },
+  { month: '2025-12', issuesProcessed: 1850, costSavings: 9850000, timeSavedHours: 222, roi: 920 },
+];
 
-  for (let i = 5; i >= 0; i--) {
-    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+// Fixed daily trend data for the past 14 days
+const dailyTrendData: DailyData[] = [
+  { date: '2025-12-15', triageCount: 42, analyzeCount: 29, fixCount: 12, filteringRate: 28 },
+  { date: '2025-12-16', triageCount: 38, analyzeCount: 27, fixCount: 11, filteringRate: 25 },
+  { date: '2025-12-17', triageCount: 45, analyzeCount: 32, fixCount: 13, filteringRate: 30 },
+  { date: '2025-12-18', triageCount: 35, analyzeCount: 25, fixCount: 10, filteringRate: 22 },
+  { date: '2025-12-19', triageCount: 48, analyzeCount: 34, fixCount: 14, filteringRate: 32 },
+  { date: '2025-12-20', triageCount: 40, analyzeCount: 28, fixCount: 11, filteringRate: 26 },
+  { date: '2025-12-21', triageCount: 32, analyzeCount: 22, fixCount: 9, filteringRate: 20 },
+  { date: '2025-12-22', triageCount: 36, analyzeCount: 25, fixCount: 10, filteringRate: 24 },
+  { date: '2025-12-23', triageCount: 44, analyzeCount: 31, fixCount: 12, filteringRate: 29 },
+  { date: '2025-12-24', triageCount: 30, analyzeCount: 21, fixCount: 8, filteringRate: 21 },
+  { date: '2025-12-25', triageCount: 28, analyzeCount: 20, fixCount: 8, filteringRate: 18 },
+  { date: '2025-12-26', triageCount: 46, analyzeCount: 32, fixCount: 13, filteringRate: 31 },
+  { date: '2025-12-27', triageCount: 50, analyzeCount: 35, fixCount: 14, filteringRate: 33 },
+  { date: '2025-12-28', triageCount: 52, analyzeCount: 36, fixCount: 15, filteringRate: 35 },
+];
 
-    // Simulate growth trend
-    const baseIssues = 800 + i * 150 + Math.floor(Math.random() * 200);
-    const baseCost = baseIssues * 5000 + Math.floor(Math.random() * 500000);
-    const baseHours = Math.round(baseIssues * 0.12);
-    const baseRoi = 700 + i * 30 + Math.floor(Math.random() * 50);
-
-    months.push({
-      month,
-      issuesProcessed: baseIssues,
-      costSavings: baseCost,
-      timeSavedHours: baseHours,
-      roi: baseRoi,
-    });
-  }
-
-  return months;
-};
-
-// Generate daily trend data for the past 14 days
-const generateDailyTrend = (): DailyData[] => {
-  const days: DailyData[] = [];
-  const now = new Date();
-
-  for (let i = 13; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
-
-    const triageCount = 30 + Math.floor(Math.random() * 20);
-    const analyzeCount = Math.floor(triageCount * 0.7);
-    const fixCount = Math.floor(analyzeCount * 0.4);
-    const filteringRate = 20 + Math.floor(Math.random() * 15);
-
-    days.push({
-      date: dateStr,
-      triageCount,
-      analyzeCount,
-      fixCount,
-      filteringRate,
-    });
-  }
-
-  return days;
-};
-
-const monthlyTrend = generateMonthlyTrend();
-const dailyTrend = generateDailyTrend();
+const monthlyTrend = monthlyTrendData;
+const dailyTrend = dailyTrendData;
 
 // Calculate totals from monthly data
 const totalIssues = monthlyTrend.reduce((sum, m) => sum + m.issuesProcessed, 0);
