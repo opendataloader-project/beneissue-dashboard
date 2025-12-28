@@ -4,10 +4,10 @@ export interface WorkflowRun {
   repo: string;
   issue_number: number;
   workflow_type: 'triage' | 'analyze' | 'fix' | 'full';
-  issue_created_at: string;
+  issue_created_at: string | null;
   workflow_started_at: string;
-  workflow_completed_at: string;
-  triage_decision: 'valid' | 'invalid' | 'duplicate' | 'needs_info';
+  workflow_completed_at: string | null;
+  triage_decision: 'valid' | 'invalid' | 'duplicate' | 'needs_info' | null;
   triage_reason: string | null;
   duplicate_of: number | null;
   fix_decision: 'auto_eligible' | 'manual_required' | 'comment_only' | null;
@@ -19,7 +19,8 @@ export interface WorkflowRun {
   fix_error: string | null;
   input_tokens: number;
   output_tokens: number;
-  total_cost_usd: number;
+  input_cost: number;
+  output_cost: number;
   created_at: string;
 }
 
@@ -38,7 +39,13 @@ export interface DailyMetrics {
   fix_attempted_count: number;
   fix_success_count: number;
   avg_first_response_seconds: number | null;
+  min_first_response_seconds: number | null;
+  max_first_response_seconds: number | null;
+  total_input_tokens: number;
+  total_output_tokens: number;
   total_cost_usd: number;
+  created_at: string;
+  updated_at: string;
 }
 
 // Computed metrics for pages
