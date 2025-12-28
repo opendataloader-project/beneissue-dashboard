@@ -45,8 +45,8 @@ export default async function handler(
       totalMetrics.totalCostUsd
     );
     const roi = calculateROI(netSavings, aiCost);
-    // Calculate invalid count (uniqueIssues - validCount)
-    const invalidCount = totalMetrics.uniqueIssues - totalMetrics.validCount;
+    // Calculate invalid count: ai_filtered - duplicate (ai_filtered includes invalid + duplicate)
+    const invalidCount = totalMetrics.aiFilteredCount - totalMetrics.duplicateCount;
     const autoResolutionRate = calculateAutoResolutionRate(
       invalidCount,
       totalMetrics.duplicateCount,

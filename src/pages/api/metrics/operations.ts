@@ -64,7 +64,8 @@ export default async function handler(
     // Transform daily data
     const dailyTrend: DailyData[] = dailyMetrics.map((d) => {
       const uniqueIssues = d.unique_issues || 1;
-      const invalidCount = uniqueIssues - (d.valid_count || 0);
+      // invalid = ai_filtered - duplicate
+      const invalidCount = (d.ai_filtered_count || 0) - (d.duplicate_count || 0);
       const filteringRate = calculateAIFilteringRate(
         invalidCount,
         d.duplicate_count || 0,
@@ -81,8 +82,9 @@ export default async function handler(
     });
 
     // Calculate current period metrics
+    // invalid = ai_filtered - duplicate (ai_filtered_count includes both invalid + duplicate)
     const currentInvalid =
-      currentMonthData.uniqueIssues - currentMonthData.validCount;
+      currentMonthData.aiFilteredCount - currentMonthData.duplicateCount;
     const currentFilteringRate = calculateAIFilteringRate(
       currentInvalid,
       currentMonthData.duplicateCount,
@@ -105,7 +107,7 @@ export default async function handler(
 
     if (previousMonthData) {
       const prevInvalid =
-        previousMonthData.uniqueIssues - previousMonthData.validCount;
+        previousMonthData.aiFilteredCount - previousMonthData.duplicateCount;
       prevFilteringRate = calculateAIFilteringRate(
         prevInvalid,
         previousMonthData.duplicateCount,
@@ -143,7 +145,7 @@ export default async function handler(
       dailyTrend,
       decisionDistribution: {
         valid: currentMonthData.validCount,
-        invalid: currentInvalid,
+        invalid: Math.max(0, currentInvalid),
         duplicate: currentMonthData.duplicateCount,
         needsInfo: currentMonthData.needsInfoCount,
       },
