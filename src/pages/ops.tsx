@@ -58,8 +58,7 @@ export default function Operations() {
               />
               <KPICard
                 title="AI 비용"
-                value={metrics.totalCostUSD}
-                suffix="USD"
+                value={`$ ${metrics.totalCostUSD.toFixed(2)}`}
                 delta={metrics.totalCostDelta}
                 icon={DollarSign}
                 accentColor="purple"
