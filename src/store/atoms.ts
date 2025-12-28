@@ -3,6 +3,7 @@ import {
   mockOperationsMetrics,
   mockPublicMetrics,
 } from "@/data/mock";
+import type { Language } from "@/i18n/translations";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
@@ -17,6 +18,12 @@ export type DataMode = "mock" | "live";
 export const dataModeAtom = atomWithStorage<DataMode>(
   "beneissue-data-mode",
   "mock"
+);
+
+// Language setting
+export const languageAtom = atomWithStorage<Language>(
+  "beneissue-language",
+  "en"
 );
 
 // Date filter atoms

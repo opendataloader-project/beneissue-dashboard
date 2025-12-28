@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import type { TranslationKey } from "@/i18n/translations";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,6 +15,7 @@ import {
 import type { DailyData } from "@/types/metrics";
 import { formatDateShort, formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface DailyTrendChartProps {
   data: DailyData[];
@@ -25,18 +26,16 @@ function CustomTooltip({
   active,
   payload,
   label,
+  labels,
+  countUnit,
 }: {
   active?: boolean;
   payload?: Array<{ value: number; dataKey: string; fill: string }>;
   label?: string;
+  labels: Record<string, string>;
+  countUnit: string;
 }) {
   if (!active || !payload || !payload.length) return null;
-
-  const labels: Record<string, string> = {
-    triageCount: "분류",
-    analyzeCount: "분석",
-    fixCount: "수정",
-  };
 
   return (
     <div className="px-4 py-3 rounded-lg border bg-card/95 backdrop-blur-sm border-border shadow-xl">
@@ -57,7 +56,8 @@ function CustomTooltip({
               {labels[item.dataKey]}:
             </span>
             <span className="font-medium tabular-nums">
-              {formatNumber(item.value)}건
+              {formatNumber(item.value)}
+              {countUnit}
             </span>
           </p>
         ))}
@@ -69,6 +69,13 @@ function CustomTooltip({
 export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
   const [isVisible, setIsVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+
+  const labels: Record<string, string> = {
+    triageCount: t("triage"),
+    analyzeCount: t("analyze"),
+    fixCount: t("fix"),
+  };
 
   // Transform data for chart
   const chartData = data.map((item) => ({
@@ -110,10 +117,10 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
           className="text-lg font-semibold"
           style={{ fontFamily: "'Instrument Sans', sans-serif" }}
         >
-          일별 처리량 추이
+          {t("dailyTrendTitle")}
         </h3>
         <p className="text-sm text-muted-foreground mt-1">
-          최근 14일간 워크플로우 단계별 처리량
+          {t("dailyTrendDesc")}
         </p>
       </div>
 
@@ -147,20 +154,22 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
             />
 
             <Tooltip
-              content={<CustomTooltip />}
+              content={
+                <CustomTooltip labels={labels} countUnit={t("countUnit")} />
+              }
               cursor={{ fill: "oklch(0.5 0 0 / 0.1)" }}
             />
 
             <Bar
               dataKey="triageCount"
-              name="분류"
+              name={t("triage")}
               fill="oklch(0.75 0.18 195)"
               radius={[4, 4, 0, 0]}
               animationDuration={1500}
             />
             <Bar
               dataKey="analyzeCount"
-              name="분석"
+              name={t("analyze")}
               fill="oklch(0.78 0.16 75)"
               radius={[4, 4, 0, 0]}
               animationDuration={1500}
@@ -168,7 +177,7 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
             />
             <Bar
               dataKey="fixCount"
-              name="수정"
+              name={t("fix")}
               fill="oklch(0.70 0.20 145)"
               radius={[4, 4, 0, 0]}
               animationDuration={1500}
@@ -181,16 +190,16 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
       {/* Legend */}
       <div className="mt-4 flex items-center justify-center gap-6">
         {[
-          { label: "분류", color: "oklch(0.75 0.18 195)" },
-          { label: "분석", color: "oklch(0.78 0.16 75)" },
-          { label: "수정", color: "oklch(0.70 0.20 145)" },
+          { key: "triage" as TranslationKey, color: "oklch(0.75 0.18 195)" },
+          { key: "analyze" as TranslationKey, color: "oklch(0.78 0.16 75)" },
+          { key: "fix" as TranslationKey, color: "oklch(0.70 0.20 145)" },
         ].map((item) => (
-          <div key={item.label} className="flex items-center gap-2">
+          <div key={item.key} className="flex items-center gap-2">
             <div
               className="w-3 h-3 rounded"
               style={{ background: item.color }}
             />
-            <span className="text-sm text-muted-foreground">{item.label}</span>
+            <span className="text-sm text-muted-foreground">{t(item.key)}</span>
           </div>
         ))}
       </div>

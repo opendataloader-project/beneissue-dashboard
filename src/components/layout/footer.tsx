@@ -1,12 +1,17 @@
+"use client";
+
 import { Activity, ExternalLink, Github } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface FooterProps {
   className?: string;
 }
 
 export function Footer({ className }: FooterProps) {
+  const { t } = useTranslation();
+
   return (
     <footer
       className={cn(
@@ -29,7 +34,7 @@ export function Footer({ className }: FooterProps) {
                 Beneissue
               </p>
               <p className="text-xs text-muted-foreground">
-                AI-Powered Issue Automation
+                {t("footerTagline")}
               </p>
             </div>
           </div>
@@ -56,7 +61,7 @@ export function Footer({ className }: FooterProps) {
           </p>
           <p className="text-xs text-muted-foreground flex items-center gap-1">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            All systems operational
+            {t("allSystemsOperational")}
           </p>
         </div>
       </div>

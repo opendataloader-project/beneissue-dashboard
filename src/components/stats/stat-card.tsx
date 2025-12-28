@@ -83,14 +83,13 @@ export function StatCard({
 
   // Animate number counting
   useEffect(() => {
-    if (!isVisible || typeof value !== "number") {
-      setDisplayValue(value);
-      return;
-    }
+    if (!isVisible) return;
+    if (typeof value !== "number") return;
 
     const duration = 1500;
     const startTime = performance.now();
     const startValue = 0;
+    let animationId: number;
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -105,11 +104,13 @@ export function StatCard({
       setDisplayValue(current);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationId);
   }, [isVisible, value]);
 
   return (

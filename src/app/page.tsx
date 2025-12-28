@@ -3,12 +3,14 @@
 import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 
 import { usePublicMetrics } from "@/hooks/useMetrics";
+import { useTranslation } from "@/hooks/useTranslation";
 import { TrendLineChart } from "@/components/charts/trend-line-chart";
 import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stats/stat-card";
 
 export default function Home() {
   const { data: metrics } = usePublicMetrics();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
-              Live Metrics
+              {t("liveMetrics")}
             </div>
           </div>
 
@@ -34,17 +36,15 @@ export default function Home() {
             className="text-center text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
             style={{ fontFamily: "'Instrument Sans', sans-serif" }}
           >
-            <span className="block text-foreground">AI-Powered Issue</span>
+            <span className="block text-foreground">{t("heroTitle1")}</span>
             <span className="block bg-gradient-to-r from-[oklch(0.75_0.18_195)] via-[oklch(0.78_0.16_75)] to-[oklch(0.75_0.18_195)] bg-clip-text text-transparent">
-              Automation
+              {t("heroTitle2")}
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-center text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-16">
-            GitHub 이슈를 자동으로 분류하고 분석하고 수정합니다.
-            <br className="hidden md:block" />
-            개발자 시간을 절약하고 ROI를 극대화하세요.
+            {t("heroSubtitle")}
           </p>
 
           {/* Stats Grid */}
@@ -52,37 +52,37 @@ export default function Home() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
                 <StatCard
-                  title="총 처리량"
+                  title={t("totalProcessed")}
                   value={metrics.totalIssuesProcessed}
-                  suffix="건"
+                  suffix={t("issuesUnit")}
                   icon={FileCheck}
-                  description="누적 처리량"
+                  description={t("cumulativeProcessed")}
                   accentColor="purple"
                   animationDelay={100}
                 />
                 <StatCard
-                  title="자동 해결율"
+                  title={t("autoResolutionRate")}
                   value={metrics.autoResolutionRate}
                   suffix="%"
                   icon={Sparkles}
-                  description="AI가 직접 수정"
+                  description={t("aiDirectFix")}
                   accentColor="emerald"
                   animationDelay={200}
                 />
                 <StatCard
-                  title="평균 응답 시간"
+                  title={t("avgResponseTime")}
                   value={metrics.avgResponseTimeSeconds}
-                  suffix="초"
+                  suffix={t("secondsUnit")}
                   icon={Clock}
-                  description="첫 응답까지"
+                  description={t("toFirstResponse")}
                   accentColor="cyan"
                   animationDelay={300}
                 />
                 <StatCard
-                  title="총 AI 비용"
+                  title={t("totalAICost")}
                   value={`$${metrics.totalCostUSD.toFixed(2)}`}
                   icon={DollarSign}
-                  description="총 API 비용"
+                  description={t("totalAPICost")}
                   accentColor="amber"
                   animationDelay={400}
                 />
@@ -103,25 +103,22 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: "자동 분류",
-                description:
-                  "이슈가 등록되면 AI가 즉시 유효성을 판단하고 중복 여부를 확인합니다.",
-                stat: "5분",
-                statLabel: "절약 / 이슈",
+                title: t("autoClassification"),
+                description: t("autoClassificationDesc"),
+                stat: "5min",
+                statLabel: t("savedPerIssue"),
               },
               {
-                title: "심층 분석",
-                description:
-                  "코드베이스를 분석하여 우선순위, 스토리 포인트, 담당자를 자동 지정합니다.",
-                stat: "30분",
-                statLabel: "절약 / 이슈",
+                title: t("deepAnalysis"),
+                description: t("deepAnalysisDesc"),
+                stat: "30min",
+                statLabel: t("savedPerIssue"),
               },
               {
-                title: "자동 수정",
-                description:
-                  "간단한 버그는 AI가 직접 수정하고 PR을 생성합니다.",
-                stat: "2시간",
-                statLabel: "절약 / 이슈",
+                title: t("autoFix"),
+                description: t("autoFixDesc"),
+                stat: "2hr",
+                statLabel: t("savedPerIssue"),
               },
             ].map((feature) => (
               <div

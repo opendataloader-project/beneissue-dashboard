@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   mockDashboardMetrics,
   mockExecutiveMetrics,
@@ -47,7 +47,7 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     if (dataMode === "mock") {
       setData(mockPublicMetrics);
       setIsLoading(false);
@@ -63,11 +63,11 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [dataMode]);
 
   useEffect(() => {
     refetch();
-  }, [dataMode]);
+  }, [refetch]);
 
   return { data, isLoading, error, refetch };
 }
@@ -80,7 +80,7 @@ export function useExecutiveMetrics(): UseMetricsResult<ExecutiveMetrics> {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     if (dataMode === "mock") {
       setData(mockExecutiveMetrics);
       setIsLoading(false);
@@ -98,11 +98,11 @@ export function useExecutiveMetrics(): UseMetricsResult<ExecutiveMetrics> {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [dataMode]);
 
   useEffect(() => {
     refetch();
-  }, [dataMode]);
+  }, [refetch]);
 
   return { data, isLoading, error, refetch };
 }
@@ -115,7 +115,7 @@ export function useOperationsMetrics(): UseMetricsResult<OperationsMetrics> {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     if (dataMode === "mock") {
       setData(mockOperationsMetrics);
       setIsLoading(false);
@@ -133,11 +133,11 @@ export function useOperationsMetrics(): UseMetricsResult<OperationsMetrics> {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [dataMode]);
 
   useEffect(() => {
     refetch();
-  }, [dataMode]);
+  }, [refetch]);
 
   return { data, isLoading, error, refetch };
 }
@@ -156,7 +156,7 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
   const [error, setError] = useState<Error | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>("this_month");
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     if (dataMode === "mock") {
       setData(mockDashboardMetrics);
       setIsLoading(false);
@@ -174,11 +174,11 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [dataMode, period]);
 
   useEffect(() => {
     refetch();
-  }, [dataMode, period]);
+  }, [refetch]);
 
   return { data, isLoading, error, refetch, period, setPeriod };
 }

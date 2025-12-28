@@ -5,6 +5,7 @@ import { Minus, TrendingDown, TrendingUp } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface KPICardProps {
   title: string;
@@ -26,13 +27,15 @@ export function KPICard({
   suffix,
   subtitle,
   delta,
-  deltaLabel = "전월 대비",
+  deltaLabel,
   invertDelta = false,
   icon: Icon,
   accentColor = "cyan",
   animationDelay = 0,
   className,
 }: KPICardProps) {
+  const { t } = useTranslation();
+  const resolvedDeltaLabel = deltaLabel ?? t("vsLastMonth");
   const [isVisible, setIsVisible] = useState(false);
   const [displayValue, setDisplayValue] = useState<string | number>(
     typeof value === "number" ? 0 : value
@@ -116,13 +119,12 @@ export function KPICard({
 
   // Animate number counting
   useEffect(() => {
-    if (!isVisible || typeof value !== "number") {
-      setDisplayValue(value);
-      return;
-    }
+    if (!isVisible) return;
+    if (typeof value !== "number") return;
 
     const duration = 1500;
     const startTime = performance.now();
+    let animationId: number;
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -133,11 +135,13 @@ export function KPICard({
       setDisplayValue(current);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationId);
   }, [isVisible, value]);
 
   return (
@@ -219,7 +223,9 @@ export function KPICard({
               {delta.toFixed(1)}%
             </span>
           </div>
-          <span className="text-xs text-muted-foreground">{deltaLabel}</span>
+          <span className="text-xs text-muted-foreground">
+            {resolvedDeltaLabel}
+          </span>
         </div>
       )}
 

@@ -6,6 +6,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import type { DecisionDistribution } from "@/types/metrics";
 import { formatNumber, formatPercent } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface DecisionDistributionChartProps {
   data: DecisionDistribution;
@@ -19,16 +20,11 @@ const COLORS = [
   "oklch(0.65 0.22 265)", // Purple - Needs Info
 ];
 
-const LABELS = {
-  valid: "유효",
-  invalid: "무효",
-  duplicate: "중복",
-  needsInfo: "정보 필요",
-};
-
 function CustomTooltip({
   active,
   payload,
+  labels,
+  countUnit,
 }: {
   active?: boolean;
   payload?: Array<{
@@ -36,6 +32,8 @@ function CustomTooltip({
     value: number;
     payload: { fill: string; percent: number };
   }>;
+  labels: Record<string, string>;
+  countUnit: string;
 }) {
   if (!active || !payload || !payload.length) return null;
 
@@ -48,12 +46,13 @@ function CustomTooltip({
           className="w-3 h-3 rounded-full"
           style={{ background: item.payload.fill }}
         />
-        <span className="text-sm font-medium">
-          {LABELS[item.name as keyof typeof LABELS]}
-        </span>
+        <span className="text-sm font-medium">{labels[item.name]}</span>
       </div>
       <div className="mt-1 text-sm text-muted-foreground">
-        <span className="tabular-nums">{formatNumber(item.value)}건</span>
+        <span className="tabular-nums">
+          {formatNumber(item.value)}
+          {countUnit}
+        </span>
         <span className="mx-1">·</span>
         <span className="tabular-nums">
           {formatPercent(item.payload.percent * 100)}
@@ -69,6 +68,14 @@ export function DecisionDistributionChart({
 }: DecisionDistributionChartProps) {
   const [isVisible, setIsVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+
+  const labels: Record<string, string> = {
+    valid: t("valid"),
+    invalid: t("invalid"),
+    duplicate: t("duplicate"),
+    needsInfo: t("needsInfo"),
+  };
 
   const chartData = [
     { name: "valid", value: data.valid },
@@ -115,10 +122,10 @@ export function DecisionDistributionChart({
           className="text-lg font-semibold"
           style={{ fontFamily: "'Instrument Sans', sans-serif" }}
         >
-          분류 결정 분포
+          {t("decisionDistTitle")}
         </h3>
         <p className="text-sm text-muted-foreground mt-1">
-          AI 분류 결과별 이슈 비율
+          {t("decisionDistDesc")}
         </p>
       </div>
 
@@ -145,7 +152,11 @@ export function DecisionDistributionChart({
                 />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={
+                <CustomTooltip labels={labels} countUnit={t("countUnit")} />
+              }
+            />
           </PieChart>
         </ResponsiveContainer>
 
@@ -158,7 +169,9 @@ export function DecisionDistributionChart({
             >
               {formatPercent(filteringRate)}
             </p>
-            <p className="text-xs text-muted-foreground">필터링율</p>
+            <p className="text-xs text-muted-foreground">
+              {t("filteringRate")}
+            </p>
           </div>
         </div>
       </div>
@@ -174,7 +187,7 @@ export function DecisionDistributionChart({
                 style={{ background: COLORS[index] }}
               />
               <span className="text-sm text-muted-foreground truncate">
-                {LABELS[item.name as keyof typeof LABELS]}
+                {labels[item.name]}
               </span>
               <span className="text-sm font-medium tabular-nums ml-auto">
                 {formatPercent(percent)}

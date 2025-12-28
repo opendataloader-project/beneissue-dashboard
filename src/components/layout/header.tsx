@@ -9,12 +9,14 @@ import {
   Activity,
   Database,
   FlaskConical,
+  Globe,
   LayoutDashboard,
   Menu,
   X,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface HeaderProps {
   className?: string;
@@ -23,6 +25,7 @@ interface HeaderProps {
 export function Header({ className }: HeaderProps) {
   const pathname = usePathname();
   const [dataMode, setDataMode] = useAtom(dataModeAtom);
+  const { t, language, setLanguage } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const isOnDashboard = pathname === "/dashboard";
@@ -77,7 +80,7 @@ export function Header({ className }: HeaderProps) {
             )}
           >
             <LayoutDashboard className="w-4 h-4" />
-            Dashboard
+            {t("dashboard")}
           </Link>
         </div>
 
@@ -113,7 +116,7 @@ export function Header({ className }: HeaderProps) {
                 )}
               >
                 <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Data Source
+                  {t("dataSource")}
                 </div>
 
                 {/* Demo Mode */}
@@ -137,8 +140,8 @@ export function Header({ className }: HeaderProps) {
                     )}
                   />
                   <div className="flex-1 text-left">
-                    <div>Demo</div>
-                    <div className="text-xs opacity-60">Fixed sample data</div>
+                    <div>{t("demo")}</div>
+                    <div className="text-xs opacity-60">{t("demoDesc")}</div>
                   </div>
                   {dataMode === "mock" && (
                     <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
@@ -166,11 +169,75 @@ export function Header({ className }: HeaderProps) {
                     )}
                   />
                   <div className="flex-1 text-left">
-                    <div>Live</div>
-                    <div className="text-xs opacity-60">Real database</div>
+                    <div>{t("live")}</div>
+                    <div className="text-xs opacity-60">{t("liveDesc")}</div>
                   </div>
                   {dataMode === "live" && (
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  )}
+                </button>
+
+                {/* Divider */}
+                <div className="my-2 border-t border-border/50" />
+
+                {/* Language Section */}
+                <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  {t("language")}
+                </div>
+
+                {/* Korean */}
+                <button
+                  onClick={() => {
+                    setLanguage("ko");
+                    setIsMenuOpen(false);
+                  }}
+                  className={cn(
+                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                    "text-sm font-medium transition-all duration-200",
+                    language === "ko"
+                      ? "bg-primary/20 text-primary border border-primary/30"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                  )}
+                >
+                  <Globe
+                    className={cn(
+                      "w-4 h-4 transition-transform duration-200",
+                      language !== "ko" && "group-hover:scale-110"
+                    )}
+                  />
+                  <div className="flex-1 text-left">
+                    <div>{t("korean")}</div>
+                  </div>
+                  {language === "ko" && (
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  )}
+                </button>
+
+                {/* English */}
+                <button
+                  onClick={() => {
+                    setLanguage("en");
+                    setIsMenuOpen(false);
+                  }}
+                  className={cn(
+                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                    "text-sm font-medium transition-all duration-200",
+                    language === "en"
+                      ? "bg-primary/20 text-primary border border-primary/30"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+                  )}
+                >
+                  <Globe
+                    className={cn(
+                      "w-4 h-4 transition-transform duration-200",
+                      language !== "en" && "group-hover:scale-110"
+                    )}
+                  />
+                  <div className="flex-1 text-left">
+                    <div>{t("english")}</div>
+                  </div>
+                  {language === "en" && (
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   )}
                 </button>
               </div>

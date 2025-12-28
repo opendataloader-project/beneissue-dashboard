@@ -6,7 +6,6 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,8 +13,9 @@ import {
 } from "recharts";
 
 import type { MonthlyData } from "@/types/metrics";
-import { formatMonth, formatNumber } from "@/lib/format";
+import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface TrendLineChartProps {
   data: MonthlyData[];
@@ -27,12 +27,30 @@ function CustomTooltip({
   active,
   payload,
   label,
+  processedLabel,
+  countUnit,
+  language,
 }: {
   active?: boolean;
   payload?: Array<{ value: number; dataKey: string }>;
   label?: string;
+  processedLabel: string;
+  countUnit: string;
+  language: string;
 }) {
   if (!active || !payload || !payload.length) return null;
+
+  const formatMonthLabel = (monthStr: string) => {
+    const [year, month] = monthStr.split("-");
+    if (language === "ko") {
+      return `${year}년 ${Number.parseInt(month)}월`;
+    }
+    const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+    });
+  };
 
   return (
     <div
@@ -46,14 +64,15 @@ function CustomTooltip({
         className="text-sm font-semibold mb-2"
         style={{ fontFamily: "'Instrument Sans', sans-serif" }}
       >
-        {label ? formatMonth(label) : ""}
+        {label ? formatMonthLabel(label) : ""}
       </p>
       <div className="space-y-1">
         <p className="text-sm flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[oklch(0.75_0.18_195)]" />
-          <span className="text-muted-foreground">처리량:</span>
+          <span className="text-muted-foreground">{processedLabel}:</span>
           <span className="font-medium tabular-nums">
-            {formatNumber(payload[0]?.value || 0)}건
+            {formatNumber(payload[0]?.value || 0)}
+            {countUnit}
           </span>
         </p>
       </div>
@@ -64,6 +83,7 @@ function CustomTooltip({
 export function TrendLineChart({ data, className }: TrendLineChartProps) {
   const [isVisible, setIsVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
+  const { t, language } = useTranslation();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -83,11 +103,15 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
     return () => observer.disconnect();
   }, []);
 
-  // Transform data for chart
-  const chartData = data.map((item) => ({
-    ...item,
-    monthLabel: formatMonth(item.month),
-  }));
+  // Format month for x-axis
+  const formatMonthAxis = (monthStr: string) => {
+    const [year, month] = monthStr.split("-");
+    if (language === "ko") {
+      return `${Number.parseInt(month)}월`;
+    }
+    const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
+    return date.toLocaleDateString("en-US", { month: "short" });
+  };
 
   return (
     <div
@@ -105,10 +129,10 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
           className="text-lg font-semibold"
           style={{ fontFamily: "'Instrument Sans', sans-serif" }}
         >
-          월별 처리량 추이
+          {t("monthlyTrendTitle")}
         </h3>
         <p className="text-sm text-muted-foreground mt-1">
-          최근 6개월간 AI가 처리한 이슈 수
+          {t("monthlyTrendDesc")}
         </p>
       </div>
 
@@ -116,7 +140,7 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
-            data={chartData}
+            data={data}
             margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
           >
             <defs>
@@ -149,10 +173,7 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
 
             <XAxis
               dataKey="month"
-              tickFormatter={(value) => {
-                const [, month] = value.split("-");
-                return `${parseInt(month)}월`;
-              }}
+              tickFormatter={formatMonthAxis}
               axisLine={false}
               tickLine={false}
               tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 12 }}
@@ -167,7 +188,15 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
               dx={-10}
             />
 
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip
+              content={
+                <CustomTooltip
+                  processedLabel={t("processedLabel")}
+                  countUnit={t("countUnit")}
+                  language={language}
+                />
+              }
+            />
 
             <Area
               type="monotone"
@@ -207,7 +236,9 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
       <div className="mt-4 flex items-center justify-center gap-6">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-[oklch(0.75_0.18_195)]" />
-          <span className="text-sm text-muted-foreground">처리된 이슈</span>
+          <span className="text-sm text-muted-foreground">
+            {t("processedIssues")}
+          </span>
         </div>
       </div>
     </div>

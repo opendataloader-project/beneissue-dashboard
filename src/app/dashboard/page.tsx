@@ -2,8 +2,8 @@
 
 import { Clock, DollarSign, FileCheck, Sparkles, Zap } from "lucide-react";
 
-import { formatSeconds } from "@/lib/format";
 import { useDashboardMetrics } from "@/hooks/useMetrics";
+import { useTranslation } from "@/hooks/useTranslation";
 import { DailyTrendChart } from "@/components/charts/daily-trend-chart";
 import { DecisionDistributionChart } from "@/components/charts/decision-distribution";
 import { EmptyState } from "@/components/empty-state";
@@ -13,11 +13,19 @@ import { KPICard } from "@/components/stats/kpi-card";
 
 export default function Dashboard() {
   const { data: metrics, period, setPeriod } = useDashboardMetrics();
+  const { t } = useTranslation();
+
+  // Format seconds with i18n
+  const formatSecondsI18n = (seconds: number): string => {
+    if (seconds < 60) return `${Math.round(seconds)}${t("seconds")}`;
+    if (seconds < 3600) return `${Math.round(seconds / 60)}${t("minutes")}`;
+    return `${(seconds / 3600).toFixed(1)}${t("hours")}`;
+  };
 
   return (
     <DashboardLayout
-      title="Dashboard"
-      description="AI 이슈 자동화 성능 현황 (팩트 기반)"
+      title={t("dashboardTitle")}
+      description={t("dashboardDesc")}
     >
       {metrics ? (
         <>
@@ -29,16 +37,16 @@ export default function Dashboard() {
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <KPICard
-              title="총 처리량"
+              title={t("totalProcessed")}
               value={metrics.totalIssuesProcessed}
-              suffix="건"
+              suffix={t("issuesUnit")}
               delta={metrics.totalIssuesDelta}
               icon={FileCheck}
               accentColor="purple"
               animationDelay={100}
             />
             <KPICard
-              title="자동 해결율"
+              title={t("autoResolutionRate")}
               value={metrics.autoResolutionRate}
               suffix="%"
               delta={metrics.autoResolutionDelta}
@@ -47,9 +55,9 @@ export default function Dashboard() {
               animationDelay={200}
             />
             <KPICard
-              title="평균 응답 시간"
+              title={t("avgResponseTime")}
               value={metrics.avgResponseTimeSeconds}
-              suffix="초"
+              suffix={t("secondsUnit")}
               delta={metrics.avgResponseTimeDelta}
               icon={Clock}
               accentColor="cyan"
@@ -57,13 +65,13 @@ export default function Dashboard() {
               invertDelta
             />
             <KPICard
-              title="총 AI 비용"
+              title={t("totalAICost")}
               value={`$${metrics.totalCostUSD.toFixed(2)}`}
               delta={metrics.totalCostDelta}
               icon={DollarSign}
               accentColor="amber"
               animationDelay={400}
-              subtitle={`건당 $${metrics.costPerIssueUSD.toFixed(2)}`}
+              subtitle={`${t("perIssue")} $${metrics.costPerIssueUSD.toFixed(2)}`}
             />
           </div>
 
@@ -81,10 +89,10 @@ export default function Dashboard() {
                 style={{ fontFamily: "'Instrument Sans', sans-serif" }}
               >
                 <Zap className="w-5 h-5 text-primary" />
-                처리 단계별 평균 시간
+                {t("processingTimeByStep")}
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                각 워크플로우 단계의 평균 처리 시간
+                {t("processingTimeByStepDesc")}
               </p>
             </div>
             <div className="grid sm:grid-cols-3 gap-6">
@@ -93,19 +101,19 @@ export default function Dashboard() {
                   label: "Triage",
                   value: metrics.processingTimes.triageSeconds,
                   color: "oklch(0.75 0.18 195)",
-                  description: "이슈 유효성 검증",
+                  description: t("triageDesc"),
                 },
                 {
                   label: "Analyze",
                   value: metrics.processingTimes.analyzeSeconds,
                   color: "oklch(0.78 0.16 75)",
-                  description: "코드 분석 및 우선순위 결정",
+                  description: t("analyzeDesc"),
                 },
                 {
                   label: "Fix",
                   value: metrics.processingTimes.fixSeconds,
                   color: "oklch(0.70 0.20 145)",
-                  description: "PR 생성 및 코드 수정",
+                  description: t("fixDesc"),
                 },
               ].map((item) => (
                 <div
@@ -128,7 +136,7 @@ export default function Dashboard() {
                       color: item.color,
                     }}
                   >
-                    {formatSeconds(item.value)}
+                    {formatSecondsI18n(item.value)}
                   </p>
                   <p className="text-xs text-muted-foreground mt-2">
                     {item.description}
