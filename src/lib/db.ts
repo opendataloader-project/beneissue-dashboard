@@ -56,7 +56,8 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
   // Aggregate the daily data
   return data.reduce(
     (acc, day) => ({
-      totalIssues: acc.totalIssues + (day.total_issues || 0),
+      totalRuns: acc.totalRuns + (day.total_runs || 0),
+      uniqueIssues: acc.uniqueIssues + (day.unique_issues || 0),
       triageCount: acc.triageCount + (day.triage_count || 0),
       analyzeCount: acc.analyzeCount + (day.analyze_count || 0),
       fixCount: acc.fixCount + (day.fix_count || 0),
@@ -66,7 +67,8 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
       needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
       fixAttemptedCount: acc.fixAttemptedCount + (day.fix_attempted_count || 0),
       fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
-      totalCostUsd: acc.totalCostUsd + (day.total_cost_usd || 0),
+      commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
+      totalCostUsd: acc.totalCostUsd + (day.total_input_cost || 0) + (day.total_output_cost || 0),
       avgResponseSeconds:
         (acc.avgResponseSeconds * acc.responseCount +
           (day.avg_first_response_seconds || 0)) /
@@ -75,7 +77,8 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
         acc.responseCount + (day.avg_first_response_seconds ? 1 : 0),
     }),
     {
-      totalIssues: 0,
+      totalRuns: 0,
+      uniqueIssues: 0,
       triageCount: 0,
       analyzeCount: 0,
       fixCount: 0,
@@ -85,6 +88,7 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
       needsInfoCount: 0,
       fixAttemptedCount: 0,
       fixSuccessCount: 0,
+      commentOnlyCount: 0,
       totalCostUsd: 0,
       avgResponseSeconds: 0,
       responseCount: 0,
@@ -113,28 +117,32 @@ export async function fetchTotalMetrics() {
 
   const aggregated = data.reduce(
     (acc, day) => ({
-      totalIssues: acc.totalIssues + (day.total_issues || 0),
+      totalRuns: acc.totalRuns + (day.total_runs || 0),
+      uniqueIssues: acc.uniqueIssues + (day.unique_issues || 0),
       triageCount: acc.triageCount + (day.triage_count || 0),
       analyzeCount: acc.analyzeCount + (day.analyze_count || 0),
       fixCount: acc.fixCount + (day.fix_count || 0),
       fixAttemptedCount: acc.fixAttemptedCount + (day.fix_attempted_count || 0),
       fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
+      commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
       validCount: acc.validCount + (day.valid_count || 0),
       duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
       needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
-      totalCostUsd: acc.totalCostUsd + (day.total_cost_usd || 0),
+      totalCostUsd: acc.totalCostUsd + (day.total_input_cost || 0) + (day.total_output_cost || 0),
       totalResponseSeconds:
         acc.totalResponseSeconds + (day.avg_first_response_seconds || 0),
       responseCount:
         acc.responseCount + (day.avg_first_response_seconds ? 1 : 0),
     }),
     {
-      totalIssues: 0,
+      totalRuns: 0,
+      uniqueIssues: 0,
       triageCount: 0,
       analyzeCount: 0,
       fixCount: 0,
       fixAttemptedCount: 0,
       fixSuccessCount: 0,
+      commentOnlyCount: 0,
       validCount: 0,
       duplicateCount: 0,
       needsInfoCount: 0,

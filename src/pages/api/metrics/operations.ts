@@ -63,12 +63,12 @@ export default async function handler(
 
     // Transform daily data
     const dailyTrend: DailyData[] = dailyMetrics.map((d) => {
-      const totalIssues = d.total_issues || 1;
-      const invalidCount = totalIssues - (d.valid_count || 0);
+      const uniqueIssues = d.unique_issues || 1;
+      const invalidCount = uniqueIssues - (d.valid_count || 0);
       const filteringRate = calculateAIFilteringRate(
         invalidCount,
         d.duplicate_count || 0,
-        totalIssues
+        uniqueIssues
       );
 
       return {
@@ -82,15 +82,19 @@ export default async function handler(
 
     // Calculate current period metrics
     const currentInvalid =
-      currentMonthData.totalIssues - currentMonthData.validCount;
+      currentMonthData.uniqueIssues - currentMonthData.validCount;
     const currentFilteringRate = calculateAIFilteringRate(
       currentInvalid,
       currentMonthData.duplicateCount,
-      currentMonthData.totalIssues
+      currentMonthData.uniqueIssues
     );
     const currentResolutionRate = calculateAutoResolutionRate(
+      currentInvalid,
+      currentMonthData.duplicateCount,
+      currentMonthData.needsInfoCount,
       currentMonthData.fixSuccessCount,
-      currentMonthData.fixAttemptedCount
+      currentMonthData.commentOnlyCount,
+      currentMonthData.uniqueIssues
     );
 
     // Calculate previous period metrics for deltas
@@ -101,15 +105,19 @@ export default async function handler(
 
     if (previousMonthData) {
       const prevInvalid =
-        previousMonthData.totalIssues - previousMonthData.validCount;
+        previousMonthData.uniqueIssues - previousMonthData.validCount;
       prevFilteringRate = calculateAIFilteringRate(
         prevInvalid,
         previousMonthData.duplicateCount,
-        previousMonthData.totalIssues
+        previousMonthData.uniqueIssues
       );
       prevResolutionRate = calculateAutoResolutionRate(
+        prevInvalid,
+        previousMonthData.duplicateCount,
+        previousMonthData.needsInfoCount,
         previousMonthData.fixSuccessCount,
-        previousMonthData.fixAttemptedCount
+        previousMonthData.commentOnlyCount,
+        previousMonthData.uniqueIssues
       );
       prevResponseTime = previousMonthData.avgResponseSeconds;
       prevCost = previousMonthData.totalCostUsd;

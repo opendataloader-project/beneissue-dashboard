@@ -28,7 +28,8 @@ export interface DailyMetrics {
   id: string;
   date: string;
   repo: string | null;
-  total_issues: number;
+  total_runs: number;
+  unique_issues: number;
   triage_count: number;
   analyze_count: number;
   fix_count: number;
@@ -38,12 +39,14 @@ export interface DailyMetrics {
   needs_info_count: number;
   fix_attempted_count: number;
   fix_success_count: number;
+  comment_only_count: number;
   avg_first_response_seconds: number | null;
   min_first_response_seconds: number | null;
   max_first_response_seconds: number | null;
   total_input_tokens: number;
   total_output_tokens: number;
-  total_cost_usd: number;
+  total_input_cost: number;
+  total_output_cost: number;
   created_at: string;
   updated_at: string;
 }

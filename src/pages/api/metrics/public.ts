@@ -45,9 +45,15 @@ export default async function handler(
       totalMetrics.totalCostUsd
     );
     const roi = calculateROI(netSavings, aiCost);
+    // Calculate invalid count (uniqueIssues - validCount)
+    const invalidCount = totalMetrics.uniqueIssues - totalMetrics.validCount;
     const autoResolutionRate = calculateAutoResolutionRate(
+      invalidCount,
+      totalMetrics.duplicateCount,
+      totalMetrics.needsInfoCount,
       totalMetrics.fixSuccessCount,
-      totalMetrics.fixAttemptedCount
+      totalMetrics.commentOnlyCount,
+      totalMetrics.uniqueIssues
     );
 
     // Transform monthly trend data
@@ -62,7 +68,7 @@ export default async function handler(
 
       return {
         month: m.month,
-        issuesProcessed: m.totalIssues,
+        issuesProcessed: m.uniqueIssues,
         costSavings: Math.round(monthSavings.netSavings),
         timeSavedHours: Math.round(monthSavedMinutes / 60),
         roi: Math.round(monthRoi),
@@ -70,7 +76,7 @@ export default async function handler(
     });
 
     const metrics: PublicMetrics = {
-      totalIssuesProcessed: totalMetrics.totalIssues,
+      totalIssuesProcessed: totalMetrics.uniqueIssues,
       avgResponseTimeSeconds: Math.round(totalMetrics.avgResponseSeconds),
       autoResolutionRate: Math.round(autoResolutionRate * 10) / 10,
       roi: Math.round(roi),

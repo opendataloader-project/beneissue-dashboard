@@ -43,7 +43,7 @@ export default async function handler(
 
       return {
         month: m.month,
-        issuesProcessed: m.totalIssues,
+        issuesProcessed: m.uniqueIssues,
         costSavings: Math.round(savings.netSavings),
         timeSavedHours: Math.round(savedMinutes / 60),
         roi: Math.round(roi),

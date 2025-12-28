@@ -56,13 +56,24 @@ export function calculateAIFilteringRate(
 
 /**
  * Calculate auto resolution rate
+ * Auto-resolved = cases that can be closed without human intervention:
+ * - triage/invalid: Invalid issues
+ * - triage/duplicate: Duplicate issues
+ * - triage/needs-info: Waiting for info (auto-labeled)
+ * - fix/completed: PR auto-generated
+ * - fix/comment-only: Resolved via comment (no code change needed)
  */
 export function calculateAutoResolutionRate(
+  invalidCount: number,
+  duplicateCount: number,
+  needsInfoCount: number,
   fixSuccessCount: number,
-  fixAttemptedCount: number
+  commentOnlyCount: number,
+  totalIssues: number
 ): number {
-  if (fixAttemptedCount === 0) return 0;
-  return (fixSuccessCount / fixAttemptedCount) * 100;
+  if (totalIssues === 0) return 0;
+  const autoResolved = invalidCount + duplicateCount + needsInfoCount + fixSuccessCount + commentOnlyCount;
+  return (autoResolved / totalIssues) * 100;
 }
 
 /**
