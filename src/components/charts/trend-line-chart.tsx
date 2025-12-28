@@ -1,20 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from "react";
 import {
-  LineChart,
+  Area,
+  CartesianGrid,
+  ComposedChart,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Area,
-  ComposedChart,
-} from 'recharts';
-import { cn } from '@/lib/utils';
-import { formatMonth, formatNumber } from '@/lib/format';
-import type { MonthlyData } from '@/types/metrics';
+} from "recharts";
+
+import type { MonthlyData } from "@/types/metrics";
+import { formatMonth, formatNumber } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface TrendLineChartProps {
   data: MonthlyData[];
@@ -36,16 +37,16 @@ function CustomTooltip({
   return (
     <div
       className={cn(
-        'px-4 py-3 rounded-lg border',
-        'bg-card/95 backdrop-blur-sm border-border',
-        'shadow-xl'
+        "px-4 py-3 rounded-lg border",
+        "bg-card/95 backdrop-blur-sm border-border",
+        "shadow-xl"
       )}
     >
       <p
         className="text-sm font-semibold mb-2"
         style={{ fontFamily: "'Instrument Sans', sans-serif" }}
       >
-        {label ? formatMonth(label) : ''}
+        {label ? formatMonth(label) : ""}
       </p>
       <div className="space-y-1">
         <p className="text-sm flex items-center gap-2">
@@ -92,9 +93,9 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
     <div
       ref={chartRef}
       className={cn(
-        'relative rounded-xl border bg-card/50 backdrop-blur-sm p-6',
-        'transition-all duration-700',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        "relative rounded-xl border bg-card/50 backdrop-blur-sm p-6",
+        "transition-all duration-700",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
         className
       )}
     >
@@ -149,19 +150,19 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
             <XAxis
               dataKey="month"
               tickFormatter={(value) => {
-                const [, month] = value.split('-');
+                const [, month] = value.split("-");
                 return `${parseInt(month)}월`;
               }}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'oklch(0.60 0.02 260)', fontSize: 12 }}
+              tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 12 }}
               dy={10}
             />
 
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'oklch(0.60 0.02 260)', fontSize: 12 }}
+              tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 12 }}
               tickFormatter={(value) => `${(value / 1000).toFixed(1)}k`}
               dx={-10}
             />
@@ -183,17 +184,17 @@ export function TrendLineChart({ data, className }: TrendLineChartProps) {
               stroke="oklch(0.75 0.18 195)"
               strokeWidth={3}
               dot={{
-                fill: 'oklch(0.08 0.01 260)',
-                stroke: 'oklch(0.75 0.18 195)',
+                fill: "oklch(0.08 0.01 260)",
+                stroke: "oklch(0.75 0.18 195)",
                 strokeWidth: 2,
                 r: 5,
               }}
               activeDot={{
-                fill: 'oklch(0.75 0.18 195)',
-                stroke: 'oklch(0.08 0.01 260)',
+                fill: "oklch(0.75 0.18 195)",
+                stroke: "oklch(0.08 0.01 260)",
                 strokeWidth: 2,
                 r: 7,
-                filter: 'url(#glow)',
+                filter: "url(#glow)",
               }}
               animationDuration={1500}
               animationBegin={0}

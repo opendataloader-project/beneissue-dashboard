@@ -1,5 +1,6 @@
-import { supabase, isSupabaseConfigured } from './supabase';
-import type { DailyMetrics, WorkflowRun } from '@/types/metrics';
+import type { DailyMetrics, WorkflowRun } from "@/types/metrics";
+
+import { isSupabaseConfigured, supabase } from "./supabase";
 
 /**
  * Fetch daily metrics for a date range
@@ -13,14 +14,14 @@ export async function fetchDailyMetrics(
   }
 
   const { data, error } = await supabase
-    .from('daily_metrics')
-    .select('*')
-    .gte('date', startDate)
-    .lte('date', endDate)
-    .order('date', { ascending: true });
+    .from("daily_metrics")
+    .select("*")
+    .gte("date", startDate)
+    .lte("date", endDate)
+    .order("date", { ascending: true });
 
   if (error) {
-    console.error('Error fetching daily metrics:', error);
+    console.error("Error fetching daily metrics:", error);
     return [];
   }
 
@@ -35,17 +36,17 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
     return null;
   }
 
-  const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-  const endDate = new Date(year, month, 0).toISOString().split('T')[0]; // Last day of month
+  const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
+  const endDate = new Date(year, month, 0).toISOString().split("T")[0]; // Last day of month
 
   const { data, error } = await supabase
-    .from('daily_metrics')
-    .select('*')
-    .gte('date', startDate)
-    .lte('date', endDate);
+    .from("daily_metrics")
+    .select("*")
+    .gte("date", startDate)
+    .lte("date", endDate);
 
   if (error) {
-    console.error('Error fetching monthly aggregates:', error);
+    console.error("Error fetching monthly aggregates:", error);
     return null;
   }
 
@@ -56,9 +57,13 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
   // Aggregate the daily data
   const aggregated = data.reduce(
     (acc, day) => {
-      const hasResponseTime = day.avg_first_response_seconds != null && day.avg_first_response_seconds > 0;
+      const hasResponseTime =
+        day.avg_first_response_seconds != null &&
+        day.avg_first_response_seconds > 0;
       const newResponseCount = acc.responseCount + (hasResponseTime ? 1 : 0);
-      const newTotalResponseSeconds = acc.totalResponseSeconds + (hasResponseTime ? day.avg_first_response_seconds : 0);
+      const newTotalResponseSeconds =
+        acc.totalResponseSeconds +
+        (hasResponseTime ? day.avg_first_response_seconds : 0);
 
       return {
         totalRuns: acc.totalRuns + (day.total_runs || 0),
@@ -70,10 +75,14 @@ export async function fetchMonthlyAggregates(year: number, month: number) {
         validCount: acc.validCount + (day.valid_count || 0),
         duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
         needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
-        fixAttemptedCount: acc.fixAttemptedCount + (day.fix_attempted_count || 0),
+        fixAttemptedCount:
+          acc.fixAttemptedCount + (day.fix_attempted_count || 0),
         fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
         commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
-        totalCostUsd: acc.totalCostUsd + (day.total_input_cost || 0) + (day.total_output_cost || 0),
+        totalCostUsd:
+          acc.totalCostUsd +
+          (day.total_input_cost || 0) +
+          (day.total_output_cost || 0),
         totalResponseSeconds: newTotalResponseSeconds,
         responseCount: newResponseCount,
       };
@@ -114,10 +123,10 @@ export async function fetchTotalMetrics() {
     return null;
   }
 
-  const { data, error } = await supabase.from('daily_metrics').select('*');
+  const { data, error } = await supabase.from("daily_metrics").select("*");
 
   if (error) {
-    console.error('Error fetching total metrics:', error);
+    console.error("Error fetching total metrics:", error);
     return null;
   }
 
@@ -139,7 +148,10 @@ export async function fetchTotalMetrics() {
       validCount: acc.validCount + (day.valid_count || 0),
       duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
       needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
-      totalCostUsd: acc.totalCostUsd + (day.total_input_cost || 0) + (day.total_output_cost || 0),
+      totalCostUsd:
+        acc.totalCostUsd +
+        (day.total_input_cost || 0) +
+        (day.total_output_cost || 0),
       totalResponseSeconds:
         acc.totalResponseSeconds + (day.avg_first_response_seconds || 0),
       responseCount:
@@ -192,7 +204,7 @@ export async function fetchMonthlyTrend(months: number = 6) {
     const monthData = await fetchMonthlyAggregates(year, month);
     if (monthData) {
       results.push({
-        month: `${year}-${String(month).padStart(2, '0')}`,
+        month: `${year}-${String(month).padStart(2, "0")}`,
         ...monthData,
       });
     }
@@ -212,13 +224,13 @@ export async function fetchWorkflowRuns(
   }
 
   const { data, error } = await supabase
-    .from('workflow_runs')
-    .select('*')
-    .order('created_at', { ascending: false })
+    .from("workflow_runs")
+    .select("*")
+    .order("created_at", { ascending: false })
     .limit(limit);
 
   if (error) {
-    console.error('Error fetching workflow runs:', error);
+    console.error("Error fetching workflow runs:", error);
     return [];
   }
 
@@ -233,14 +245,14 @@ export async function fetchProcessingTimes() {
     return null;
   }
 
-  const { data, error } = await supabase.from('workflow_runs').select(`
+  const { data, error } = await supabase.from("workflow_runs").select(`
       workflow_type,
       workflow_started_at,
       workflow_completed_at
     `);
 
   if (error) {
-    console.error('Error fetching processing times:', error);
+    console.error("Error fetching processing times:", error);
     return null;
   }
 
@@ -252,7 +264,11 @@ export async function fetchProcessingTimes() {
   const timesByType: Record<string, { total: number; count: number }> = {};
 
   data.forEach((run) => {
-    if (run.workflow_started_at && run.workflow_completed_at && run.workflow_type) {
+    if (
+      run.workflow_started_at &&
+      run.workflow_completed_at &&
+      run.workflow_type
+    ) {
       const start = new Date(run.workflow_started_at).getTime();
       const end = new Date(run.workflow_completed_at).getTime();
       const durationSeconds = (end - start) / 1000;
@@ -266,14 +282,14 @@ export async function fetchProcessingTimes() {
   });
 
   return {
-    triageSeconds: timesByType['triage']
-      ? Math.round(timesByType['triage'].total / timesByType['triage'].count)
+    triageSeconds: timesByType["triage"]
+      ? Math.round(timesByType["triage"].total / timesByType["triage"].count)
       : 0,
-    analyzeSeconds: timesByType['analyze']
-      ? Math.round(timesByType['analyze'].total / timesByType['analyze'].count)
+    analyzeSeconds: timesByType["analyze"]
+      ? Math.round(timesByType["analyze"].total / timesByType["analyze"].count)
       : 0,
-    fixSeconds: timesByType['fix']
-      ? Math.round(timesByType['fix'].total / timesByType['fix'].count)
+    fixSeconds: timesByType["fix"]
+      ? Math.round(timesByType["fix"].total / timesByType["fix"].count)
       : 0,
   };
 }

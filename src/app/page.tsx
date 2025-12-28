@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { FileCheck, Clock, Sparkles, DollarSign } from 'lucide-react';
-import { StatCard } from '@/components/stats/stat-card';
-import { TrendLineChart } from '@/components/charts/trend-line-chart';
-import { EmptyState } from '@/components/empty-state';
-import { usePublicMetrics } from '@/hooks/useMetrics';
+import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
+
+import { usePublicMetrics } from "@/hooks/useMetrics";
+import { TrendLineChart } from "@/components/charts/trend-line-chart";
+import { EmptyState } from "@/components/empty-state";
+import { StatCard } from "@/components/stats/stat-card";
 
 export default function Home() {
   const { data: metrics } = usePublicMetrics();
@@ -33,9 +34,7 @@ export default function Home() {
             className="text-center text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
             style={{ fontFamily: "'Instrument Sans', sans-serif" }}
           >
-            <span className="block text-foreground">
-              AI-Powered Issue
-            </span>
+            <span className="block text-foreground">AI-Powered Issue</span>
             <span className="block bg-gradient-to-r from-[oklch(0.75_0.18_195)] via-[oklch(0.78_0.16_75)] to-[oklch(0.75_0.18_195)] bg-clip-text text-transparent">
               Automation
             </span>
@@ -104,25 +103,25 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: '자동 분류',
+                title: "자동 분류",
                 description:
-                  '이슈가 등록되면 AI가 즉시 유효성을 판단하고 중복 여부를 확인합니다.',
-                stat: '5분',
-                statLabel: '절약 / 이슈',
+                  "이슈가 등록되면 AI가 즉시 유효성을 판단하고 중복 여부를 확인합니다.",
+                stat: "5분",
+                statLabel: "절약 / 이슈",
               },
               {
-                title: '심층 분석',
+                title: "심층 분석",
                 description:
-                  '코드베이스를 분석하여 우선순위, 스토리 포인트, 담당자를 자동 지정합니다.',
-                stat: '30분',
-                statLabel: '절약 / 이슈',
+                  "코드베이스를 분석하여 우선순위, 스토리 포인트, 담당자를 자동 지정합니다.",
+                stat: "30분",
+                statLabel: "절약 / 이슈",
               },
               {
-                title: '자동 수정',
+                title: "자동 수정",
                 description:
-                  '간단한 버그는 AI가 직접 수정하고 PR을 생성합니다.',
-                stat: '2시간',
-                statLabel: '절약 / 이슈',
+                  "간단한 버그는 AI가 직접 수정하고 PR을 생성합니다.",
+                stat: "2시간",
+                statLabel: "절약 / 이슈",
               },
             ].map((feature) => (
               <div

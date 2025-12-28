@@ -1,16 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+
+import type { DailyData, OperationsMetrics } from "@/types/metrics";
 import {
   fetchDailyMetrics,
   fetchMonthlyAggregates,
   fetchProcessingTimes,
-} from '@/lib/db';
-import { isSupabaseConfigured } from '@/lib/supabase';
+} from "@/lib/db";
 import {
   calculateAIFilteringRate,
   calculateAutoResolutionRate,
   calculateDelta,
-} from '@/lib/metrics';
-import type { OperationsMetrics, DailyData } from '@/types/metrics';
+} from "@/lib/metrics";
+import { isSupabaseConfigured } from "@/lib/supabase";
 
 export async function GET() {
   // Return null if Supabase is not configured
@@ -24,8 +25,8 @@ export async function GET() {
     const twoWeeksAgo = new Date(now);
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
-    const startDate = twoWeeksAgo.toISOString().split('T')[0];
-    const endDate = now.toISOString().split('T')[0];
+    const startDate = twoWeeksAgo.toISOString().split("T")[0];
+    const endDate = now.toISOString().split("T")[0];
 
     // Current month
     const currentYear = now.getFullYear();
@@ -36,17 +37,13 @@ export async function GET() {
     const prevYear = prevDate.getFullYear();
     const prevMonth = prevDate.getMonth() + 1;
 
-    const [
-      dailyMetrics,
-      currentMonthData,
-      previousMonthData,
-      processingTimes,
-    ] = await Promise.all([
-      fetchDailyMetrics(startDate, endDate),
-      fetchMonthlyAggregates(currentYear, currentMonth),
-      fetchMonthlyAggregates(prevYear, prevMonth),
-      fetchProcessingTimes(),
-    ]);
+    const [dailyMetrics, currentMonthData, previousMonthData, processingTimes] =
+      await Promise.all([
+        fetchDailyMetrics(startDate, endDate),
+        fetchMonthlyAggregates(currentYear, currentMonth),
+        fetchMonthlyAggregates(prevYear, prevMonth),
+        fetchProcessingTimes(),
+      ]);
 
     // Return null if no data
     if (!currentMonthData) {
@@ -57,7 +54,8 @@ export async function GET() {
     const dailyTrend: DailyData[] = dailyMetrics.map((d) => {
       const uniqueIssues = d.unique_issues || 1;
       // invalid = ai_filtered - duplicate
-      const invalidCount = (d.ai_filtered_count || 0) - (d.duplicate_count || 0);
+      const invalidCount =
+        (d.ai_filtered_count || 0) - (d.duplicate_count || 0);
       const filteringRate = calculateAIFilteringRate(
         invalidCount,
         d.duplicate_count || 0,
@@ -119,21 +117,28 @@ export async function GET() {
 
     const metrics: OperationsMetrics = {
       aiFilteringRate: Math.round(currentFilteringRate * 10) / 10,
-      aiFilteringDelta: Math.round(
-        calculateDelta(currentFilteringRate, prevFilteringRate) * 10
-      ) / 10,
+      aiFilteringDelta:
+        Math.round(
+          calculateDelta(currentFilteringRate, prevFilteringRate) * 10
+        ) / 10,
       autoResolutionRate: Math.round(currentResolutionRate * 10) / 10,
-      autoResolutionDelta: Math.round(
-        calculateDelta(currentResolutionRate, prevResolutionRate) * 10
-      ) / 10,
+      autoResolutionDelta:
+        Math.round(
+          calculateDelta(currentResolutionRate, prevResolutionRate) * 10
+        ) / 10,
       avgResponseTimeSeconds: Math.round(currentMonthData.avgResponseSeconds),
-      avgResponseTimeDelta: Math.round(
-        calculateDelta(currentMonthData.avgResponseSeconds, prevResponseTime) * 10
-      ) / 10,
+      avgResponseTimeDelta:
+        Math.round(
+          calculateDelta(
+            currentMonthData.avgResponseSeconds,
+            prevResponseTime
+          ) * 10
+        ) / 10,
       totalCostUSD: Math.round(currentMonthData.totalCostUsd * 100) / 100,
-      totalCostDelta: Math.round(
-        calculateDelta(currentMonthData.totalCostUsd, prevCost) * 10
-      ) / 10,
+      totalCostDelta:
+        Math.round(
+          calculateDelta(currentMonthData.totalCostUsd, prevCost) * 10
+        ) / 10,
       dailyTrend,
       decisionDistribution: {
         valid: currentMonthData.validCount,
@@ -150,7 +155,7 @@ export async function GET() {
 
     return NextResponse.json(metrics);
   } catch (error) {
-    console.error('Error in operations metrics API:', error);
+    console.error("Error in operations metrics API:", error);
     return NextResponse.json(null);
   }
 }

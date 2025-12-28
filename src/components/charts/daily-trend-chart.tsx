@@ -1,19 +1,20 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from "react";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
-import { cn } from '@/lib/utils';
-import { formatDateShort, formatNumber } from '@/lib/format';
-import type { DailyData } from '@/types/metrics';
+} from "recharts";
+
+import type { DailyData } from "@/types/metrics";
+import { formatDateShort, formatNumber } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface DailyTrendChartProps {
   data: DailyData[];
@@ -32,9 +33,9 @@ function CustomTooltip({
   if (!active || !payload || !payload.length) return null;
 
   const labels: Record<string, string> = {
-    triageCount: '분류',
-    analyzeCount: '분석',
-    fixCount: '수정',
+    triageCount: "분류",
+    analyzeCount: "분석",
+    fixCount: "수정",
   };
 
   return (
@@ -97,9 +98,9 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
     <div
       ref={chartRef}
       className={cn(
-        'relative rounded-xl border bg-card/50 backdrop-blur-sm p-6',
-        'transition-all duration-700',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        "relative rounded-xl border bg-card/50 backdrop-blur-sm p-6",
+        "transition-all duration-700",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
         className
       )}
     >
@@ -133,7 +134,7 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
               dataKey="dateLabel"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'oklch(0.60 0.02 260)', fontSize: 11 }}
+              tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 11 }}
               dy={10}
               interval={1}
             />
@@ -141,11 +142,14 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'oklch(0.60 0.02 260)', fontSize: 12 }}
+              tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 12 }}
               dx={-10}
             />
 
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'oklch(0.5 0 0 / 0.1)' }} />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "oklch(0.5 0 0 / 0.1)" }}
+            />
 
             <Bar
               dataKey="triageCount"
@@ -177,9 +181,9 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
       {/* Legend */}
       <div className="mt-4 flex items-center justify-center gap-6">
         {[
-          { label: '분류', color: 'oklch(0.75 0.18 195)' },
-          { label: '분석', color: 'oklch(0.78 0.16 75)' },
-          { label: '수정', color: 'oklch(0.70 0.20 145)' },
+          { label: "분류", color: "oklch(0.75 0.18 195)" },
+          { label: "분석", color: "oklch(0.78 0.16 75)" },
+          { label: "수정", color: "oklch(0.70 0.20 145)" },
         ].map((item) => (
           <div key={item.label} className="flex items-center gap-2">
             <div

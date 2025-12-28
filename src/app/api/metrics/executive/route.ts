@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server';
-import { fetchMonthlyTrend } from '@/lib/db';
-import { isSupabaseConfigured } from '@/lib/supabase';
+import { NextResponse } from "next/server";
+
+import type { ExecutiveMetrics, MonthlyData } from "@/types/metrics";
+import { fetchMonthlyTrend } from "@/lib/db";
 import {
-  calculateSavedMinutes,
   calculateCostSavings,
-  calculateROI,
   calculateDelta,
-} from '@/lib/metrics';
-import type { ExecutiveMetrics, MonthlyData } from '@/types/metrics';
+  calculateROI,
+  calculateSavedMinutes,
+} from "@/lib/metrics";
+import { isSupabaseConfigured } from "@/lib/supabase";
 
 export async function GET() {
   // Return null if Supabase is not configured
@@ -80,7 +81,7 @@ export async function GET() {
 
     return NextResponse.json(metrics);
   } catch (error) {
-    console.error('Error in executive metrics API:', error);
+    console.error("Error in executive metrics API:", error);
     return NextResponse.json(null);
   }
 }

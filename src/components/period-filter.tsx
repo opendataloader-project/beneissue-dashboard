@@ -1,5 +1,6 @@
-import { Calendar } from 'lucide-react';
-import type { PeriodFilter } from '@/types/metrics';
+import { Calendar } from "lucide-react";
+
+import type { PeriodFilter } from "@/types/metrics";
 
 interface PeriodFilterProps {
   value: PeriodFilter;
@@ -7,12 +8,12 @@ interface PeriodFilterProps {
 }
 
 const periodOptions: { value: PeriodFilter; label: string }[] = [
-  { value: 'today', label: '오늘' },
-  { value: 'this_week', label: '이번 주' },
-  { value: 'this_month', label: '이번 달' },
-  { value: 'last_90_days', label: '최근 90일' },
-  { value: 'last_year', label: '1년' },
-  { value: 'all', label: '전체' },
+  { value: "today", label: "오늘" },
+  { value: "this_week", label: "이번 주" },
+  { value: "this_month", label: "이번 달" },
+  { value: "last_90_days", label: "최근 90일" },
+  { value: "last_year", label: "1년" },
+  { value: "all", label: "전체" },
 ];
 
 export function PeriodFilterSelect({ value, onChange }: PeriodFilterProps) {
@@ -37,7 +38,12 @@ export function PeriodFilterSelect({ value, onChange }: PeriodFilterProps) {
         stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
       </svg>
     </div>
   );

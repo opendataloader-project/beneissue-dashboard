@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { FileCheck, Sparkles, Clock, DollarSign, Zap } from 'lucide-react';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { KPICard } from '@/components/stats/kpi-card';
-import { DailyTrendChart } from '@/components/charts/daily-trend-chart';
-import { DecisionDistributionChart } from '@/components/charts/decision-distribution';
-import { PeriodFilterSelect } from '@/components/period-filter';
-import { EmptyState } from '@/components/empty-state';
-import { useDashboardMetrics } from '@/hooks/useMetrics';
-import { formatSeconds } from '@/lib/format';
+import { Clock, DollarSign, FileCheck, Sparkles, Zap } from "lucide-react";
+
+import { formatSeconds } from "@/lib/format";
+import { useDashboardMetrics } from "@/hooks/useMetrics";
+import { DailyTrendChart } from "@/components/charts/daily-trend-chart";
+import { DecisionDistributionChart } from "@/components/charts/decision-distribution";
+import { EmptyState } from "@/components/empty-state";
+import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { PeriodFilterSelect } from "@/components/period-filter";
+import { KPICard } from "@/components/stats/kpi-card";
 
 export default function Dashboard() {
   const { data: metrics, period, setPeriod } = useDashboardMetrics();
@@ -88,9 +89,24 @@ export default function Dashboard() {
             </div>
             <div className="grid sm:grid-cols-3 gap-6">
               {[
-                { label: 'Triage', value: metrics.processingTimes.triageSeconds, color: 'oklch(0.75 0.18 195)', description: '이슈 유효성 검증' },
-                { label: 'Analyze', value: metrics.processingTimes.analyzeSeconds, color: 'oklch(0.78 0.16 75)', description: '코드 분석 및 우선순위 결정' },
-                { label: 'Fix', value: metrics.processingTimes.fixSeconds, color: 'oklch(0.70 0.20 145)', description: 'PR 생성 및 코드 수정' },
+                {
+                  label: "Triage",
+                  value: metrics.processingTimes.triageSeconds,
+                  color: "oklch(0.75 0.18 195)",
+                  description: "이슈 유효성 검증",
+                },
+                {
+                  label: "Analyze",
+                  value: metrics.processingTimes.analyzeSeconds,
+                  color: "oklch(0.78 0.16 75)",
+                  description: "코드 분석 및 우선순위 결정",
+                },
+                {
+                  label: "Fix",
+                  value: metrics.processingTimes.fixSeconds,
+                  color: "oklch(0.70 0.20 145)",
+                  description: "PR 생성 및 코드 수정",
+                },
               ].map((item) => (
                 <div
                   key={item.label}

@@ -1,10 +1,10 @@
 import {
-  DEVELOPER_HOURLY_RATE_KRW,
-  USD_TO_KRW,
-  TRIAGE_TIME_MINUTES,
   ANALYZE_TIME_MINUTES,
+  DEVELOPER_HOURLY_RATE_KRW,
   FIX_TIME_MINUTES,
-} from './constants';
+  TRIAGE_TIME_MINUTES,
+  USD_TO_KRW,
+} from "./constants";
 
 /**
  * Calculate total saved minutes based on workflow counts
@@ -72,7 +72,12 @@ export function calculateAutoResolutionRate(
   totalIssues: number
 ): number {
   if (totalIssues === 0) return 0;
-  const autoResolved = invalidCount + duplicateCount + needsInfoCount + fixSuccessCount + commentOnlyCount;
+  const autoResolved =
+    invalidCount +
+    duplicateCount +
+    needsInfoCount +
+    fixSuccessCount +
+    commentOnlyCount;
   return (autoResolved / totalIssues) * 100;
 }
 

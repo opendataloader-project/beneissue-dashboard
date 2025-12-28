@@ -1,18 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from "react";
 import {
-  AreaChart,
   Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import { cn } from '@/lib/utils';
-import { formatMonth, formatCurrencyKRW } from '@/lib/format';
-import type { MonthlyData } from '@/types/metrics';
+} from "recharts";
+
+import type { MonthlyData } from "@/types/metrics";
+import { formatCurrencyKRW, formatMonth } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface CostSavingsChartProps {
   data: MonthlyData[];
@@ -36,7 +37,7 @@ function CustomTooltip({
         className="text-sm font-semibold mb-2"
         style={{ fontFamily: "'Instrument Sans', sans-serif" }}
       >
-        {label ? formatMonth(label) : ''}
+        {label ? formatMonth(label) : ""}
       </p>
       <div className="space-y-1">
         <p className="text-sm flex items-center gap-2">
@@ -77,9 +78,9 @@ export function CostSavingsChart({ data, className }: CostSavingsChartProps) {
     <div
       ref={chartRef}
       className={cn(
-        'relative rounded-xl border bg-card/50 backdrop-blur-sm p-6',
-        'transition-all duration-700',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        "relative rounded-xl border bg-card/50 backdrop-blur-sm p-6",
+        "transition-all duration-700",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
         className
       )}
     >
@@ -127,19 +128,19 @@ export function CostSavingsChart({ data, className }: CostSavingsChartProps) {
             <XAxis
               dataKey="month"
               tickFormatter={(value) => {
-                const [, month] = value.split('-');
+                const [, month] = value.split("-");
                 return `${parseInt(month)}월`;
               }}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'oklch(0.60 0.02 260)', fontSize: 12 }}
+              tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 12 }}
               dy={10}
             />
 
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'oklch(0.60 0.02 260)', fontSize: 12 }}
+              tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 12 }}
               tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`}
               dx={-10}
             />

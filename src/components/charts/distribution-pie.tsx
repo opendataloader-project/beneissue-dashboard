@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { cn } from '@/lib/utils';
-import { formatNumber } from '@/lib/format';
-import type { ProcessingDistribution } from '@/types/metrics';
+import { useEffect, useRef, useState } from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
+import type { ProcessingDistribution } from "@/types/metrics";
+import { formatNumber } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface DistributionPieProps {
   data: ProcessingDistribution;
@@ -12,15 +13,15 @@ interface DistributionPieProps {
 }
 
 const COLORS = [
-  'oklch(0.75 0.18 195)', // Cyan - Triage
-  'oklch(0.78 0.16 75)',  // Amber - Analyze
-  'oklch(0.70 0.20 145)', // Emerald - Fix
+  "oklch(0.75 0.18 195)", // Cyan - Triage
+  "oklch(0.78 0.16 75)", // Amber - Analyze
+  "oklch(0.70 0.20 145)", // Emerald - Fix
 ];
 
 const LABELS = {
-  triage: '분류',
-  analyze: '분석',
-  fix: '수정',
+  triage: "분류",
+  analyze: "분석",
+  fix: "수정",
 };
 
 function CustomTooltip({
@@ -57,9 +58,9 @@ export function DistributionPie({ data, className }: DistributionPieProps) {
   const chartRef = useRef<HTMLDivElement>(null);
 
   const chartData = [
-    { name: 'triage', value: data.triage },
-    { name: 'analyze', value: data.analyze },
-    { name: 'fix', value: data.fix },
+    { name: "triage", value: data.triage },
+    { name: "analyze", value: data.analyze },
+    { name: "fix", value: data.fix },
   ];
 
   const total = data.triage + data.analyze + data.fix;
@@ -86,9 +87,9 @@ export function DistributionPie({ data, className }: DistributionPieProps) {
     <div
       ref={chartRef}
       className={cn(
-        'relative rounded-xl border bg-card/50 backdrop-blur-sm p-6',
-        'transition-all duration-700',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        "relative rounded-xl border bg-card/50 backdrop-blur-sm p-6",
+        "transition-all duration-700",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
         className
       )}
     >

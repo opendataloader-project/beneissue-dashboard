@@ -1,5 +1,5 @@
-import { Header } from './header';
-import { Footer } from './footer';
+import { Footer } from "./footer";
+import { Header } from "./header";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -18,9 +18,7 @@ export function RootLayout({ children }: RootLayoutProps) {
       {/* Content */}
       <div className="relative z-10">
         <Header />
-        <main className="pt-16">
-          {children}
-        </main>
+        <main className="pt-16">{children}</main>
         <Footer />
       </div>
     </div>

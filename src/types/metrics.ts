@@ -3,15 +3,15 @@ export interface WorkflowRun {
   id: string;
   repo: string;
   issue_number: number;
-  workflow_type: 'triage' | 'analyze' | 'fix' | 'full';
+  workflow_type: "triage" | "analyze" | "fix" | "full";
   issue_created_at: string | null;
   workflow_started_at: string;
   workflow_completed_at: string | null;
-  triage_decision: 'valid' | 'invalid' | 'duplicate' | 'needs_info' | null;
+  triage_decision: "valid" | "invalid" | "duplicate" | "needs_info" | null;
   triage_reason: string | null;
   duplicate_of: number | null;
-  fix_decision: 'auto_eligible' | 'manual_required' | 'comment_only' | null;
-  priority: 'P0' | 'P1' | 'P2' | null;
+  fix_decision: "auto_eligible" | "manual_required" | "comment_only" | null;
+  priority: "P0" | "P1" | "P2" | null;
   story_points: number | null;
   assignee: string | null;
   fix_success: boolean | null;
@@ -109,7 +109,13 @@ export interface DashboardMetrics {
 }
 
 // Period filter type
-export type PeriodFilter = 'today' | 'this_week' | 'this_month' | 'last_90_days' | 'last_year' | 'all';
+export type PeriodFilter =
+  | "today"
+  | "this_week"
+  | "this_month"
+  | "last_90_days"
+  | "last_year"
+  | "all";
 
 export interface DateRange {
   startDate: string;

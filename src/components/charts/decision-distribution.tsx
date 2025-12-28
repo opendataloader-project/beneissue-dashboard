@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { cn } from '@/lib/utils';
-import { formatNumber, formatPercent } from '@/lib/format';
-import type { DecisionDistribution } from '@/types/metrics';
+import { useEffect, useRef, useState } from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
+import type { DecisionDistribution } from "@/types/metrics";
+import { formatNumber, formatPercent } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
 interface DecisionDistributionChartProps {
   data: DecisionDistribution;
@@ -12,17 +13,17 @@ interface DecisionDistributionChartProps {
 }
 
 const COLORS = [
-  'oklch(0.70 0.20 145)', // Emerald - Valid
-  'oklch(0.60 0.20 25)',  // Rose - Invalid
-  'oklch(0.78 0.16 75)',  // Amber - Duplicate
-  'oklch(0.65 0.22 265)', // Purple - Needs Info
+  "oklch(0.70 0.20 145)", // Emerald - Valid
+  "oklch(0.60 0.20 25)", // Rose - Invalid
+  "oklch(0.78 0.16 75)", // Amber - Duplicate
+  "oklch(0.65 0.22 265)", // Purple - Needs Info
 ];
 
 const LABELS = {
-  valid: '유효',
-  invalid: '무효',
-  duplicate: '중복',
-  needsInfo: '정보 필요',
+  valid: "유효",
+  invalid: "무효",
+  duplicate: "중복",
+  needsInfo: "정보 필요",
 };
 
 function CustomTooltip({
@@ -70,14 +71,15 @@ export function DecisionDistributionChart({
   const chartRef = useRef<HTMLDivElement>(null);
 
   const chartData = [
-    { name: 'valid', value: data.valid },
-    { name: 'invalid', value: data.invalid },
-    { name: 'duplicate', value: data.duplicate },
-    { name: 'needsInfo', value: data.needsInfo },
+    { name: "valid", value: data.valid },
+    { name: "invalid", value: data.invalid },
+    { name: "duplicate", value: data.duplicate },
+    { name: "needsInfo", value: data.needsInfo },
   ];
 
   const total = data.valid + data.invalid + data.duplicate + data.needsInfo;
-  const filteringRate = total > 0 ? ((data.invalid + data.duplicate) / total) * 100 : 0;
+  const filteringRate =
+    total > 0 ? ((data.invalid + data.duplicate) / total) * 100 : 0;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -101,9 +103,9 @@ export function DecisionDistributionChart({
     <div
       ref={chartRef}
       className={cn(
-        'relative rounded-xl border bg-card/50 backdrop-blur-sm p-6',
-        'transition-all duration-700',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        "relative rounded-xl border bg-card/50 backdrop-blur-sm p-6",
+        "transition-all duration-700",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
         className
       )}
     >

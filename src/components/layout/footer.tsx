@@ -1,5 +1,6 @@
-import { Activity, Github, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Activity, ExternalLink, Github } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 interface FooterProps {
   className?: string;
@@ -9,7 +10,7 @@ export function Footer({ className }: FooterProps) {
   return (
     <footer
       className={cn(
-        'border-t border-border/50 bg-card/30 backdrop-blur-sm',
+        "border-t border-border/50 bg-card/30 backdrop-blur-sm",
         className
       )}
     >

@@ -2,7 +2,7 @@
  * Format number with Korean locale
  */
 export function formatNumber(value: number): string {
-  return new Intl.NumberFormat('ko-KR').format(Math.round(value));
+  return new Intl.NumberFormat("ko-KR").format(Math.round(value));
 }
 
 /**
@@ -15,9 +15,9 @@ export function formatCurrencyKRW(value: number): string {
   if (value >= 10000) {
     return `${Math.round(value / 10000)}만원`;
   }
-  return new Intl.NumberFormat('ko-KR', {
-    style: 'currency',
-    currency: 'KRW',
+  return new Intl.NumberFormat("ko-KR", {
+    style: "currency",
+    currency: "KRW",
     maximumFractionDigits: 0,
   }).format(value);
 }
@@ -26,9 +26,9 @@ export function formatCurrencyKRW(value: number): string {
  * Format currency in USD
  */
 export function formatCurrencyUSD(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
@@ -45,7 +45,7 @@ export function formatPercent(value: number, decimals: number = 1): string {
  * Format delta with sign
  */
 export function formatDelta(value: number): string {
-  const sign = value >= 0 ? '+' : '';
+  const sign = value >= 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}%`;
 }
 
@@ -70,7 +70,7 @@ export function formatHours(hours: number): string {
  * Format month string (YYYY-MM) to Korean
  */
 export function formatMonth(monthStr: string): string {
-  const [year, month] = monthStr.split('-');
+  const [year, month] = monthStr.split("-");
   return `${year}년 ${parseInt(month)}월`;
 }
 
