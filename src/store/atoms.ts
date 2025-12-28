@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import type {
   PublicMetrics,
   ExecutiveMetrics,
@@ -9,6 +10,10 @@ import {
   mockExecutiveMetrics,
   mockOperationsMetrics,
 } from '@/data/mock';
+
+// Data mode: 'mock' for fixed demo data, 'live' for real DB data
+export type DataMode = 'mock' | 'live';
+export const dataModeAtom = atomWithStorage<DataMode>('beneissue-data-mode', 'mock');
 
 // Date filter atoms
 export const selectedMonthAtom = atom<string | null>(null);

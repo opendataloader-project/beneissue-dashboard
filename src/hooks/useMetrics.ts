@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAtomValue } from 'jotai';
 import type {
   PublicMetrics,
   ExecutiveMetrics,
@@ -9,6 +10,7 @@ import {
   mockExecutiveMetrics,
   mockOperationsMetrics,
 } from '@/data/mock';
+import { dataModeAtom } from '@/store/atoms';
 
 interface UseMetricsResult<T> {
   data: T;
@@ -31,11 +33,17 @@ async function fetchMetrics<T>(endpoint: string, fallback: T): Promise<T> {
 }
 
 export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
+  const dataMode = useAtomValue(dataModeAtom);
   const [data, setData] = useState<PublicMetrics>(mockPublicMetrics);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const refetch = async () => {
+    if (dataMode === 'mock') {
+      setData(mockPublicMetrics);
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
@@ -53,17 +61,23 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [dataMode]);
 
   return { data, isLoading, error, refetch };
 }
 
 export function useExecutiveMetrics(): UseMetricsResult<ExecutiveMetrics> {
+  const dataMode = useAtomValue(dataModeAtom);
   const [data, setData] = useState<ExecutiveMetrics>(mockExecutiveMetrics);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const refetch = async () => {
+    if (dataMode === 'mock') {
+      setData(mockExecutiveMetrics);
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
@@ -81,17 +95,23 @@ export function useExecutiveMetrics(): UseMetricsResult<ExecutiveMetrics> {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [dataMode]);
 
   return { data, isLoading, error, refetch };
 }
 
 export function useOperationsMetrics(): UseMetricsResult<OperationsMetrics> {
+  const dataMode = useAtomValue(dataModeAtom);
   const [data, setData] = useState<OperationsMetrics>(mockOperationsMetrics);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const refetch = async () => {
+    if (dataMode === 'mock') {
+      setData(mockOperationsMetrics);
+      setIsLoading(false);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
@@ -109,7 +129,7 @@ export function useOperationsMetrics(): UseMetricsResult<OperationsMetrics> {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [dataMode]);
 
   return { data, isLoading, error, refetch };
 }
