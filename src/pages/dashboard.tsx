@@ -1,99 +1,132 @@
 import Head from 'next/head';
-import { TrendingUp, Clock, Wallet, FileCheck, Sparkles } from 'lucide-react';
+import { FileCheck, Sparkles, Clock, DollarSign, Zap } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { KPICard } from '@/components/stats/kpi-card';
-import { CostSavingsChart } from '@/components/charts/cost-savings-chart';
-import { DistributionPie } from '@/components/charts/distribution-pie';
+import { DailyTrendChart } from '@/components/charts/daily-trend-chart';
+import { DecisionDistributionChart } from '@/components/charts/decision-distribution';
+import { PeriodFilterSelect } from '@/components/period-filter';
 import { EmptyState } from '@/components/empty-state';
-import { useExecutiveMetrics } from '@/hooks/useMetrics';
+import { useDashboardMetrics } from '@/hooks/useMetrics';
+import { formatSeconds } from '@/lib/format';
 
 export default function Dashboard() {
-  const { data: metrics } = useExecutiveMetrics();
+  const { data: metrics, period, setPeriod } = useDashboardMetrics();
 
   return (
     <>
       <Head>
-        <title>Executive Dashboard - Beneissue</title>
+        <title>Dashboard - Beneissue</title>
         <meta
           name="description"
-          content="Executive dashboard showing ROI, cost savings, and business metrics for AI issue automation."
+          content="AI issue automation dashboard showing processing metrics and costs."
         />
       </Head>
 
       <DashboardLayout
-        title="Executive Dashboard"
-        description="경영진을 위한 ROI 및 비용 절감 현황"
+        title="Dashboard"
+        description="AI 이슈 자동화 성능 현황 (팩트 기반)"
       >
         {metrics ? (
           <>
+            {/* Period Filter */}
+            <div className="flex justify-end mb-6">
+              <PeriodFilterSelect value={period} onChange={setPeriod} />
+            </div>
+
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
               <KPICard
-                title="ROI"
-                value={metrics.roi}
-                suffix="%"
-                delta={metrics.roiDelta}
-                icon={TrendingUp}
-                accentColor="amber"
+                title="총 처리량"
+                value={metrics.totalIssuesProcessed}
+                suffix="건"
+                delta={metrics.totalIssuesDelta}
+                icon={FileCheck}
+                accentColor="purple"
                 animationDelay={100}
               />
               <KPICard
-                title="시간 절감"
-                value={metrics.timeSavedHours}
-                suffix="시간"
-                delta={metrics.timeSavedDelta}
-                icon={Clock}
-                accentColor="cyan"
+                title="자동 해결율"
+                value={metrics.autoResolutionRate}
+                suffix="%"
+                delta={metrics.autoResolutionDelta}
+                icon={Sparkles}
+                accentColor="emerald"
                 animationDelay={200}
               />
               <KPICard
-                title="비용 절감"
-                value={Math.round(metrics.costSavingsKRW / 10000)}
-                suffix="만원"
-                delta={metrics.costSavingsDelta}
-                icon={Wallet}
-                accentColor="emerald"
+                title="평균 응답 시간"
+                value={metrics.avgResponseTimeSeconds}
+                suffix="초"
+                delta={metrics.avgResponseTimeDelta}
+                icon={Clock}
+                accentColor="cyan"
                 animationDelay={300}
+                invertDelta
               />
               <KPICard
-                title="처리 건수"
-                value={metrics.issuesProcessed}
-                suffix="건"
-                delta={metrics.issuesProcessedDelta}
-                icon={FileCheck}
-                accentColor="purple"
+                title="총 AI 비용"
+                value={`$${metrics.totalCostUSD.toFixed(2)}`}
+                delta={metrics.totalCostDelta}
+                icon={DollarSign}
+                accentColor="amber"
                 animationDelay={400}
+                subtitle={`건당 $${metrics.costPerIssueUSD.toFixed(2)}`}
               />
             </div>
 
             {/* Charts */}
             <div className="grid lg:grid-cols-2 gap-6 mb-8">
-              <CostSavingsChart data={metrics.monthlyTrend} />
-              <DistributionPie data={metrics.processingDistribution} />
+              <DailyTrendChart data={metrics.dailyTrend} />
+              <DecisionDistributionChart data={metrics.decisionDistribution} />
             </div>
 
-            {/* Summary sentence */}
+            {/* Processing Times */}
             <div className="relative rounded-xl border bg-card/50 backdrop-blur-sm p-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
-                  <Sparkles className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h3
-                    className="text-lg font-semibold mb-2"
-                    style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+              <div className="mb-6">
+                <h3
+                  className="text-lg font-semibold flex items-center gap-2"
+                  style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+                >
+                  <Zap className="w-5 h-5 text-primary" />
+                  처리 단계별 평균 시간
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  각 워크플로우 단계의 평균 처리 시간
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-6">
+                {[
+                  { label: 'Triage', value: metrics.processingTimes.triageSeconds, color: 'oklch(0.75 0.18 195)', description: '이슈 유효성 검증' },
+                  { label: 'Analyze', value: metrics.processingTimes.analyzeSeconds, color: 'oklch(0.78 0.16 75)', description: '코드 분석 및 우선순위 결정' },
+                  { label: 'Fix', value: metrics.processingTimes.fixSeconds, color: 'oklch(0.70 0.20 145)', description: 'PR 생성 및 코드 수정' },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="relative p-4 rounded-lg border bg-background/50"
                   >
-                    이번 달 요약
-                  </h3>
-                  <p className="text-lg text-muted-foreground">
-                    {metrics.summaryText}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-3">
-                    AI 자동화로 개발팀의 생산성이 크게 향상되었습니다.
-                    비용 대비 효과가 지속적으로 증가하고 있으며,
-                    더 많은 이슈를 자동으로 처리할 수 있게 되었습니다.
-                  </p>
-                </div>
+                    <div
+                      className="absolute top-0 left-4 right-4 h-px opacity-30"
+                      style={{
+                        background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`,
+                      }}
+                    />
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {item.label}
+                    </p>
+                    <p
+                      className="text-3xl font-bold tabular-nums"
+                      style={{
+                        fontFamily: "'Instrument Sans', sans-serif",
+                        color: item.color,
+                      }}
+                    >
+                      {formatSeconds(item.value)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </>

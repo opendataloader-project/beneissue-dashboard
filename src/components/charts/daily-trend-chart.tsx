@@ -145,7 +145,7 @@ export function DailyTrendChart({ data, className }: DailyTrendChartProps) {
               dx={-10}
             />
 
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'oklch(0.5 0 0 / 0.1)' }} />
 
             <Bar
               dataKey="triageCount"

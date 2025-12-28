@@ -77,7 +77,7 @@ export function DecisionDistributionChart({
   ];
 
   const total = data.valid + data.invalid + data.duplicate + data.needsInfo;
-  const filteringRate = ((data.invalid + data.duplicate) / total) * 100;
+  const filteringRate = total > 0 ? ((data.invalid + data.duplicate) / total) * 100 : 0;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -164,7 +164,7 @@ export function DecisionDistributionChart({
       {/* Legend */}
       <div className="mt-4 grid grid-cols-2 gap-3">
         {chartData.map((item, index) => {
-          const percent = (item.value / total) * 100;
+          const percent = total > 0 ? (item.value / total) * 100 : 0;
           return (
             <div key={item.name} className="flex items-center gap-2">
               <div

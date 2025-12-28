@@ -34,17 +34,6 @@ export default async function handler(
       return res.status(200).json(null);
     }
 
-    // Calculate derived metrics
-    const savedMinutes = calculateSavedMinutes(
-      totalMetrics.triageCount,
-      totalMetrics.analyzeCount,
-      totalMetrics.fixSuccessCount
-    );
-    const { netSavings, aiCost } = calculateCostSavings(
-      savedMinutes,
-      totalMetrics.totalCostUsd
-    );
-    const roi = calculateROI(netSavings, aiCost);
     // Calculate invalid count: ai_filtered - duplicate (ai_filtered includes invalid + duplicate)
     const invalidCount = totalMetrics.aiFilteredCount - totalMetrics.duplicateCount;
     const autoResolutionRate = calculateAutoResolutionRate(
@@ -79,7 +68,7 @@ export default async function handler(
       totalIssuesProcessed: totalMetrics.uniqueIssues,
       avgResponseTimeSeconds: Math.round(totalMetrics.avgResponseSeconds),
       autoResolutionRate: Math.round(autoResolutionRate * 10) / 10,
-      roi: Math.round(roi),
+      totalCostUSD: Math.round(totalMetrics.totalCostUsd * 100) / 100,
       monthlyTrend,
     };
 

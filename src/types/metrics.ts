@@ -56,10 +56,11 @@ export interface PublicMetrics {
   totalIssuesProcessed: number;
   avgResponseTimeSeconds: number;
   autoResolutionRate: number;
-  roi: number;
+  totalCostUSD: number;
   monthlyTrend: MonthlyData[];
 }
 
+// Legacy interfaces (kept for backwards compatibility during migration)
 export interface ExecutiveMetrics {
   roi: number;
   roiDelta: number;
@@ -86,6 +87,33 @@ export interface OperationsMetrics {
   dailyTrend: DailyData[];
   decisionDistribution: DecisionDistribution;
   processingTimes: ProcessingTimes;
+}
+
+// New unified dashboard metrics (fact-based)
+export interface DashboardMetrics {
+  // Core KPIs
+  totalIssuesProcessed: number;
+  totalIssuesDelta: number;
+  autoResolutionRate: number;
+  autoResolutionDelta: number;
+  avgResponseTimeSeconds: number;
+  avgResponseTimeDelta: number;
+  totalCostUSD: number;
+  totalCostDelta: number;
+  costPerIssueUSD: number;
+
+  // Charts data
+  dailyTrend: DailyData[];
+  decisionDistribution: DecisionDistribution;
+  processingTimes: ProcessingTimes;
+}
+
+// Period filter type
+export type PeriodFilter = 'today' | 'this_week' | 'this_month' | 'last_90_days' | 'last_year' | 'all';
+
+export interface DateRange {
+  startDate: string;
+  endDate: string;
 }
 
 export interface MonthlyData {

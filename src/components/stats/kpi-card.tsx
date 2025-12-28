@@ -9,8 +9,10 @@ interface KPICardProps {
   title: string;
   value: string | number;
   suffix?: string;
+  subtitle?: string;
   delta?: number;
   deltaLabel?: string;
+  invertDelta?: boolean; // For metrics where lower is better (e.g., response time)
   icon?: LucideIcon;
   accentColor?: 'cyan' | 'amber' | 'emerald' | 'purple';
   animationDelay?: number;
@@ -21,8 +23,10 @@ export function KPICard({
   title,
   value,
   suffix,
+  subtitle,
   delta,
   deltaLabel = '전월 대비',
+  invertDelta = false,
   icon: Icon,
   accentColor = 'cyan',
   animationDelay = 0,
@@ -34,9 +38,12 @@ export function KPICard({
   );
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Determine trend
-  const trend = delta === undefined ? 'neutral' : delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral';
-  const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
+  // Determine trend (inverted for metrics where lower is better)
+  const rawTrend = delta === undefined ? 'neutral' : delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral';
+  const trend = invertDelta
+    ? rawTrend === 'up' ? 'down' : rawTrend === 'down' ? 'up' : 'neutral'
+    : rawTrend;
+  const TrendIcon = rawTrend === 'up' ? TrendingUp : rawTrend === 'down' ? TrendingDown : Minus;
 
   // Accent color mapping
   const accentColors = {
@@ -156,7 +163,7 @@ export function KPICard({
       </div>
 
       {/* Value */}
-      <div className="flex items-baseline gap-2 mb-3">
+      <div className="flex items-baseline gap-2 mb-1">
         <span
           className={cn('text-4xl font-bold tracking-tight tabular-nums', colors.text)}
           style={{ fontFamily: "'Instrument Sans', sans-serif" }}
@@ -169,6 +176,13 @@ export function KPICard({
           <span className="text-lg text-muted-foreground font-medium">{suffix}</span>
         )}
       </div>
+
+      {/* Subtitle */}
+      {subtitle && (
+        <p className="text-xs text-muted-foreground mb-2">{subtitle}</p>
+      )}
+
+      {!subtitle && <div className="mb-2" />}
 
       {/* Delta indicator */}
       {delta !== undefined && (
