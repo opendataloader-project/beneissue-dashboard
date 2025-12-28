@@ -91,7 +91,7 @@ export function Header({ className }: HeaderProps) {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={cn(
-                "flex items-center justify-center w-9 h-9 rounded-lg",
+                "flex items-center justify-center w-9 h-9 rounded-lg cursor-pointer",
                 "text-muted-foreground hover:text-foreground",
                 "hover:bg-secondary/50 transition-all duration-200",
                 isMenuOpen && "bg-secondary/50 text-foreground"
@@ -126,7 +126,7 @@ export function Header({ className }: HeaderProps) {
                     setIsMenuOpen(false);
                   }}
                   className={cn(
-                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
                     "text-sm font-medium transition-all duration-200",
                     dataMode === "mock"
                       ? "bg-amber-500/20 text-amber-500 border border-amber-500/30"
@@ -155,7 +155,7 @@ export function Header({ className }: HeaderProps) {
                     setIsMenuOpen(false);
                   }}
                   className={cn(
-                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
                     "text-sm font-medium transition-all duration-200",
                     dataMode === "live"
                       ? "bg-emerald-500/20 text-emerald-500 border border-emerald-500/30"
@@ -192,7 +192,7 @@ export function Header({ className }: HeaderProps) {
                     setIsMenuOpen(false);
                   }}
                   className={cn(
-                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
                     "text-sm font-medium transition-all duration-200",
                     language === "ko"
                       ? "bg-primary/20 text-primary border border-primary/30"
@@ -220,7 +220,7 @@ export function Header({ className }: HeaderProps) {
                     setIsMenuOpen(false);
                   }}
                   className={cn(
-                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg",
+                    "group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer",
                     "text-sm font-medium transition-all duration-200",
                     language === "en"
                       ? "bg-primary/20 text-primary border border-primary/30"
