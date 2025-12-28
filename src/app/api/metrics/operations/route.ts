@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import {
   fetchDailyMetrics,
   fetchMonthlyAggregates,
@@ -12,18 +12,10 @@ import {
 } from '@/lib/metrics';
 import type { OperationsMetrics, DailyData } from '@/types/metrics';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<OperationsMetrics | null>
-) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function GET() {
   // Return null if Supabase is not configured
   if (!isSupabaseConfigured) {
-    return res.status(200).json(null);
+    return NextResponse.json(null);
   }
 
   try {
@@ -58,7 +50,7 @@ export default async function handler(
 
     // Return null if no data
     if (!currentMonthData) {
-      return res.status(200).json(null);
+      return NextResponse.json(null);
     }
 
     // Transform daily data
@@ -156,9 +148,9 @@ export default async function handler(
       },
     };
 
-    res.status(200).json(metrics);
+    return NextResponse.json(metrics);
   } catch (error) {
     console.error('Error in operations metrics API:', error);
-    res.status(200).json(null);
+    return NextResponse.json(null);
   }
 }

@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import { fetchMonthlyTrend } from '@/lib/db';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import {
@@ -9,18 +9,10 @@ import {
 } from '@/lib/metrics';
 import type { ExecutiveMetrics, MonthlyData } from '@/types/metrics';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ExecutiveMetrics | null>
-) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function GET() {
   // Return null if Supabase is not configured
   if (!isSupabaseConfigured) {
-    return res.status(200).json(null);
+    return NextResponse.json(null);
   }
 
   try {
@@ -28,7 +20,7 @@ export default async function handler(
 
     // Return null if no data
     if (monthlyTrendRaw.length === 0) {
-      return res.status(200).json(null);
+      return NextResponse.json(null);
     }
 
     // Transform monthly trend data and calculate derived metrics
@@ -57,7 +49,6 @@ export default async function handler(
         : currentMonth;
 
     // Get current month raw data for distribution
-    const now = new Date();
     const currentMonthRaw = monthlyTrendRaw[monthlyTrendRaw.length - 1];
 
     const metrics: ExecutiveMetrics = {
@@ -87,9 +78,9 @@ export default async function handler(
       summaryText: `이번 달 AI가 ${currentMonth.issuesProcessed.toLocaleString()}건 처리, ${currentMonth.timeSavedHours}시간 절약, ROI ${currentMonth.roi}%`,
     };
 
-    res.status(200).json(metrics);
+    return NextResponse.json(metrics);
   } catch (error) {
     console.error('Error in executive metrics API:', error);
-    res.status(200).json(null);
+    return NextResponse.json(null);
   }
 }

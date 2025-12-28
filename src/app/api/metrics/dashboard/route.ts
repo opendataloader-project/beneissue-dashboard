@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   fetchDailyMetrics,
   fetchProcessingTimes,
@@ -110,21 +110,14 @@ function getPreviousPeriodRange(period: PeriodFilter): { startDate: string; endD
   }
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<DashboardMetrics | null>
-) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function GET(request: NextRequest) {
   if (!isSupabaseConfigured) {
-    return res.status(200).json(null);
+    return NextResponse.json(null);
   }
 
   try {
-    const period = (req.query.period as PeriodFilter) || 'this_month';
+    const searchParams = request.nextUrl.searchParams;
+    const period = (searchParams.get('period') as PeriodFilter) || 'this_month';
     const { startDate, endDate } = getDateRange(period);
     const { startDate: prevStartDate, endDate: prevEndDate } = getPreviousPeriodRange(period);
 
@@ -135,7 +128,7 @@ export default async function handler(
     ]);
 
     if (dailyMetrics.length === 0) {
-      return res.status(200).json(null);
+      return NextResponse.json(null);
     }
 
     // Aggregate current period data
@@ -282,9 +275,9 @@ export default async function handler(
       },
     };
 
-    res.status(200).json(metrics);
+    return NextResponse.json(metrics);
   } catch (error) {
     console.error('Error in dashboard metrics API:', error);
-    res.status(200).json(null);
+    return NextResponse.json(null);
   }
 }

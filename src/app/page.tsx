@@ -1,4 +1,5 @@
-import Head from 'next/head';
+'use client';
+
 import { FileCheck, Clock, Sparkles, DollarSign } from 'lucide-react';
 import { StatCard } from '@/components/stats/stat-card';
 import { TrendLineChart } from '@/components/charts/trend-line-chart';
@@ -10,15 +11,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Beneissue - AI Issue Automation</title>
-        <meta
-          name="description"
-          content="AI-powered issue automation that saves time and money. Track real-time metrics and ROI."
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-
       {/* Scan line effect for home page */}
       <div className="scan-line" />
 

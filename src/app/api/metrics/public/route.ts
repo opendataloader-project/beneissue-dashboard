@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import { fetchTotalMetrics, fetchMonthlyTrend } from '@/lib/db';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import {
@@ -9,18 +9,10 @@ import {
 } from '@/lib/metrics';
 import type { PublicMetrics, MonthlyData } from '@/types/metrics';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<PublicMetrics | null>
-) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', ['GET']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function GET() {
   // Return null if Supabase is not configured
   if (!isSupabaseConfigured) {
-    return res.status(200).json(null);
+    return NextResponse.json(null);
   }
 
   try {
@@ -31,7 +23,7 @@ export default async function handler(
 
     // Return null if no data
     if (!totalMetrics || monthlyTrendRaw.length === 0) {
-      return res.status(200).json(null);
+      return NextResponse.json(null);
     }
 
     // Calculate invalid count: ai_filtered - duplicate (ai_filtered includes invalid + duplicate)
@@ -72,9 +64,9 @@ export default async function handler(
       monthlyTrend,
     };
 
-    res.status(200).json(metrics);
+    return NextResponse.json(metrics);
   } catch (error) {
     console.error('Error in public metrics API:', error);
-    res.status(200).json(null);
+    return NextResponse.json(null);
   }
 }

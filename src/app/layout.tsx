@@ -1,9 +1,24 @@
-import { Html, Head, Main, NextScript } from "next/document";
+import type { Metadata, Viewport } from 'next';
+import '@/styles/globals.css';
+import { RootLayout } from '@/components/layout/root-layout';
 
-export default function Document() {
+export const metadata: Metadata = {
+  title: 'Beneissue - AI Issue Automation',
+  description: 'AI-powered issue automation that saves time and money. Track real-time metrics and ROI.',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0a0a14',
+};
+
+export default function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <Html lang="ko">
-      <Head>
+    <html lang="ko">
+      <head>
         {/* Preconnect for faster font loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -14,19 +29,15 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
-
-        {/* Favicon and meta */}
-        <meta name="theme-color" content="#0a0a14" />
-      </Head>
+      </head>
       <body
         className="antialiased"
         style={{
           fontFamily: "'Figtree', system-ui, sans-serif",
         }}
       >
-        <Main />
-        <NextScript />
+        <RootLayout>{children}</RootLayout>
       </body>
-    </Html>
+    </html>
   );
 }

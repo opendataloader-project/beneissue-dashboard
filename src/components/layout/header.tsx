@@ -1,6 +1,8 @@
+'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { Activity, Database, FlaskConical, LayoutDashboard, Menu, X } from 'lucide-react';
 import { useAtom } from 'jotai';
 import { cn } from '@/lib/utils';
@@ -11,11 +13,11 @@ interface HeaderProps {
 }
 
 export function Header({ className }: HeaderProps) {
-  const router = useRouter();
+  const pathname = usePathname();
   const [dataMode, setDataMode] = useAtom(dataModeAtom);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const isOnDashboard = router.pathname === '/dashboard';
+  const isOnDashboard = pathname === '/dashboard';
 
   // Close menu when clicking outside
   useEffect(() => {
