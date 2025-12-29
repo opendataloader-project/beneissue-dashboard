@@ -6,6 +6,7 @@ import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface KPICardProps {
   title: string;
@@ -19,6 +20,7 @@ interface KPICardProps {
   accentColor?: "cyan" | "amber" | "emerald" | "purple";
   animationDelay?: number;
   className?: string;
+  isLoading?: boolean;
 }
 
 export function KPICard({
@@ -33,6 +35,7 @@ export function KPICard({
   accentColor = "cyan",
   animationDelay = 0,
   className,
+  isLoading = false,
 }: KPICardProps) {
   const { t } = useTranslation();
   const resolvedDeltaLabel = deltaLabel ?? t("vsLastMonth");
@@ -183,21 +186,27 @@ export function KPICard({
 
       {/* Value */}
       <div className="flex items-baseline gap-2 mb-1">
-        <span
-          className={cn(
-            "text-4xl font-bold tracking-tight tabular-nums",
-            colors.text
-          )}
-          style={{ fontFamily: "'Instrument Sans', sans-serif" }}
-        >
-          {typeof displayValue === "number"
-            ? displayValue.toLocaleString()
-            : displayValue}
-        </span>
-        {suffix && (
-          <span className="text-lg text-muted-foreground font-medium">
-            {suffix}
-          </span>
+        {isLoading ? (
+          <Skeleton className="h-10 w-24" />
+        ) : (
+          <>
+            <span
+              className={cn(
+                "text-4xl font-bold tracking-tight tabular-nums",
+                colors.text
+              )}
+              style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+            >
+              {typeof displayValue === "number"
+                ? displayValue.toLocaleString()
+                : displayValue}
+            </span>
+            {suffix && (
+              <span className="text-lg text-muted-foreground font-medium">
+                {suffix}
+              </span>
+            )}
+          </>
         )}
       </div>
 
@@ -209,24 +218,28 @@ export function KPICard({
       {!subtitle && <div className="mb-2" />}
 
       {/* Delta indicator */}
-      {delta !== undefined && (
-        <div className="flex items-center gap-2">
-          <div
-            className={cn(
-              "inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium",
-              trendColors[trend]
-            )}
-          >
-            <TrendIcon className="w-3 h-3" />
-            <span className="tabular-nums">
-              {delta > 0 ? "+" : ""}
-              {delta.toFixed(1)}%
+      {isLoading ? (
+        <Skeleton className="h-6 w-28" />
+      ) : (
+        delta !== undefined && (
+          <div className="flex items-center gap-2">
+            <div
+              className={cn(
+                "inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium",
+                trendColors[trend]
+              )}
+            >
+              <TrendIcon className="w-3 h-3" />
+              <span className="tabular-nums">
+                {delta > 0 ? "+" : ""}
+                {delta.toFixed(1)}%
+              </span>
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {resolvedDeltaLabel}
             </span>
           </div>
-          <span className="text-xs text-muted-foreground">
-            {resolvedDeltaLabel}
-          </span>
-        </div>
+        )
       )}
 
       {/* Hover effect */}

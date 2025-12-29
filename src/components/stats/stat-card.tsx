@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface StatCardProps {
   title: string;
@@ -14,6 +15,7 @@ interface StatCardProps {
   accentColor?: "cyan" | "amber" | "emerald" | "purple";
   animationDelay?: number;
   className?: string;
+  isLoading?: boolean;
 }
 
 export function StatCard({
@@ -25,6 +27,7 @@ export function StatCard({
   accentColor = "cyan",
   animationDelay = 0,
   className,
+  isLoading = false,
 }: StatCardProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [displayValue, setDisplayValue] = useState<string | number>(
@@ -152,21 +155,27 @@ export function StatCard({
 
       {/* Value */}
       <div className="flex items-baseline gap-2">
-        <span
-          className={cn(
-            "text-4xl font-bold tracking-tight tabular-nums",
-            colors.text
-          )}
-          style={{ fontFamily: "'Instrument Sans', sans-serif" }}
-        >
-          {typeof displayValue === "number"
-            ? displayValue.toLocaleString()
-            : displayValue}
-        </span>
-        {suffix && (
-          <span className="text-lg text-muted-foreground font-medium">
-            {suffix}
-          </span>
+        {isLoading ? (
+          <Skeleton className="h-10 w-24" />
+        ) : (
+          <>
+            <span
+              className={cn(
+                "text-4xl font-bold tracking-tight tabular-nums",
+                colors.text
+              )}
+              style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+            >
+              {typeof displayValue === "number"
+                ? displayValue.toLocaleString()
+                : displayValue}
+            </span>
+            {suffix && (
+              <span className="text-lg text-muted-foreground font-medium">
+                {suffix}
+              </span>
+            )}
+          </>
         )}
       </div>
 

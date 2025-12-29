@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stats/stat-card";
 
 export default function Home() {
-  const { data: metrics } = usePublicMetrics();
+  const { data: metrics, isLoading } = usePublicMetrics();
   const { t } = useTranslation();
 
   return (
@@ -48,55 +48,61 @@ export default function Home() {
           </p>
 
           {/* Stats Grid - 기획서: 총 처리량, 자동해결율, 평균응답시간, 건당비용 */}
-          {metrics ? (
+          {!isLoading && !metrics ? (
+            <EmptyState />
+          ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
                 <StatCard
                   title={t("totalProcessed")}
-                  value={metrics.totalIssuesProcessed}
+                  value={metrics?.totalIssuesProcessed ?? 0}
                   suffix={t("issuesUnit")}
                   icon={FileCheck}
                   description={t("cumulativeProcessed")}
                   accentColor="purple"
                   animationDelay={100}
+                  isLoading={isLoading}
                 />
                 <StatCard
                   title={t("autoResolutionRate")}
-                  value={metrics.autoResolutionRate}
+                  value={metrics?.autoResolutionRate ?? 0}
                   suffix="%"
                   icon={Sparkles}
                   description={t("aiDirectFix")}
                   accentColor="emerald"
                   animationDelay={200}
+                  isLoading={isLoading}
                 />
                 <StatCard
                   title={t("avgResponseTime")}
-                  value={metrics.avgResponseTimeSeconds}
+                  value={metrics?.avgResponseTimeSeconds ?? 0}
                   suffix={t("secondsUnit")}
                   icon={Clock}
                   description={t("toFirstResponse")}
                   accentColor="cyan"
                   animationDelay={300}
+                  isLoading={isLoading}
                 />
                 <StatCard
                   title={t("costPerIssue")}
-                  value={`$${metrics.costPerIssueUSD.toFixed(2)}`}
+                  value={metrics ? `$${metrics.costPerIssueUSD.toFixed(2)}` : "$0.00"}
                   icon={DollarSign}
                   description={t("totalAPICost")}
                   accentColor="amber"
                   animationDelay={400}
+                  isLoading={isLoading}
                 />
               </div>
 
               {/* 추이 차트 - 기획서: Stacked Bar + Line */}
-              <TrendChart
-                data={metrics.monthlyTrend}
-                title={t("monthlyTrendTitle")}
-                description={t("monthlyTrendDesc")}
-              />
+              {metrics && (
+                <TrendChart
+                  data={metrics.monthlyTrend}
+                  title={t("monthlyTrendTitle")}
+                  description={t("monthlyTrendDesc")}
+                />
+              )}
             </>
-          ) : (
-            <EmptyState />
           )}
         </div>
       </section>

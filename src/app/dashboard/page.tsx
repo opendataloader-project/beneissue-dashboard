@@ -12,7 +12,7 @@ import { PeriodFilterSelect } from "@/components/period-filter";
 import { KPICard } from "@/components/stats/kpi-card";
 
 export default function Dashboard() {
-  const { data: metrics, period, setPeriod, customRange, setCustomRange } = useDashboardMetrics();
+  const { data: metrics, isLoading, period, setPeriod, customRange, setCustomRange } = useDashboardMetrics();
   const { t } = useTranslation();
 
   return (
@@ -20,73 +20,79 @@ export default function Dashboard() {
       title={t("dashboardTitle")}
       description={t("dashboardDesc")}
     >
-      {metrics ? (
-        <>
-          {/* Period Filter */}
-          <div className="flex justify-end mb-6">
-            <PeriodFilterSelect
-              value={period}
-              onChange={setPeriod}
-              customRange={customRange}
-              onCustomRangeChange={setCustomRange}
-            />
-          </div>
+      {/* Period Filter */}
+      <div className="flex justify-end mb-6">
+        <PeriodFilterSelect
+          value={period}
+          onChange={setPeriod}
+          customRange={customRange}
+          onCustomRangeChange={setCustomRange}
+        />
+      </div>
 
+      {!isLoading && !metrics ? (
+        <EmptyState />
+      ) : (
+        <>
           {/* KPI Cards - 기획서: 총 처리량, 자동해결율, 평균응답시간, 총 AI비용(건당 포함) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <KPICard
               title={t("totalProcessed")}
-              value={metrics.totalIssuesProcessed}
+              value={metrics?.totalIssuesProcessed ?? 0}
               suffix={t("issuesUnit")}
-              delta={metrics.totalIssuesDelta}
+              delta={metrics?.totalIssuesDelta}
               icon={FileCheck}
               accentColor="purple"
               animationDelay={100}
+              isLoading={isLoading}
             />
             <KPICard
               title={t("autoResolutionRate")}
-              value={metrics.autoResolutionRate}
+              value={metrics?.autoResolutionRate ?? 0}
               suffix="%"
-              delta={metrics.autoResolutionDelta}
+              delta={metrics?.autoResolutionDelta}
               icon={Sparkles}
               accentColor="emerald"
               animationDelay={200}
+              isLoading={isLoading}
             />
             <KPICard
               title={t("avgResponseTime")}
-              value={metrics.avgResponseTimeSeconds}
+              value={metrics?.avgResponseTimeSeconds ?? 0}
               suffix={t("secondsUnit")}
-              delta={metrics.avgResponseTimeDelta}
+              delta={metrics?.avgResponseTimeDelta}
               icon={Clock}
               accentColor="cyan"
               animationDelay={300}
               invertDelta
+              isLoading={isLoading}
             />
             <KPICard
               title={t("totalAICost")}
-              value={`$${metrics.totalCostUSD.toFixed(2)}`}
-              delta={metrics.totalCostDelta}
+              value={metrics ? `$${metrics.totalCostUSD.toFixed(2)}` : "$0.00"}
+              delta={metrics?.totalCostDelta}
               icon={DollarSign}
               accentColor="amber"
               animationDelay={400}
-              subtitle={`${t("perIssue")} $${metrics.costPerIssueUSD.toFixed(2)}`}
+              subtitle={metrics ? `${t("perIssue")} $${metrics.costPerIssueUSD.toFixed(2)}` : undefined}
+              isLoading={isLoading}
             />
           </div>
 
           {/* Charts - 기획서: 추이 차트 + 결과 분포 */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {/* 추이 차트 (Stacked Bar + Line) */}
-            <TrendChart
-              data={metrics.trendData}
-              title={t("trendChartTitle")}
-              description={t("trendChartDesc")}
-            />
-            {/* 결과 분포 (2분류 바) */}
-            <ResolutionDistributionChart data={metrics.resolutionDistribution} />
-          </div>
+          {metrics && (
+            <div className="grid lg:grid-cols-2 gap-6 mb-8">
+              {/* 추이 차트 (Stacked Bar + Line) */}
+              <TrendChart
+                data={metrics.trendData}
+                title={t("trendChartTitle")}
+                description={t("trendChartDesc")}
+              />
+              {/* 결과 분포 (2분류 바) */}
+              <ResolutionDistributionChart data={metrics.resolutionDistribution} />
+            </div>
+          )}
         </>
-      ) : (
-        <EmptyState />
       )}
     </DashboardLayout>
   );
