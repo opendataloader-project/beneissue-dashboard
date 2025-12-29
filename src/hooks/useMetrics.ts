@@ -1,20 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  mockDashboardMetrics,
-  mockExecutiveMetrics,
-  mockOperationsMetrics,
-  mockPublicMetrics,
-} from "@/data/mock";
+import { mockDashboardMetrics, mockPublicMetrics } from "@/data/mock";
 import { dataModeAtom } from "@/store/atoms";
 import { useAtomValue } from "jotai";
 
-import type {
-  DashboardMetrics,
-  ExecutiveMetrics,
-  OperationsMetrics,
-  PeriodFilter,
-  PublicMetrics,
-} from "@/types/metrics";
+import type { DashboardMetrics, PeriodFilter, PublicMetrics } from "@/types/metrics";
 
 interface UseMetricsResult<T> {
   data: T | null;
@@ -72,76 +61,6 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
   return { data, isLoading, error, refetch };
 }
 
-export function useExecutiveMetrics(): UseMetricsResult<ExecutiveMetrics> {
-  const dataMode = useAtomValue(dataModeAtom);
-  const [data, setData] = useState<ExecutiveMetrics | null>(
-    mockExecutiveMetrics
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const refetch = useCallback(async () => {
-    if (dataMode === "mock") {
-      setData(mockExecutiveMetrics);
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const metrics = await fetchMetrics<ExecutiveMetrics>(
-        "/api/metrics/executive"
-      );
-      setData(metrics);
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error("Unknown error"));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dataMode]);
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
-  return { data, isLoading, error, refetch };
-}
-
-export function useOperationsMetrics(): UseMetricsResult<OperationsMetrics> {
-  const dataMode = useAtomValue(dataModeAtom);
-  const [data, setData] = useState<OperationsMetrics | null>(
-    mockOperationsMetrics
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const refetch = useCallback(async () => {
-    if (dataMode === "mock") {
-      setData(mockOperationsMetrics);
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const metrics = await fetchMetrics<OperationsMetrics>(
-        "/api/metrics/operations"
-      );
-      setData(metrics);
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error("Unknown error"));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dataMode]);
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
-  return { data, isLoading, error, refetch };
-}
-
 interface UseDashboardMetricsResult extends UseMetricsResult<DashboardMetrics> {
   period: PeriodFilter;
   setPeriod: (period: PeriodFilter) => void;
@@ -149,12 +68,10 @@ interface UseDashboardMetricsResult extends UseMetricsResult<DashboardMetrics> {
 
 export function useDashboardMetrics(): UseDashboardMetricsResult {
   const dataMode = useAtomValue(dataModeAtom);
-  const [data, setData] = useState<DashboardMetrics | null>(
-    mockDashboardMetrics
-  );
+  const [data, setData] = useState<DashboardMetrics | null>(mockDashboardMetrics);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [period, setPeriod] = useState<PeriodFilter>("this_month");
+  const [period, setPeriod] = useState<PeriodFilter>("1month");
 
   const refetch = useCallback(async () => {
     if (dataMode === "mock") {

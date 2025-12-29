@@ -77,11 +77,33 @@ export const translations = {
     duplicate: "중복",
     needsInfo: "정보 필요",
 
+    // Resolution Distribution Chart (2분류)
+    resolutionDistTitle: "결과 분포",
+    resolutionDistDesc: "자동 해결 vs 수동 필요 비율",
+    autoResolved: "자동 해결",
+    manualRequired: "수동 필요",
+    autoResolvedMessage: "는 사람 개입 없이 처리됨",
+
+    // Trend Chart
+    trendChartTitle: "추이 차트",
+    trendChartDesc: "자동 해결 / 수동 필요 건수와 자동 해결율",
+
     // Monthly Trend Chart
     monthlyTrendTitle: "월별 처리량 추이",
     monthlyTrendDesc: "최근 6개월간 AI가 처리한 이슈 수",
     processedLabel: "처리량",
     processedIssues: "처리된 이슈",
+
+    // Period Filter (기획서)
+    oneWeek: "1주",
+    oneMonth: "1달",
+    ninetyDays: "90일",
+    oneYear: "1년",
+    allTime: "전체",
+    custom: "사용자 지정",
+
+    // Public Stats
+    costPerIssue: "건당 비용",
 
     // Time units
     seconds: "초",
@@ -180,11 +202,33 @@ export const translations = {
     duplicate: "Duplicate",
     needsInfo: "Needs Info",
 
+    // Resolution Distribution Chart (2分類)
+    resolutionDistTitle: "Resolution Distribution",
+    resolutionDistDesc: "Auto-resolved vs Manual required ratio",
+    autoResolved: "Auto Resolved",
+    manualRequired: "Manual Required",
+    autoResolvedMessage: "processed without human intervention",
+
+    // Trend Chart
+    trendChartTitle: "Processing Trend",
+    trendChartDesc: "Auto-resolved / Manual required counts and auto-resolution rate",
+
     // Monthly Trend Chart
     monthlyTrendTitle: "Monthly Processing Trend",
     monthlyTrendDesc: "Issues processed by AI over the last 6 months",
     processedLabel: "Processed",
     processedIssues: "Issues Processed",
+
+    // Period Filter (spec)
+    oneWeek: "1 Week",
+    oneMonth: "1 Month",
+    ninetyDays: "90 Days",
+    oneYear: "1 Year",
+    allTime: "All",
+    custom: "Custom",
+
+    // Public Stats
+    costPerIssue: "Cost per issue",
 
     // Time units
     seconds: "s",

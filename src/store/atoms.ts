@@ -1,17 +1,9 @@
-import {
-  mockExecutiveMetrics,
-  mockOperationsMetrics,
-  mockPublicMetrics,
-} from "@/data/mock";
+import { mockDashboardMetrics, mockPublicMetrics } from "@/data/mock";
 import type { Language } from "@/i18n/translations";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-import type {
-  ExecutiveMetrics,
-  OperationsMetrics,
-  PublicMetrics,
-} from "@/types/metrics";
+import type { DashboardMetrics, PublicMetrics } from "@/types/metrics";
 
 // Data mode: 'mock' for fixed demo data, 'live' for real DB data
 export type DataMode = "mock" | "live";
@@ -32,11 +24,7 @@ export const dateRangeAtom = atom<{ start: string; end: string } | null>(null);
 
 // Metrics data atoms (initialized with mock data)
 export const publicMetricsAtom = atom<PublicMetrics>(mockPublicMetrics);
-export const executiveMetricsAtom =
-  atom<ExecutiveMetrics>(mockExecutiveMetrics);
-export const operationsMetricsAtom = atom<OperationsMetrics>(
-  mockOperationsMetrics
-);
+export const dashboardMetricsAtom = atom<DashboardMetrics>(mockDashboardMetrics);
 
 // Loading states
 export const isLoadingAtom = atom<boolean>(false);

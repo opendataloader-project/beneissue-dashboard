@@ -24,72 +24,16 @@ export interface WorkflowRun {
   created_at: string;
 }
 
-export interface DailyMetrics {
-  id: string;
-  date: string;
-  repo: string | null;
-  total_runs: number;
-  unique_issues: number;
-  triage_count: number;
-  analyze_count: number;
-  fix_count: number;
-  ai_filtered_count: number;
-  valid_count: number;
-  duplicate_count: number;
-  needs_info_count: number;
-  fix_attempted_count: number;
-  fix_success_count: number;
-  comment_only_count: number;
-  avg_first_response_seconds: number | null;
-  min_first_response_seconds: number | null;
-  max_first_response_seconds: number | null;
-  total_input_tokens: number;
-  total_output_tokens: number;
-  total_input_cost: number;
-  total_output_cost: number;
-  created_at: string;
-  updated_at: string;
-}
-
-// Computed metrics for pages
+// Computed metrics for Public Stats page (/)
 export interface PublicMetrics {
-  totalIssuesProcessed: number;
-  avgResponseTimeSeconds: number;
-  autoResolutionRate: number;
-  totalCostUSD: number;
-  monthlyTrend: MonthlyData[];
+  totalIssuesProcessed: number; // 유니크 이슈 수
+  avgResponseTimeSeconds: number; // 평균 응답 시간
+  autoResolutionRate: number; // 자동 해결율 (%)
+  costPerIssueUSD: number; // 건당 AI 비용
+  monthlyTrend: TrendData[]; // 월별 추이
 }
 
-// Legacy interfaces (kept for backwards compatibility during migration)
-export interface ExecutiveMetrics {
-  roi: number;
-  roiDelta: number;
-  timeSavedHours: number;
-  timeSavedDelta: number;
-  costSavingsKRW: number;
-  costSavingsDelta: number;
-  issuesProcessed: number;
-  issuesProcessedDelta: number;
-  monthlyTrend: MonthlyData[];
-  processingDistribution: ProcessingDistribution;
-  summaryText: string;
-}
-
-export interface OperationsMetrics {
-  aiFilteringRate: number;
-  aiFilteringDelta: number;
-  autoResolutionRate: number;
-  autoResolutionDelta: number;
-  avgResponseTimeSeconds: number;
-  avgResponseTimeDelta: number;
-  totalCostUSD: number;
-  totalCostDelta: number;
-  dailyTrend: DailyData[];
-  decisionDistribution: DecisionDistribution;
-  processingTimes: ProcessingTimes;
-}
-
-// New unified dashboard metrics (fact-based)
+// Computed metrics for Dashboard page (/dashboard)
 export interface DashboardMetrics {
   // Core KPIs
   totalIssuesProcessed: number;
@@ -103,18 +47,30 @@ export interface DashboardMetrics {
   costPerIssueUSD: number;
 
   // Charts data
-  dailyTrend: DailyData[];
-  decisionDistribution: DecisionDistribution;
-  processingTimes: ProcessingTimes;
+  trendData: TrendData[]; // 추이 차트 데이터
+  resolutionDistribution: ResolutionDistribution; // 결과 분포 (자동해결/수동필요)
+}
+
+// 추이 차트 데이터 (Stacked Bar + Line)
+export interface TrendData {
+  period: string; // 날짜 또는 월 (e.g., "2025-01" or "2025-01-15")
+  autoResolved: number; // 자동 해결 건수
+  manualRequired: number; // 수동 필요 건수
+  autoResolutionRate: number; // 자동 해결율 (%)
+}
+
+// 결과 분포 (2분류)
+export interface ResolutionDistribution {
+  autoResolved: number; // 자동 해결
+  manualRequired: number; // 수동 필요
 }
 
 // Period filter type
 export type PeriodFilter =
-  | "today"
-  | "this_week"
-  | "this_month"
-  | "last_90_days"
-  | "last_year"
+  | "1week"
+  | "1month"
+  | "90days"
+  | "1year"
   | "all";
 
 export interface DateRange {
@@ -122,6 +78,7 @@ export interface DateRange {
   endDate: string;
 }
 
+// Legacy types for backwards compatibility during migration
 export interface MonthlyData {
   month: string;
   issuesProcessed: number;
@@ -136,23 +93,4 @@ export interface DailyData {
   analyzeCount: number;
   fixCount: number;
   filteringRate: number;
-}
-
-export interface ProcessingDistribution {
-  triage: number;
-  analyze: number;
-  fix: number;
-}
-
-export interface DecisionDistribution {
-  valid: number;
-  invalid: number;
-  duplicate: number;
-  needsInfo: number;
-}
-
-export interface ProcessingTimes {
-  triageSeconds: number;
-  analyzeSeconds: number;
-  fixSeconds: number;
 }

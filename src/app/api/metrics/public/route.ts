@@ -1,13 +1,8 @@
-import { NextResponse } from 'next/server';
-import { fetchTotalMetrics, fetchMonthlyTrend } from '@/lib/db';
-import { isSupabaseConfigured } from '@/lib/supabase';
-import {
-  calculateSavedMinutes,
-  calculateCostSavings,
-  calculateROI,
-  calculateAutoResolutionRate,
-} from '@/lib/metrics';
-import type { PublicMetrics, MonthlyData } from '@/types/metrics';
+import { NextResponse } from "next/server";
+
+import type { PublicMetrics } from "@/types/metrics";
+import { fetchTotalMetrics } from "@/lib/db";
+import { isSupabaseConfigured } from "@/lib/supabase";
 
 export async function GET() {
   // Return null if Supabase is not configured
@@ -16,57 +11,24 @@ export async function GET() {
   }
 
   try {
-    const [totalMetrics, monthlyTrendRaw] = await Promise.all([
-      fetchTotalMetrics(),
-      fetchMonthlyTrend(6),
-    ]);
+    const totalMetrics = await fetchTotalMetrics();
 
     // Return null if no data
-    if (!totalMetrics || monthlyTrendRaw.length === 0) {
+    if (!totalMetrics) {
       return NextResponse.json(null);
     }
-
-    // Calculate invalid count: ai_filtered - duplicate (ai_filtered includes invalid + duplicate)
-    const invalidCount = totalMetrics.aiFilteredCount - totalMetrics.duplicateCount;
-    const autoResolutionRate = calculateAutoResolutionRate(
-      invalidCount,
-      totalMetrics.duplicateCount,
-      totalMetrics.needsInfoCount,
-      totalMetrics.fixSuccessCount,
-      totalMetrics.commentOnlyCount,
-      totalMetrics.uniqueIssues
-    );
-
-    // Transform monthly trend data
-    const monthlyTrend: MonthlyData[] = monthlyTrendRaw.map((m) => {
-      const monthSavedMinutes = calculateSavedMinutes(
-        m.triageCount,
-        m.analyzeCount,
-        m.fixSuccessCount
-      );
-      const monthSavings = calculateCostSavings(monthSavedMinutes, m.totalCostUsd);
-      const monthRoi = calculateROI(monthSavings.netSavings, monthSavings.aiCost);
-
-      return {
-        month: m.month,
-        issuesProcessed: m.uniqueIssues,
-        costSavings: Math.round(monthSavings.netSavings),
-        timeSavedHours: Math.round(monthSavedMinutes / 60),
-        roi: Math.round(monthRoi),
-      };
-    });
 
     const metrics: PublicMetrics = {
       totalIssuesProcessed: totalMetrics.uniqueIssues,
       avgResponseTimeSeconds: Math.round(totalMetrics.avgResponseSeconds),
-      autoResolutionRate: Math.round(autoResolutionRate * 10) / 10,
-      totalCostUSD: Math.round(totalMetrics.totalCostUsd * 100) / 100,
-      monthlyTrend,
+      autoResolutionRate: Math.round(totalMetrics.autoResolutionRate * 10) / 10,
+      costPerIssueUSD: Math.round(totalMetrics.costPerIssue * 100) / 100,
+      monthlyTrend: totalMetrics.monthlyTrend,
     };
 
     return NextResponse.json(metrics);
   } catch (error) {
-    console.error('Error in public metrics API:', error);
+    console.error("Error in public metrics API:", error);
     return NextResponse.json(null);
   }
 }

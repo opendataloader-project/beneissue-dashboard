@@ -1,11 +1,11 @@
 "use client";
 
-import { Clock, DollarSign, FileCheck, Sparkles, Zap } from "lucide-react";
+import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 
 import { useDashboardMetrics } from "@/hooks/useMetrics";
 import { useTranslation } from "@/hooks/useTranslation";
-import { DailyTrendChart } from "@/components/charts/daily-trend-chart";
-import { DecisionDistributionChart } from "@/components/charts/decision-distribution";
+import { TrendChart } from "@/components/charts/trend-chart";
+import { ResolutionDistributionChart } from "@/components/charts/resolution-distribution";
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { PeriodFilterSelect } from "@/components/period-filter";
@@ -14,13 +14,6 @@ import { KPICard } from "@/components/stats/kpi-card";
 export default function Dashboard() {
   const { data: metrics, period, setPeriod } = useDashboardMetrics();
   const { t } = useTranslation();
-
-  // Format seconds with i18n
-  const formatSecondsI18n = (seconds: number): string => {
-    if (seconds < 60) return `${Math.round(seconds)}${t("seconds")}`;
-    if (seconds < 3600) return `${Math.round(seconds / 60)}${t("minutes")}`;
-    return `${(seconds / 3600).toFixed(1)}${t("hours")}`;
-  };
 
   return (
     <DashboardLayout
@@ -34,7 +27,7 @@ export default function Dashboard() {
             <PeriodFilterSelect value={period} onChange={setPeriod} />
           </div>
 
-          {/* KPI Cards */}
+          {/* KPI Cards - 기획서: 총 처리량, 자동해결율, 평균응답시간, 총 AI비용(건당 포함) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <KPICard
               title={t("totalProcessed")}
@@ -75,75 +68,16 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Charts */}
+          {/* Charts - 기획서: 추이 차트 + 결과 분포 */}
           <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            <DailyTrendChart data={metrics.dailyTrend} />
-            <DecisionDistributionChart data={metrics.decisionDistribution} />
-          </div>
-
-          {/* Processing Times */}
-          <div className="relative rounded-xl border bg-card/50 backdrop-blur-sm p-6">
-            <div className="mb-6">
-              <h3
-                className="text-lg font-semibold flex items-center gap-2"
-                style={{ fontFamily: "'Instrument Sans', sans-serif" }}
-              >
-                <Zap className="w-5 h-5 text-primary" />
-                {t("processingTimeByStep")}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                {t("processingTimeByStepDesc")}
-              </p>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-6">
-              {[
-                {
-                  label: "Triage",
-                  value: metrics.processingTimes.triageSeconds,
-                  color: "oklch(0.75 0.18 195)",
-                  description: t("triageDesc"),
-                },
-                {
-                  label: "Analyze",
-                  value: metrics.processingTimes.analyzeSeconds,
-                  color: "oklch(0.78 0.16 75)",
-                  description: t("analyzeDesc"),
-                },
-                {
-                  label: "Fix",
-                  value: metrics.processingTimes.fixSeconds,
-                  color: "oklch(0.70 0.20 145)",
-                  description: t("fixDesc"),
-                },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="relative p-4 rounded-lg border bg-background/50"
-                >
-                  <div
-                    className="absolute top-0 left-4 right-4 h-px opacity-30"
-                    style={{
-                      background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`,
-                    }}
-                  />
-                  <p className="text-sm text-muted-foreground mb-1">
-                    {item.label}
-                  </p>
-                  <p
-                    className="text-3xl font-bold tabular-nums"
-                    style={{
-                      fontFamily: "'Instrument Sans', sans-serif",
-                      color: item.color,
-                    }}
-                  >
-                    {formatSecondsI18n(item.value)}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {item.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+            {/* 추이 차트 (Stacked Bar + Line) */}
+            <TrendChart
+              data={metrics.trendData}
+              title={t("trendChartTitle")}
+              description={t("trendChartDesc")}
+            />
+            {/* 결과 분포 (2분류 바) */}
+            <ResolutionDistributionChart data={metrics.resolutionDistribution} />
           </div>
         </>
       ) : (

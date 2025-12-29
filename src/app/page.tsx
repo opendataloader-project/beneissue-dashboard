@@ -4,7 +4,7 @@ import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 
 import { usePublicMetrics } from "@/hooks/useMetrics";
 import { useTranslation } from "@/hooks/useTranslation";
-import { TrendLineChart } from "@/components/charts/trend-line-chart";
+import { TrendChart } from "@/components/charts/trend-chart";
 import { EmptyState } from "@/components/empty-state";
 import { StatCard } from "@/components/stats/stat-card";
 
@@ -47,7 +47,7 @@ export default function Home() {
             {t("heroSubtitle")}
           </p>
 
-          {/* Stats Grid */}
+          {/* Stats Grid - 기획서: 총 처리량, 자동해결율, 평균응답시간, 건당비용 */}
           {metrics ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-16">
@@ -79,8 +79,8 @@ export default function Home() {
                   animationDelay={300}
                 />
                 <StatCard
-                  title={t("totalAICost")}
-                  value={`$${metrics.totalCostUSD.toFixed(2)}`}
+                  title={t("costPerIssue")}
+                  value={`$${metrics.costPerIssueUSD.toFixed(2)}`}
                   icon={DollarSign}
                   description={t("totalAPICost")}
                   accentColor="amber"
@@ -88,8 +88,12 @@ export default function Home() {
                 />
               </div>
 
-              {/* Chart */}
-              <TrendLineChart data={metrics.monthlyTrend} />
+              {/* 추이 차트 - 기획서: Stacked Bar + Line */}
+              <TrendChart
+                data={metrics.monthlyTrend}
+                title={t("monthlyTrendTitle")}
+                description={t("monthlyTrendDesc")}
+              />
             </>
           ) : (
             <EmptyState />

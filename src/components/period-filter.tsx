@@ -13,14 +13,15 @@ interface PeriodFilterProps {
 export function PeriodFilterSelect({ value, onChange }: PeriodFilterProps) {
   const { t } = useTranslation();
 
+  // 기획서 기간 필터: 1주, 1달, 90일, 1년, 전체
   const periodOptions: { value: PeriodFilter; label: string }[] = [
-    { value: "today", label: t("today") },
-    { value: "this_week", label: t("thisWeek") },
-    { value: "this_month", label: t("thisMonth") },
-    { value: "last_90_days", label: t("last90Days") },
-    { value: "last_year", label: t("lastYear") },
-    { value: "all", label: t("all") },
+    { value: "1week", label: t("oneWeek") },
+    { value: "1month", label: t("oneMonth") },
+    { value: "90days", label: t("ninetyDays") },
+    { value: "1year", label: t("oneYear") },
+    { value: "all", label: t("allTime") },
   ];
+
   return (
     <div className="relative inline-flex items-center">
       <Calendar className="absolute left-3 w-4 h-4 text-muted-foreground pointer-events-none" />

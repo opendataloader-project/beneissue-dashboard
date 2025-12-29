@@ -1,233 +1,56 @@
-import type { DailyMetrics, WorkflowRun } from "@/types/metrics";
-
+import type { WorkflowRun, TrendData, ResolutionDistribution } from "@/types/metrics";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
 /**
- * Fetch daily metrics for a date range
+ * 자동 해결 조건 체크
+ * 기획서 정의: triage_decision IN ('invalid', 'duplicate', 'needs_info')
+ *            OR fix_success = true
+ *            OR fix_decision = 'comment_only'
  */
-export async function fetchDailyMetrics(
-  startDate: string,
-  endDate: string
-): Promise<DailyMetrics[]> {
-  if (!isSupabaseConfigured || !supabase) {
-    return [];
-  }
+function isAutoResolved(run: WorkflowRun): boolean {
+  const triageAutoResolved =
+    run.triage_decision === "invalid" ||
+    run.triage_decision === "duplicate" ||
+    run.triage_decision === "needs_info";
 
-  const { data, error } = await supabase
-    .from("daily_metrics")
-    .select("*")
-    .gte("date", startDate)
-    .lte("date", endDate)
-    .order("date", { ascending: true });
+  const fixAutoResolved =
+    run.fix_success === true ||
+    run.fix_decision === "comment_only";
 
-  if (error) {
-    console.error("Error fetching daily metrics:", error);
-    return [];
-  }
-
-  return data || [];
+  return triageAutoResolved || fixAutoResolved;
 }
 
 /**
- * Fetch aggregated metrics for a specific month
+ * 유니크 이슈 키 생성
  */
-export async function fetchMonthlyAggregates(year: number, month: number) {
-  if (!isSupabaseConfigured || !supabase) {
-    return null;
-  }
-
-  const startDate = `${year}-${String(month).padStart(2, "0")}-01`;
-  const endDate = new Date(year, month, 0).toISOString().split("T")[0]; // Last day of month
-
-  const { data, error } = await supabase
-    .from("daily_metrics")
-    .select("*")
-    .gte("date", startDate)
-    .lte("date", endDate);
-
-  if (error) {
-    console.error("Error fetching monthly aggregates:", error);
-    return null;
-  }
-
-  if (!data || data.length === 0) {
-    return null;
-  }
-
-  // Aggregate the daily data
-  const aggregated = data.reduce(
-    (acc, day) => {
-      const hasResponseTime =
-        day.avg_first_response_seconds != null &&
-        day.avg_first_response_seconds > 0;
-      const newResponseCount = acc.responseCount + (hasResponseTime ? 1 : 0);
-      const newTotalResponseSeconds =
-        acc.totalResponseSeconds +
-        (hasResponseTime ? day.avg_first_response_seconds : 0);
-
-      return {
-        totalRuns: acc.totalRuns + (day.total_runs || 0),
-        uniqueIssues: acc.uniqueIssues + (day.unique_issues || 0),
-        triageCount: acc.triageCount + (day.triage_count || 0),
-        analyzeCount: acc.analyzeCount + (day.analyze_count || 0),
-        fixCount: acc.fixCount + (day.fix_count || 0),
-        aiFilteredCount: acc.aiFilteredCount + (day.ai_filtered_count || 0),
-        validCount: acc.validCount + (day.valid_count || 0),
-        duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
-        needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
-        fixAttemptedCount:
-          acc.fixAttemptedCount + (day.fix_attempted_count || 0),
-        fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
-        commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
-        totalCostUsd:
-          acc.totalCostUsd +
-          (day.total_input_cost || 0) +
-          (day.total_output_cost || 0),
-        totalResponseSeconds: newTotalResponseSeconds,
-        responseCount: newResponseCount,
-      };
-    },
-    {
-      totalRuns: 0,
-      uniqueIssues: 0,
-      triageCount: 0,
-      analyzeCount: 0,
-      fixCount: 0,
-      aiFilteredCount: 0,
-      validCount: 0,
-      duplicateCount: 0,
-      needsInfoCount: 0,
-      fixAttemptedCount: 0,
-      fixSuccessCount: 0,
-      commentOnlyCount: 0,
-      totalCostUsd: 0,
-      totalResponseSeconds: 0,
-      responseCount: 0,
-    }
-  );
-
-  return {
-    ...aggregated,
-    avgResponseSeconds:
-      aggregated.responseCount > 0
-        ? aggregated.totalResponseSeconds / aggregated.responseCount
-        : 0,
-  };
+function getUniqueIssueKey(run: WorkflowRun): string {
+  return `${run.repo}:${run.issue_number}`;
 }
 
 /**
- * Fetch total cumulative metrics
- */
-export async function fetchTotalMetrics() {
-  if (!isSupabaseConfigured || !supabase) {
-    return null;
-  }
-
-  const { data, error } = await supabase.from("daily_metrics").select("*");
-
-  if (error) {
-    console.error("Error fetching total metrics:", error);
-    return null;
-  }
-
-  if (!data || data.length === 0) {
-    return null;
-  }
-
-  const aggregated = data.reduce(
-    (acc, day) => ({
-      totalRuns: acc.totalRuns + (day.total_runs || 0),
-      uniqueIssues: acc.uniqueIssues + (day.unique_issues || 0),
-      triageCount: acc.triageCount + (day.triage_count || 0),
-      analyzeCount: acc.analyzeCount + (day.analyze_count || 0),
-      fixCount: acc.fixCount + (day.fix_count || 0),
-      aiFilteredCount: acc.aiFilteredCount + (day.ai_filtered_count || 0),
-      fixAttemptedCount: acc.fixAttemptedCount + (day.fix_attempted_count || 0),
-      fixSuccessCount: acc.fixSuccessCount + (day.fix_success_count || 0),
-      commentOnlyCount: acc.commentOnlyCount + (day.comment_only_count || 0),
-      validCount: acc.validCount + (day.valid_count || 0),
-      duplicateCount: acc.duplicateCount + (day.duplicate_count || 0),
-      needsInfoCount: acc.needsInfoCount + (day.needs_info_count || 0),
-      totalCostUsd:
-        acc.totalCostUsd +
-        (day.total_input_cost || 0) +
-        (day.total_output_cost || 0),
-      totalResponseSeconds:
-        acc.totalResponseSeconds + (day.avg_first_response_seconds || 0),
-      responseCount:
-        acc.responseCount + (day.avg_first_response_seconds ? 1 : 0),
-    }),
-    {
-      totalRuns: 0,
-      uniqueIssues: 0,
-      triageCount: 0,
-      analyzeCount: 0,
-      fixCount: 0,
-      aiFilteredCount: 0,
-      fixAttemptedCount: 0,
-      fixSuccessCount: 0,
-      commentOnlyCount: 0,
-      validCount: 0,
-      duplicateCount: 0,
-      needsInfoCount: 0,
-      totalCostUsd: 0,
-      totalResponseSeconds: 0,
-      responseCount: 0,
-    }
-  );
-
-  return {
-    ...aggregated,
-    avgResponseSeconds:
-      aggregated.responseCount > 0
-        ? aggregated.totalResponseSeconds / aggregated.responseCount
-        : 0,
-  };
-}
-
-/**
- * Fetch monthly trend data for the last N months
- */
-export async function fetchMonthlyTrend(months: number = 6) {
-  if (!isSupabaseConfigured || !supabase) {
-    return [];
-  }
-
-  const now = new Date();
-  const results = [];
-
-  for (let i = months - 1; i >= 0; i--) {
-    const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const year = targetDate.getFullYear();
-    const month = targetDate.getMonth() + 1;
-
-    const monthData = await fetchMonthlyAggregates(year, month);
-    if (monthData) {
-      results.push({
-        month: `${year}-${String(month).padStart(2, "0")}`,
-        ...monthData,
-      });
-    }
-  }
-
-  return results;
-}
-
-/**
- * Fetch workflow runs for detailed analysis
+ * Fetch workflow runs for a date range
  */
 export async function fetchWorkflowRuns(
-  limit: number = 100
+  startDate?: string,
+  endDate?: string
 ): Promise<WorkflowRun[]> {
   if (!isSupabaseConfigured || !supabase) {
     return [];
   }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("workflow_runs")
     .select("*")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+    .order("workflow_started_at", { ascending: true });
+
+  if (startDate) {
+    query = query.gte("workflow_started_at", startDate);
+  }
+  if (endDate) {
+    query = query.lte("workflow_started_at", endDate + "T23:59:59");
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("Error fetching workflow runs:", error);
@@ -238,58 +61,223 @@ export async function fetchWorkflowRuns(
 }
 
 /**
- * Fetch average processing times by workflow type
+ * 유니크 이슈별 메트릭 계산
+ * 동일 (repo, issue_number) 조합은 1건으로 카운트
  */
-export async function fetchProcessingTimes() {
-  if (!isSupabaseConfigured || !supabase) {
-    return null;
-  }
+export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
+  const issueMap = new Map<string, {
+    runs: WorkflowRun[];
+    firstResponseSeconds: number | null;
+    totalCost: number;
+    isAutoResolved: boolean;
+  }>();
 
-  const { data, error } = await supabase.from("workflow_runs").select(`
-      workflow_type,
-      workflow_started_at,
-      workflow_completed_at
-    `);
+  // 이슈별로 그룹화
+  for (const run of runs) {
+    const key = getUniqueIssueKey(run);
 
-  if (error) {
-    console.error("Error fetching processing times:", error);
-    return null;
-  }
-
-  if (!data || data.length === 0) {
-    return null;
-  }
-
-  // Calculate average processing time per workflow type
-  const timesByType: Record<string, { total: number; count: number }> = {};
-
-  data.forEach((run) => {
-    if (
-      run.workflow_started_at &&
-      run.workflow_completed_at &&
-      run.workflow_type
-    ) {
-      const start = new Date(run.workflow_started_at).getTime();
-      const end = new Date(run.workflow_completed_at).getTime();
-      const durationSeconds = (end - start) / 1000;
-
-      if (!timesByType[run.workflow_type]) {
-        timesByType[run.workflow_type] = { total: 0, count: 0 };
-      }
-      timesByType[run.workflow_type].total += durationSeconds;
-      timesByType[run.workflow_type].count += 1;
+    if (!issueMap.has(key)) {
+      issueMap.set(key, {
+        runs: [],
+        firstResponseSeconds: null,
+        totalCost: 0,
+        isAutoResolved: false,
+      });
     }
-  });
+
+    const issue = issueMap.get(key)!;
+    issue.runs.push(run);
+    issue.totalCost += (run.input_cost || 0) + (run.output_cost || 0);
+
+    // 자동 해결 여부 (하나라도 자동 해결 조건 만족하면 자동 해결)
+    if (isAutoResolved(run)) {
+      issue.isAutoResolved = true;
+    }
+
+    // 첫 응답 시간 계산 (이슈 생성 시점 ~ 첫 워크플로우 시작 시점)
+    if (run.issue_created_at && run.workflow_started_at) {
+      const issueCreated = new Date(run.issue_created_at).getTime();
+      const workflowStarted = new Date(run.workflow_started_at).getTime();
+      const responseSeconds = (workflowStarted - issueCreated) / 1000;
+
+      if (issue.firstResponseSeconds === null || responseSeconds < issue.firstResponseSeconds) {
+        issue.firstResponseSeconds = responseSeconds;
+      }
+    }
+  }
+
+  // 메트릭 계산
+  const uniqueIssues = issueMap.size;
+  let autoResolvedCount = 0;
+  let totalResponseSeconds = 0;
+  let responseCount = 0;
+  let totalCost = 0;
+
+  for (const issue of issueMap.values()) {
+    if (issue.isAutoResolved) {
+      autoResolvedCount++;
+    }
+    if (issue.firstResponseSeconds !== null && issue.firstResponseSeconds > 0) {
+      totalResponseSeconds += issue.firstResponseSeconds;
+      responseCount++;
+    }
+    totalCost += issue.totalCost;
+  }
+
+  const manualRequiredCount = uniqueIssues - autoResolvedCount;
+  const autoResolutionRate = uniqueIssues > 0 ? (autoResolvedCount / uniqueIssues) * 100 : 0;
+  const avgResponseSeconds = responseCount > 0 ? totalResponseSeconds / responseCount : 0;
+  const costPerIssue = uniqueIssues > 0 ? totalCost / uniqueIssues : 0;
 
   return {
-    triageSeconds: timesByType["triage"]
-      ? Math.round(timesByType["triage"].total / timesByType["triage"].count)
-      : 0,
-    analyzeSeconds: timesByType["analyze"]
-      ? Math.round(timesByType["analyze"].total / timesByType["analyze"].count)
-      : 0,
-    fixSeconds: timesByType["fix"]
-      ? Math.round(timesByType["fix"].total / timesByType["fix"].count)
-      : 0,
+    uniqueIssues,
+    autoResolvedCount,
+    manualRequiredCount,
+    autoResolutionRate,
+    avgResponseSeconds,
+    totalCost,
+    costPerIssue,
   };
+}
+
+/**
+ * 월별 추이 데이터 생성
+ */
+export function calculateMonthlyTrend(runs: WorkflowRun[], months: number = 6): TrendData[] {
+  const now = new Date();
+  const monthlyData: Map<string, WorkflowRun[]> = new Map();
+
+  // 최근 N개월 초기화
+  for (let i = months - 1; i >= 0; i--) {
+    const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthKey = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, "0")}`;
+    monthlyData.set(monthKey, []);
+  }
+
+  // 데이터 분류
+  for (const run of runs) {
+    const date = new Date(run.workflow_started_at);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+    if (monthlyData.has(monthKey)) {
+      monthlyData.get(monthKey)!.push(run);
+    }
+  }
+
+  // 월별 메트릭 계산
+  const trend: TrendData[] = [];
+  for (const [month, monthRuns] of monthlyData) {
+    const metrics = calculateUniqueIssueMetrics(monthRuns);
+    trend.push({
+      period: month,
+      autoResolved: metrics.autoResolvedCount,
+      manualRequired: metrics.manualRequiredCount,
+      autoResolutionRate: Math.round(metrics.autoResolutionRate * 10) / 10,
+    });
+  }
+
+  return trend;
+}
+
+/**
+ * 일별 추이 데이터 생성
+ */
+export function calculateDailyTrend(runs: WorkflowRun[], days: number = 14): TrendData[] {
+  const now = new Date();
+  const dailyData: Map<string, WorkflowRun[]> = new Map();
+
+  // 최근 N일 초기화
+  for (let i = days - 1; i >= 0; i--) {
+    const targetDate = new Date(now);
+    targetDate.setDate(now.getDate() - i);
+    const dateKey = targetDate.toISOString().split("T")[0];
+    dailyData.set(dateKey, []);
+  }
+
+  // 데이터 분류
+  for (const run of runs) {
+    const dateKey = run.workflow_started_at.split("T")[0];
+
+    if (dailyData.has(dateKey)) {
+      dailyData.get(dateKey)!.push(run);
+    }
+  }
+
+  // 일별 메트릭 계산
+  const trend: TrendData[] = [];
+  for (const [date, dayRuns] of dailyData) {
+    const metrics = calculateUniqueIssueMetrics(dayRuns);
+    trend.push({
+      period: date,
+      autoResolved: metrics.autoResolvedCount,
+      manualRequired: metrics.manualRequiredCount,
+      autoResolutionRate: Math.round(metrics.autoResolutionRate * 10) / 10,
+    });
+  }
+
+  return trend;
+}
+
+/**
+ * 결과 분포 계산
+ */
+export function calculateResolutionDistribution(runs: WorkflowRun[]): ResolutionDistribution {
+  const metrics = calculateUniqueIssueMetrics(runs);
+  return {
+    autoResolved: metrics.autoResolvedCount,
+    manualRequired: metrics.manualRequiredCount,
+  };
+}
+
+/**
+ * Fetch total cumulative metrics (all time)
+ */
+export async function fetchTotalMetrics() {
+  const runs = await fetchWorkflowRuns();
+  if (runs.length === 0) {
+    return null;
+  }
+
+  const metrics = calculateUniqueIssueMetrics(runs);
+  const monthlyTrend = calculateMonthlyTrend(runs, 6);
+
+  return {
+    ...metrics,
+    monthlyTrend,
+  };
+}
+
+/**
+ * Fetch metrics for a specific date range
+ */
+export async function fetchMetricsForPeriod(startDate: string, endDate: string) {
+  const runs = await fetchWorkflowRuns(startDate, endDate);
+  if (runs.length === 0) {
+    return null;
+  }
+
+  return calculateUniqueIssueMetrics(runs);
+}
+
+/**
+ * Fetch daily trend for the dashboard
+ */
+export async function fetchDailyTrendData(days: number = 14): Promise<TrendData[]> {
+  const now = new Date();
+  const startDate = new Date(now);
+  startDate.setDate(now.getDate() - days);
+
+  const runs = await fetchWorkflowRuns(startDate.toISOString().split("T")[0]);
+  return calculateDailyTrend(runs, days);
+}
+
+/**
+ * Fetch monthly trend for the public page
+ */
+export async function fetchMonthlyTrendData(months: number = 6): Promise<TrendData[]> {
+  const now = new Date();
+  const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
+
+  const runs = await fetchWorkflowRuns(startDate.toISOString().split("T")[0]);
+  return calculateMonthlyTrend(runs, months);
 }
