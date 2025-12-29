@@ -84,10 +84,15 @@ export function StatCard({
     return () => observer.disconnect();
   }, [animationDelay]);
 
-  // Animate number counting
+  // Animate number counting (or update string value)
   useEffect(() => {
     if (!isVisible) return;
-    if (typeof value !== "number") return;
+
+    // For string values, just update directly
+    if (typeof value !== "number") {
+      setDisplayValue(value);
+      return;
+    }
 
     const duration = 1500;
     const startTime = performance.now();
