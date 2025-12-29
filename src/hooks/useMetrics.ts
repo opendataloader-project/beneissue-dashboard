@@ -3,7 +3,7 @@ import { mockDashboardMetrics, mockPublicMetrics } from "@/data/mock";
 import { dataModeAtom } from "@/store/atoms";
 import { useAtomValue } from "jotai";
 
-import type { DashboardMetrics, PeriodFilter, PublicMetrics } from "@/types/metrics";
+import type { DashboardMetrics, DateRange, PeriodFilter, PublicMetrics } from "@/types/metrics";
 
 interface UseMetricsResult<T> {
   data: T | null;
@@ -32,7 +32,8 @@ async function fetchMetrics<T>(endpoint: string): Promise<T | null> {
 
 export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
   const dataMode = useAtomValue(dataModeAtom);
-  const [data, setData] = useState<PublicMetrics | null>(mockPublicMetrics);
+  // 초기 상태는 null로 설정하여 Live 모드에서 mock 데이터가 보이지 않도록 함
+  const [data, setData] = useState<PublicMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -46,6 +47,7 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
     setError(null);
     try {
       const metrics = await fetchMetrics<PublicMetrics>("/api/metrics/public");
+      // Live 모드에서 API가 null을 반환해도 mock으로 fallback하지 않음
       setData(metrics);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Unknown error"));
@@ -64,14 +66,18 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
 interface UseDashboardMetricsResult extends UseMetricsResult<DashboardMetrics> {
   period: PeriodFilter;
   setPeriod: (period: PeriodFilter) => void;
+  customRange: DateRange | null;
+  setCustomRange: (range: DateRange | null) => void;
 }
 
 export function useDashboardMetrics(): UseDashboardMetricsResult {
   const dataMode = useAtomValue(dataModeAtom);
-  const [data, setData] = useState<DashboardMetrics | null>(mockDashboardMetrics);
+  // 초기 상태는 null로 설정하여 Live 모드에서 mock 데이터가 보이지 않도록 함
+  const [data, setData] = useState<DashboardMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>("1month");
+  const [customRange, setCustomRange] = useState<DateRange | null>(null);
 
   const refetch = useCallback(async () => {
     if (dataMode === "mock") {
@@ -82,20 +88,28 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
     setIsLoading(true);
     setError(null);
     try {
-      const metrics = await fetchMetrics<DashboardMetrics>(
-        `/api/metrics/dashboard?period=${period}`
-      );
+      // Build query params
+      let endpoint = `/api/metrics/dashboard?period=${period}`;
+      if (period === "custom" && customRange) {
+        endpoint += `&startDate=${customRange.startDate}&endDate=${customRange.endDate}`;
+      }
+      const metrics = await fetchMetrics<DashboardMetrics>(endpoint);
+      // Live 모드에서 API가 null을 반환해도 mock으로 fallback하지 않음
       setData(metrics);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Unknown error"));
     } finally {
       setIsLoading(false);
     }
-  }, [dataMode, period]);
+  }, [dataMode, period, customRange]);
 
   useEffect(() => {
+    // Only refetch for custom if we have a valid range
+    if (period === "custom" && !customRange) {
+      return;
+    }
     refetch();
-  }, [refetch]);
+  }, [refetch, period, customRange]);
 
-  return { data, isLoading, error, refetch, period, setPeriod };
+  return { data, isLoading, error, refetch, period, setPeriod, customRange, setCustomRange };
 }

@@ -71,7 +71,8 @@ export type PeriodFilter =
   | "1month"
   | "90days"
   | "1year"
-  | "all";
+  | "all"
+  | "custom";
 
 export interface DateRange {
   startDate: string;

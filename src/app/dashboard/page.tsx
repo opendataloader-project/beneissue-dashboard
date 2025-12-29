@@ -12,7 +12,7 @@ import { PeriodFilterSelect } from "@/components/period-filter";
 import { KPICard } from "@/components/stats/kpi-card";
 
 export default function Dashboard() {
-  const { data: metrics, period, setPeriod } = useDashboardMetrics();
+  const { data: metrics, period, setPeriod, customRange, setCustomRange } = useDashboardMetrics();
   const { t } = useTranslation();
 
   return (
@@ -24,7 +24,12 @@ export default function Dashboard() {
         <>
           {/* Period Filter */}
           <div className="flex justify-end mb-6">
-            <PeriodFilterSelect value={period} onChange={setPeriod} />
+            <PeriodFilterSelect
+              value={period}
+              onChange={setPeriod}
+              customRange={customRange}
+              onCustomRangeChange={setCustomRange}
+            />
           </div>
 
           {/* KPI Cards - 기획서: 총 처리량, 자동해결율, 평균응답시간, 총 AI비용(건당 포함) */}
