@@ -1,4 +1,4 @@
-import type { WorkflowRun, TrendData, ResolutionDistribution } from "@/types/metrics";
+import type { WorkflowRun, TrendData, CostTrendData, ResolutionDistribution } from "@/types/metrics";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
 /**
@@ -227,6 +227,98 @@ export function calculateResolutionDistribution(runs: WorkflowRun[]): Resolution
     autoResolved: metrics.autoResolvedCount,
     manualRequired: metrics.manualRequiredCount,
   };
+}
+
+/**
+ * 월별 비용 추이 데이터 생성
+ */
+export function calculateMonthlyCostTrend(runs: WorkflowRun[], months: number = 6): CostTrendData[] {
+  const now = new Date();
+  const monthlyData: Map<string, WorkflowRun[]> = new Map();
+
+  // 최근 N개월 초기화
+  for (let i = months - 1; i >= 0; i--) {
+    const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthKey = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, "0")}`;
+    monthlyData.set(monthKey, []);
+  }
+
+  // 데이터 분류
+  for (const run of runs) {
+    const date = new Date(run.workflow_started_at);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+    if (monthlyData.has(monthKey)) {
+      monthlyData.get(monthKey)!.push(run);
+    }
+  }
+
+  // 월별 비용 계산
+  const trend: CostTrendData[] = [];
+  for (const [month, monthRuns] of monthlyData) {
+    let inputCost = 0;
+    let outputCost = 0;
+
+    for (const run of monthRuns) {
+      inputCost += run.input_cost || 0;
+      outputCost += run.output_cost || 0;
+    }
+
+    trend.push({
+      period: month,
+      inputCost: Math.round(inputCost * 100) / 100,
+      outputCost: Math.round(outputCost * 100) / 100,
+      totalCost: Math.round((inputCost + outputCost) * 100) / 100,
+    });
+  }
+
+  return trend;
+}
+
+/**
+ * 일별 비용 추이 데이터 생성
+ */
+export function calculateDailyCostTrend(runs: WorkflowRun[], days: number = 14): CostTrendData[] {
+  const now = new Date();
+  const dailyData: Map<string, WorkflowRun[]> = new Map();
+
+  // 최근 N일 초기화
+  for (let i = days - 1; i >= 0; i--) {
+    const targetDate = new Date(now);
+    targetDate.setDate(now.getDate() - i);
+    const dateKey = targetDate.toISOString().split("T")[0];
+    dailyData.set(dateKey, []);
+  }
+
+  // 데이터 분류
+  for (const run of runs) {
+    const dateKey = run.workflow_started_at.split("T")[0];
+
+    if (dailyData.has(dateKey)) {
+      dailyData.get(dateKey)!.push(run);
+    }
+  }
+
+  // 일별 비용 계산
+  const trend: CostTrendData[] = [];
+  for (const [date, dayRuns] of dailyData) {
+    let inputCost = 0;
+    let outputCost = 0;
+
+    for (const run of dayRuns) {
+      inputCost += run.input_cost || 0;
+      outputCost += run.output_cost || 0;
+    }
+
+    trend.push({
+      period: date,
+      inputCost: Math.round(inputCost * 100) / 100,
+      outputCost: Math.round(outputCost * 100) / 100,
+      totalCost: Math.round((inputCost + outputCost) * 100) / 100,
+    });
+  }
+
+  return trend;
 }
 
 /**

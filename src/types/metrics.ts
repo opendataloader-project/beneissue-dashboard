@@ -48,6 +48,7 @@ export interface DashboardMetrics {
 
   // Charts data
   trendData: TrendData[]; // 추이 차트 데이터
+  costTrendData: CostTrendData[]; // 비용 추이 차트 데이터
   resolutionDistribution: ResolutionDistribution; // 결과 분포 (자동해결/수동필요)
 }
 
@@ -57,6 +58,14 @@ export interface TrendData {
   autoResolved: number; // 자동 해결 건수
   manualRequired: number; // 수동 필요 건수
   autoResolutionRate: number; // 자동 해결율 (%)
+}
+
+// 비용 추이 차트 데이터 (Stacked Bar)
+export interface CostTrendData {
+  period: string; // 날짜 또는 월 (e.g., "2025-01" or "2025-01-15")
+  inputCost: number; // Input tokens 비용
+  outputCost: number; // Output tokens 비용
+  totalCost: number; // 총 비용
 }
 
 // 결과 분포 (2분류)

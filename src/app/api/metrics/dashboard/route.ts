@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import type { DashboardMetrics, PeriodFilter, TrendData } from "@/types/metrics";
+import type { DashboardMetrics, PeriodFilter, TrendData, CostTrendData } from "@/types/metrics";
 import {
   fetchWorkflowRuns,
   calculateUniqueIssueMetrics,
   calculateDailyTrend,
   calculateMonthlyTrend,
+  calculateDailyCostTrend,
+  calculateMonthlyCostTrend,
   calculateResolutionDistribution,
 } from "@/lib/db";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -137,8 +139,10 @@ function calculateDelta(current: number, previous: number): number {
   return ((current - previous) / previous) * 100;
 }
 
+type WorkflowRunsResult = ReturnType<typeof fetchWorkflowRuns> extends Promise<infer T> ? T : never;
+
 function getTrendData(
-  runs: ReturnType<typeof fetchWorkflowRuns> extends Promise<infer T> ? T : never,
+  runs: WorkflowRunsResult,
   period: PeriodFilter,
   customStartDate?: string,
   customEndDate?: string
@@ -170,6 +174,37 @@ function getTrendData(
   } else {
     // all
     return calculateMonthlyTrend(runs, 12);
+  }
+}
+
+function getCostTrendData(
+  runs: WorkflowRunsResult,
+  period: PeriodFilter,
+  customStartDate?: string,
+  customEndDate?: string
+): CostTrendData[] {
+  // 기간에 따라 일별 또는 월별 비용 추이 결정
+  if (period === "1week") {
+    return calculateDailyCostTrend(runs, 7);
+  } else if (period === "1month") {
+    return calculateDailyCostTrend(runs, 30);
+  } else if (period === "90days") {
+    return calculateMonthlyCostTrend(runs, 3);
+  } else if (period === "1year") {
+    return calculateMonthlyCostTrend(runs, 12);
+  } else if (period === "custom" && customStartDate && customEndDate) {
+    const start = new Date(customStartDate);
+    const end = new Date(customEndDate);
+    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    if (days <= 60) {
+      return calculateDailyCostTrend(runs, days);
+    } else {
+      const months = Math.ceil(days / 30);
+      return calculateMonthlyCostTrend(runs, months);
+    }
+  } else {
+    // all
+    return calculateMonthlyCostTrend(runs, 12);
   }
 }
 
@@ -222,6 +257,9 @@ export async function GET(request: NextRequest) {
     // Get trend data
     const trendData = getTrendData(currentRuns, period, startDate, endDate);
 
+    // Get cost trend data
+    const costTrendData = getCostTrendData(currentRuns, period, startDate, endDate);
+
     // Get resolution distribution
     const resolutionDistribution = calculateResolutionDistribution(currentRuns);
 
@@ -245,6 +283,7 @@ export async function GET(request: NextRequest) {
         Math.round(calculateDelta(current.totalCost, prev.totalCost) * 10) / 10,
       costPerIssueUSD: Math.round(current.costPerIssue * 1000) / 1000,
       trendData,
+      costTrendData,
       resolutionDistribution,
     };
 

@@ -2,6 +2,7 @@ import type {
   DashboardMetrics,
   PublicMetrics,
   TrendData,
+  CostTrendData,
 } from "@/types/metrics";
 
 // 기획서 정의에 따른 Mock 데이터
@@ -66,6 +67,24 @@ const dailyTrendData: TrendData[] = [
   { period: "2025-12-28", autoResolved: 14, manualRequired: 3, autoResolutionRate: 82.4 },
 ];
 
+// 일별 비용 추이 데이터 (최근 14일)
+const dailyCostTrendData: CostTrendData[] = [
+  { period: "2025-12-15", inputCost: 2.15, outputCost: 1.69, totalCost: 3.84 },
+  { period: "2025-12-16", inputCost: 1.82, outputCost: 1.38, totalCost: 3.2 },
+  { period: "2025-12-17", inputCost: 2.56, outputCost: 1.92, totalCost: 4.48 },
+  { period: "2025-12-18", inputCost: 1.65, outputCost: 1.23, totalCost: 2.88 },
+  { period: "2025-12-19", inputCost: 2.74, outputCost: 2.06, totalCost: 4.8 },
+  { period: "2025-12-20", inputCost: 2.01, outputCost: 1.51, totalCost: 3.52 },
+  { period: "2025-12-21", inputCost: 1.46, outputCost: 1.1, totalCost: 2.56 },
+  { period: "2025-12-22", inputCost: 1.83, outputCost: 1.37, totalCost: 3.2 },
+  { period: "2025-12-23", inputCost: 2.37, outputCost: 1.79, totalCost: 4.16 },
+  { period: "2025-12-24", inputCost: 1.46, outputCost: 1.1, totalCost: 2.56 },
+  { period: "2025-12-25", inputCost: 1.28, outputCost: 0.96, totalCost: 2.24 },
+  { period: "2025-12-26", inputCost: 2.56, outputCost: 1.92, totalCost: 4.48 },
+  { period: "2025-12-27", inputCost: 2.92, outputCost: 2.2, totalCost: 5.12 },
+  { period: "2025-12-28", inputCost: 3.1, outputCost: 2.34, totalCost: 5.44 },
+];
+
 // Calculate totals from monthly data
 const totalIssues = monthlyTrendData.reduce(
   (sum, m) => sum + m.autoResolved + m.manualRequired,
@@ -102,6 +121,7 @@ export const mockDashboardMetrics: DashboardMetrics = {
   totalCostDelta: 8.5,
   costPerIssueUSD: 0.32,
   trendData: dailyTrendData,
+  costTrendData: dailyCostTrendData,
   resolutionDistribution: {
     autoResolved: latestAutoResolved,
     manualRequired: latestManualRequired,

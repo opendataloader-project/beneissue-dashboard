@@ -5,6 +5,7 @@ import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 import { useDashboardMetrics } from "@/hooks/useMetrics";
 import { useTranslation } from "@/hooks/useTranslation";
 import { TrendChart } from "@/components/charts/trend-chart";
+import { CostTrendChart } from "@/components/charts/cost-trend-chart";
 import { ResolutionDistributionChart } from "@/components/charts/resolution-distribution";
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
@@ -79,16 +80,27 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Charts - 기획서: 추이 차트 + 결과 분포 */}
+          {/* Charts - 기획서: 처리량 추이 + 비용 추이 (2열) */}
           {metrics && (
             <div className="grid lg:grid-cols-2 gap-6 mb-8">
-              {/* 추이 차트 (Stacked Bar + Line) */}
+              {/* 처리량 추이 차트 (Stacked Bar + Line) */}
               <TrendChart
                 data={metrics.trendData}
                 title={t("trendChartTitle")}
                 description={t("trendChartDesc")}
               />
-              {/* 결과 분포 (2분류 바) */}
+              {/* 비용 추이 차트 (Stacked Bar) */}
+              <CostTrendChart
+                data={metrics.costTrendData}
+                title={t("costTrendChartTitle")}
+                description={t("costTrendChartDesc")}
+              />
+            </div>
+          )}
+
+          {/* 결과 분포 */}
+          {metrics && (
+            <div className="mb-8">
               <ResolutionDistributionChart data={metrics.resolutionDistribution} />
             </div>
           )}

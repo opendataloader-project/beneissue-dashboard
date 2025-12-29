@@ -85,8 +85,15 @@ export const translations = {
     autoResolvedMessage: "는 사람 개입 없이 처리됨",
 
     // Trend Chart
-    trendChartTitle: "추이 차트",
+    trendChartTitle: "처리량 추이",
     trendChartDesc: "자동 해결 / 수동 필요 건수와 자동 해결율",
+
+    // Cost Trend Chart
+    costTrendChartTitle: "비용 추이",
+    costTrendChartDesc: "Input / Output 토큰 비용",
+    inputCost: "Input 비용",
+    outputCost: "Output 비용",
+    totalCost: "총 비용",
 
     // Monthly Trend Chart
     monthlyTrendTitle: "월별 처리량 추이",
@@ -212,6 +219,13 @@ export const translations = {
     // Trend Chart
     trendChartTitle: "Processing Trend",
     trendChartDesc: "Auto-resolved / Manual required counts and auto-resolution rate",
+
+    // Cost Trend Chart
+    costTrendChartTitle: "Cost Trend",
+    costTrendChartDesc: "Input / Output token costs",
+    inputCost: "Input Cost",
+    outputCost: "Output Cost",
+    totalCost: "Total Cost",
 
     // Monthly Trend Chart
     monthlyTrendTitle: "Monthly Processing Trend",
