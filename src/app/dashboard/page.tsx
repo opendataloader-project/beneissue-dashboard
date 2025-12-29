@@ -2,7 +2,7 @@
 
 import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 
-import { useDashboardMetrics } from "@/hooks/useMetrics";
+import { useDashboardMetrics, useRepos } from "@/hooks/useMetrics";
 import { useTranslation } from "@/hooks/useTranslation";
 import { TrendChart } from "@/components/charts/trend-chart";
 import { CostTrendChart } from "@/components/charts/cost-trend-chart";
@@ -10,10 +10,12 @@ import { ResolutionDistributionChart } from "@/components/charts/resolution-dist
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { PeriodFilterSelect } from "@/components/period-filter";
+import { RepoFilter } from "@/components/repo-filter";
 import { KPICard } from "@/components/stats/kpi-card";
 
 export default function Dashboard() {
-  const { data: metrics, isLoading, period, setPeriod, customRange, setCustomRange } = useDashboardMetrics();
+  const { data: metrics, isLoading, period, setPeriod, customRange, setCustomRange, repo, setRepo } = useDashboardMetrics();
+  const { repos, isLoading: reposLoading } = useRepos();
   const { t } = useTranslation();
 
   return (
@@ -21,8 +23,14 @@ export default function Dashboard() {
       title={t("dashboardTitle")}
       description={t("dashboardDesc")}
     >
-      {/* Period Filter */}
-      <div className="flex justify-end mb-6">
+      {/* Filters */}
+      <div className="flex justify-end items-center gap-3 mb-6">
+        <RepoFilter
+          repos={repos}
+          value={repo}
+          onChange={setRepo}
+          isLoading={reposLoading}
+        />
         <PeriodFilterSelect
           value={period}
           onChange={setPeriod}

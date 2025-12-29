@@ -68,6 +68,8 @@ interface UseDashboardMetricsResult extends UseMetricsResult<DashboardMetrics> {
   setPeriod: (period: PeriodFilter) => void;
   customRange: DateRange | null;
   setCustomRange: (range: DateRange | null) => void;
+  repo: string | null;
+  setRepo: (repo: string | null) => void;
 }
 
 export function useDashboardMetrics(): UseDashboardMetricsResult {
@@ -78,6 +80,7 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
   const [error, setError] = useState<Error | null>(null);
   const [period, setPeriod] = useState<PeriodFilter>("1month");
   const [customRange, setCustomRange] = useState<DateRange | null>(null);
+  const [repo, setRepo] = useState<string | null>(null);
 
   const refetch = useCallback(async () => {
     if (dataMode === "mock") {
@@ -93,6 +96,9 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
       if (period === "custom" && customRange) {
         endpoint += `&startDate=${customRange.startDate}&endDate=${customRange.endDate}`;
       }
+      if (repo) {
+        endpoint += `&repo=${encodeURIComponent(repo)}`;
+      }
       const metrics = await fetchMetrics<DashboardMetrics>(endpoint);
       // Live 모드에서 API가 null을 반환해도 mock으로 fallback하지 않음
       setData(metrics);
@@ -101,7 +107,7 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
     } finally {
       setIsLoading(false);
     }
-  }, [dataMode, period, customRange]);
+  }, [dataMode, period, customRange, repo]);
 
   useEffect(() => {
     // Only refetch for custom if we have a valid range
@@ -111,5 +117,38 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
     refetch();
   }, [refetch, period, customRange]);
 
-  return { data, isLoading, error, refetch, period, setPeriod, customRange, setCustomRange };
+  return { data, isLoading, error, refetch, period, setPeriod, customRange, setCustomRange, repo, setRepo };
+}
+
+export function useRepos() {
+  const dataMode = useAtomValue(dataModeAtom);
+  const [repos, setRepos] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (dataMode === "mock") {
+      // Mock repos for demo
+      setRepos(["owner/repo-1", "owner/repo-2", "owner/repo-3"]);
+      setIsLoading(false);
+      return;
+    }
+
+    async function fetchRepos() {
+      try {
+        const res = await fetch("/api/repos");
+        if (res.ok) {
+          const data = await res.json();
+          setRepos(data);
+        }
+      } catch (error) {
+        console.error("Error fetching repos:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchRepos();
+  }, [dataMode]);
+
+  return { repos, isLoading };
 }

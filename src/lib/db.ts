@@ -2,6 +2,29 @@ import type { WorkflowRun, TrendData, CostTrendData, ResolutionDistribution } fr
 import { isSupabaseConfigured, supabase } from "./supabase";
 
 /**
+ * Fetch distinct repo names from workflow_runs
+ */
+export async function fetchDistinctRepos(): Promise<string[]> {
+  if (!isSupabaseConfigured || !supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("workflow_runs")
+    .select("repo")
+    .order("repo", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching distinct repos:", error);
+    return [];
+  }
+
+  // Get unique repos
+  const uniqueRepos = [...new Set(data?.map((d) => d.repo) || [])];
+  return uniqueRepos;
+}
+
+/**
  * 자동 해결 조건 체크
  * 기획서 정의: triage_decision IN ('invalid', 'duplicate', 'needs_info')
  *            OR fix_success = true
@@ -32,7 +55,8 @@ function getUniqueIssueKey(run: WorkflowRun): string {
  */
 export async function fetchWorkflowRuns(
   startDate?: string,
-  endDate?: string
+  endDate?: string,
+  repo?: string
 ): Promise<WorkflowRun[]> {
   if (!isSupabaseConfigured || !supabase) {
     return [];
@@ -48,6 +72,9 @@ export async function fetchWorkflowRuns(
   }
   if (endDate) {
     query = query.lte("workflow_started_at", endDate + "T23:59:59");
+  }
+  if (repo) {
+    query = query.eq("repo", repo);
   }
 
   const { data, error } = await query;

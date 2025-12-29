@@ -117,6 +117,10 @@ export const translations = {
     minutes: "분",
     hours: "시간",
 
+    // Repo Filter
+    allRepos: "전체 레포",
+    selectRepo: "레포 선택",
+
     // Empty State
     noDataAvailable: "데이터 없음",
     noDataDesc: "표시할 데이터가 없습니다. 나중에 다시 확인해주세요.",
@@ -248,6 +252,10 @@ export const translations = {
     seconds: "s",
     minutes: "m",
     hours: "h",
+
+    // Repo Filter
+    allRepos: "All Repos",
+    selectRepo: "Select Repo",
 
     // Empty State
     noDataAvailable: "No Data Available",

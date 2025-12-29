@@ -240,10 +240,13 @@ export async function GET(request: NextRequest) {
     const { startDate: prevStartDate, endDate: prevEndDate } =
       getPreviousPeriodRange(period, startDate, endDate);
 
+    // Get optional repo filter
+    const repo = searchParams.get("repo") || undefined;
+
     // Fetch current and previous period data
     const [currentRuns, prevRuns] = await Promise.all([
-      fetchWorkflowRuns(startDate, endDate),
-      fetchWorkflowRuns(prevStartDate, prevEndDate),
+      fetchWorkflowRuns(startDate, endDate, repo),
+      fetchWorkflowRuns(prevStartDate, prevEndDate, repo),
     ]);
 
     if (currentRuns.length === 0) {
