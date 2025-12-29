@@ -132,6 +132,47 @@ export function TrendChart({ data, className, title, description }: TrendChartPr
   // 월별인지 일별인지 판단
   const isMonthly = data.length > 0 && data[0].period.length === 7;
 
+  // 표시할 tick 계산 (처음과 마지막은 항상 포함, 중간은 동적)
+  const getXAxisTicks = () => {
+    const count = data.length;
+    if (count === 0) return [];
+    if (count === 1) return [data[0].period];
+    if (count === 2) return [data[0].period, data[1].period];
+
+    const firstPeriod = data[0].period;
+    const lastPeriod = data[count - 1].period;
+
+    // 원하는 중간 라벨 개수 결정
+    let midCount: number;
+    if (isMonthly) {
+      midCount = count <= 6 ? count - 2 : Math.min(4, Math.floor(count / 2) - 1);
+    } else if (count <= 7) {
+      midCount = count - 2;
+    } else if (count <= 14) {
+      midCount = 5;
+    } else if (count <= 31) {
+      midCount = 4;
+    } else {
+      midCount = 4;
+    }
+
+    const ticks: string[] = [firstPeriod];
+
+    if (midCount > 0) {
+      // 중간 라벨을 균등하게 배치
+      const step = (count - 1) / (midCount + 1);
+      for (let i = 1; i <= midCount; i++) {
+        const idx = Math.round(step * i);
+        if (idx > 0 && idx < count - 1) {
+          ticks.push(data[idx].period);
+        }
+      }
+    }
+
+    ticks.push(lastPeriod);
+    return ticks;
+  };
+
   const formatXAxis = (periodStr: string) => {
     if (isMonthly) {
       const [year, month] = periodStr.split("-");
@@ -195,7 +236,7 @@ export function TrendChart({ data, className, title, description }: TrendChartPr
               tickLine={false}
               tick={{ fill: "oklch(0.60 0.02 260)", fontSize: 11 }}
               dy={10}
-              interval={isMonthly ? 0 : 1}
+              ticks={getXAxisTicks()}
             />
 
             {/* 왼쪽 Y축: 건수 */}
