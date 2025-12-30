@@ -3,7 +3,7 @@ export interface WorkflowRun {
   id: string;
   repo: string;
   issue_number: number;
-  workflow_type: "triage" | "analyze" | "fix" | "full";
+  workflow_type: "triage" | "analyze" | "fix";
   issue_created_at: string | null;
   workflow_started_at: string;
   workflow_completed_at: string | null;
