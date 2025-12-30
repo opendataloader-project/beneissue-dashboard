@@ -63,24 +63,22 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
   return { data, isLoading, error, refetch };
 }
 
-interface UseDashboardMetricsResult extends UseMetricsResult<DashboardMetrics> {
+interface UseDashboardMetricsParams {
   period: PeriodFilter;
-  setPeriod: (period: PeriodFilter) => void;
   customRange: DateRange | null;
-  setCustomRange: (range: DateRange | null) => void;
   repo: string | null;
-  setRepo: (repo: string | null) => void;
 }
 
-export function useDashboardMetrics(): UseDashboardMetricsResult {
+export function useDashboardMetrics({
+  period,
+  customRange,
+  repo,
+}: UseDashboardMetricsParams): UseMetricsResult<DashboardMetrics> {
   const dataMode = useAtomValue(dataModeAtom);
   // 초기 상태는 null로 설정하여 Live 모드에서 mock 데이터가 보이지 않도록 함
   const [data, setData] = useState<DashboardMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [period, setPeriod] = useState<PeriodFilter>("1month");
-  const [customRange, setCustomRange] = useState<DateRange | null>(null);
-  const [repo, setRepo] = useState<string | null>(null);
 
   const refetch = useCallback(async () => {
     if (dataMode === "mock") {
@@ -117,7 +115,7 @@ export function useDashboardMetrics(): UseDashboardMetricsResult {
     refetch();
   }, [refetch, period, customRange]);
 
-  return { data, isLoading, error, refetch, period, setPeriod, customRange, setCustomRange, repo, setRepo };
+  return { data, isLoading, error, refetch };
 }
 
 export function useRepos() {

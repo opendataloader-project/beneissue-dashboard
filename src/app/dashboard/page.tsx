@@ -1,7 +1,9 @@
 "use client";
 
+import { Suspense } from "react";
 import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 
+import { useDashboardSearchParams } from "@/hooks/useDashboardSearchParams";
 import { useDashboardMetrics, useRepos } from "@/hooks/useMetrics";
 import { useTranslation } from "@/hooks/useTranslation";
 import { TrendChart } from "@/components/charts/trend-chart";
@@ -13,8 +15,9 @@ import { PeriodFilterSelect } from "@/components/period-filter";
 import { RepoFilter } from "@/components/repo-filter";
 import { KPICard } from "@/components/stats/kpi-card";
 
-export default function Dashboard() {
-  const { data: metrics, isLoading, period, setPeriod, customRange, setCustomRange, repo, setRepo } = useDashboardMetrics();
+function DashboardContent() {
+  const { period, repo, customRange, setPeriod, setRepo, setCustomRange } = useDashboardSearchParams();
+  const { data: metrics, isLoading } = useDashboardMetrics({ period, customRange, repo });
   const { repos, isLoading: reposLoading } = useRepos();
   const { t } = useTranslation();
 
@@ -114,6 +117,34 @@ export default function Dashboard() {
           )}
         </>
       )}
+    </DashboardLayout>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<DashboardSkeleton />}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <DashboardLayout title="" description="">
+      <div className="flex justify-end items-center gap-3 mb-6">
+        <div className="h-9 w-32 bg-muted/50 rounded-lg animate-pulse" />
+        <div className="h-9 w-64 bg-muted/50 rounded-lg animate-pulse" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-32 bg-muted/50 rounded-lg animate-pulse" />
+        ))}
+      </div>
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <div className="h-80 bg-muted/50 rounded-lg animate-pulse" />
+        <div className="h-80 bg-muted/50 rounded-lg animate-pulse" />
+      </div>
     </DashboardLayout>
   );
 }
