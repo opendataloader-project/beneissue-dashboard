@@ -26,21 +26,11 @@ export async function fetchDistinctRepos(): Promise<string[]> {
 
 /**
  * 자동 해결 조건 체크
- * 기획서 정의: triage_decision IN ('invalid', 'duplicate', 'needs_info')
- *            OR fix_success = true
- *            OR fix_decision = 'comment_only'
+ * 자동 해결 = fix_decision이 'manual_required'가 아닌 경우
+ * 수동 필요 = fix_decision이 'manual_required'인 경우
  */
 function isAutoResolved(run: WorkflowRun): boolean {
-  const triageAutoResolved =
-    run.triage_decision === "invalid" ||
-    run.triage_decision === "duplicate" ||
-    run.triage_decision === "needs_info";
-
-  const fixAutoResolved =
-    run.fix_success === true ||
-    run.fix_decision === "comment_only";
-
-  return triageAutoResolved || fixAutoResolved;
+  return run.fix_decision !== "manual_required";
 }
 
 /**

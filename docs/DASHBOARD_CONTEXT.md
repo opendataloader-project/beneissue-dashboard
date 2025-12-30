@@ -53,18 +53,18 @@ AI 이슈 자동화 성능을 측정하고 시각화하는 웹 대시보드
 
 ## 용어 정의
 
-| 용어          | 의미                | 조건                                                                                                                   |
-| ------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **자동 해결** | 인간 개입 없이 종료 | `triage_decision IN ('invalid', 'duplicate', 'needs_info')` OR `fix_success = true` OR `fix_decision = 'comment_only'` |
-| **수동 필요** | 인간 개입 필요      | 위 조건에 해당하지 않는 케이스                                                                                         |
+| 용어          | 의미                | 조건                                    |
+| ------------- | ------------------- | --------------------------------------- |
+| **자동 해결** | 인간 개입 없이 종료 | `fix_decision != 'manual_required'`     |
+| **수동 필요** | 인간 개입 필요      | `fix_decision = 'manual_required'`      |
 
-### 자동 해결 케이스 상세
+### 해결 유형 상세
 
-- `triage/invalid` - 유효하지 않은 이슈
-- `triage/duplicate` - 중복 이슈
-- `triage/needs-info` - 정보 요청 후 대기
-- `fix/completed` - PR 자동 생성 완료
-- `fix/comment-only` - 코멘트로 해결 (코드 변경 불필요)
+- **자동 해결**: `fix_decision`이 `manual_required`가 아닌 모든 케이스
+  - `auto_eligible` - 자동 수정 가능
+  - `comment_only` - 코멘트로 해결 (코드 변경 불필요)
+  - `NULL` - 아직 결정되지 않음 (triage 단계 등)
+- **수동 필요**: `fix_decision = 'manual_required'` - 인간 개입 필요
 
 ---
 
@@ -86,14 +86,17 @@ AI 이슈 자동화 성능을 측정하고 시각화하는 웹 대시보드
 -- 1. 총 처리량 (유니크 이슈)
 SELECT COUNT(DISTINCT (repo, issue_number)) FROM workflow_runs;
 
--- 2. 자동 해결된 유니크 이슈
+-- 2. 자동 해결된 유니크 이슈 (fix_decision != 'manual_required')
 SELECT COUNT(DISTINCT (repo, issue_number))
 FROM workflow_runs
-WHERE triage_decision IN ('invalid', 'duplicate', 'needs_info')
-   OR fix_success = true
-   OR fix_decision = 'comment_only';
+WHERE fix_decision IS NULL OR fix_decision != 'manual_required';
 
--- 3. 평균 응답 시간 (유니크 이슈별 첫 응답)
+-- 3. 수동 필요 유니크 이슈 (fix_decision = 'manual_required')
+SELECT COUNT(DISTINCT (repo, issue_number))
+FROM workflow_runs
+WHERE fix_decision = 'manual_required';
+
+-- 4. 평균 응답 시간 (유니크 이슈별 첫 응답)
 SELECT AVG(first_response_seconds) FROM (
     SELECT EXTRACT(EPOCH FROM (MIN(workflow_started_at) - MIN(issue_created_at))) as first_response_seconds
     FROM workflow_runs
@@ -101,7 +104,7 @@ SELECT AVG(first_response_seconds) FROM (
     GROUP BY repo, issue_number
 ) t;
 
--- 4. 총 AI 비용
+-- 5. 총 AI 비용
 SELECT SUM(input_cost + output_cost) FROM workflow_runs;
 ```
 
