@@ -145,7 +145,8 @@ export function TrendChart({ data, className, title, description }: TrendChartPr
     // 원하는 중간 라벨 개수 결정
     let midCount: number;
     if (isMonthly) {
-      midCount = count <= 6 ? count - 2 : Math.min(4, Math.floor(count / 2) - 1);
+      // 12개월 이하일 경우 모든 라벨 표시
+      midCount = count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
     } else if (count <= 7) {
       midCount = count - 2;
     } else if (count <= 14) {
