@@ -2,11 +2,11 @@ import type { DateRange, PeriodFilter } from "./metrics";
 
 // Developer role types based on Korean SW Association 2025 rates
 export type DeveloperRole =
-  | "application_developer" // 응용SW개발자
-  | "system_developer" // 시스템SW개발자
+  | "application_developer" // Application SW Developer
+  | "system_developer" // System SW Developer
   | "it_pm" // IT PM
-  | "it_architect" // IT아키텍트
-  | "data_analyst"; // 데이터분석가
+  | "it_architect" // IT Architect
+  | "data_analyst"; // Data Analyst
 
 export interface DeveloperRate {
   role: DeveloperRole;

@@ -10,11 +10,11 @@ import type {
   SavingsBreakdownData,
 } from "@/types/roi";
 
-// 기획서 정의에 따른 Mock 데이터
-// 자동 해결: triage_decision IN ('invalid', 'duplicate', 'needs_info')
-//           OR fix_success = true OR fix_decision = 'comment_only'
+// Mock data based on spec definition
+// Auto-resolved: triage_decision IN ('invalid', 'duplicate', 'needs_info')
+//                OR fix_success = true OR fix_decision = 'comment_only'
 
-// 월별 추이 데이터 (최근 6개월)
+// Monthly trend data (last 6 months)
 const monthlyTrendData: TrendData[] = [
   {
     period: "2025-07",
@@ -54,7 +54,7 @@ const monthlyTrendData: TrendData[] = [
   },
 ];
 
-// 일별 추이 데이터 (최근 14일)
+// Daily trend data (last 14 days)
 const dailyTrendData: TrendData[] = [
   {
     period: "2025-12-15",
@@ -142,7 +142,7 @@ const dailyTrendData: TrendData[] = [
   },
 ];
 
-// 일별 비용 추이 데이터 (최근 14일)
+// Daily cost trend data (last 14 days)
 const dailyCostTrendData: CostTrendData[] = [
   { period: "2025-12-15", inputCost: 2.15, outputCost: 1.69, totalCost: 3.84 },
   { period: "2025-12-16", inputCost: 1.82, outputCost: 1.38, totalCost: 3.2 },
@@ -211,7 +211,7 @@ export const mockDashboardMetrics: DashboardMetrics = {
 };
 
 // ROI Simulator Mock Data (/roi-simulator)
-// 기준: 응용SW개발자 시급 $30.09 (USD), all values in USD
+// Baseline: Application Developer hourly rate $30.09 (USD), all values in USD
 const mockROITrendData: ROITrendData[] = [
   {
     period: "2025-07",

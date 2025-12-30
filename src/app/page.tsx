@@ -47,7 +47,7 @@ export default function Home() {
             {t("heroSubtitle")}
           </p>
 
-          {/* Stats Grid - 기획서: 총 처리량, 자동해결율, 평균응답시간, 건당비용 */}
+          {/* Stats Grid - Spec: Total Processed, Auto Resolution Rate, Avg Response Time, Cost per Issue */}
           {!isLoading && !metrics ? (
             <EmptyState />
           ) : (
@@ -96,7 +96,7 @@ export default function Home() {
                 />
               </div>
 
-              {/* 추이 차트 - 기획서: Stacked Bar + Line */}
+              {/* Trend Chart - Spec: Stacked Bar + Line */}
               {metrics && (
                 <TrendChart
                   data={metrics.monthlyTrend}

@@ -23,7 +23,7 @@ export function useDashboardSearchParams() {
 
   const setPeriod = (period: PeriodFilter) => {
     if (period !== "custom") {
-      // custom이 아니면 날짜 범위 초기화
+      // Reset date range if not custom
       setParams({ period, startDate: null, endDate: null });
     } else {
       setParams({ period });

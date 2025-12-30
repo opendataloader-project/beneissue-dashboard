@@ -51,7 +51,7 @@ function DashboardContent() {
         <EmptyState />
       ) : (
         <>
-          {/* KPI Cards - 기획서: 총 처리량, 자동해결율, 평균응답시간, 총 AI비용(건당 포함) */}
+          {/* KPI Cards - Spec: Total Processed, Auto Resolution Rate, Avg Response Time, Total AI Cost (per issue) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
             <KPICard
               title={t("totalProcessed")}
@@ -100,16 +100,16 @@ function DashboardContent() {
             />
           </div>
 
-          {/* Charts - 기획서: 처리량 추이 + 비용 추이 (2열) */}
+          {/* Charts - Spec: Processing Trend + Cost Trend (2 columns) */}
           {metrics && (
             <div className="grid lg:grid-cols-2 gap-6 mb-8">
-              {/* 처리량 추이 차트 (Stacked Bar + Line) */}
+              {/* Processing Trend Chart (Stacked Bar + Line) */}
               <TrendChart
                 data={metrics.trendData}
                 title={t("trendChartTitle")}
                 description={t("trendChartDesc")}
               />
-              {/* 비용 추이 차트 (Stacked Bar) */}
+              {/* Cost Trend Chart (Stacked Bar) */}
               <CostTrendChart
                 data={metrics.costTrendData}
                 title={t("costTrendChartTitle")}
@@ -118,7 +118,7 @@ function DashboardContent() {
             </div>
           )}
 
-          {/* 결과 분포 */}
+          {/* Resolution Distribution */}
           {metrics && (
             <div className="mb-8">
               <ResolutionDistributionChart

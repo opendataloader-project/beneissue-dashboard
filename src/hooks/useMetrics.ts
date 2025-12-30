@@ -24,7 +24,7 @@ async function fetchMetrics<T>(endpoint: string): Promise<T | null> {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    // API가 빈 데이터를 반환하면 null 처리
+    // Return null if API returns empty data
     if (!data || (typeof data === "object" && Object.keys(data).length === 0)) {
       return null;
     }
@@ -37,7 +37,7 @@ async function fetchMetrics<T>(endpoint: string): Promise<T | null> {
 
 export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
   const dataMode = useAtomValue(dataModeAtom);
-  // 초기 상태는 null로 설정하여 Live 모드에서 mock 데이터가 보이지 않도록 함
+  // Initialize state as null to prevent mock data from showing in Live mode
   const [data, setData] = useState<PublicMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -52,7 +52,7 @@ export function usePublicMetrics(): UseMetricsResult<PublicMetrics> {
     setError(null);
     try {
       const metrics = await fetchMetrics<PublicMetrics>("/api/metrics/public");
-      // Live 모드에서 API가 null을 반환해도 mock으로 fallback하지 않음
+      // Do not fallback to mock even if API returns null in Live mode
       setData(metrics);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Unknown error"));
@@ -80,7 +80,7 @@ export function useDashboardMetrics({
   repo,
 }: UseDashboardMetricsParams): UseMetricsResult<DashboardMetrics> {
   const dataMode = useAtomValue(dataModeAtom);
-  // 초기 상태는 null로 설정하여 Live 모드에서 mock 데이터가 보이지 않도록 함
+  // Initialize state as null to prevent mock data from showing in Live mode
   const [data, setData] = useState<DashboardMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -103,7 +103,7 @@ export function useDashboardMetrics({
         endpoint += `&repo=${encodeURIComponent(repo)}`;
       }
       const metrics = await fetchMetrics<DashboardMetrics>(endpoint);
-      // Live 모드에서 API가 null을 반환해도 mock으로 fallback하지 않음
+      // Do not fallback to mock even if API returns null in Live mode
       setData(metrics);
     } catch (e) {
       setError(e instanceof Error ? e : new Error("Unknown error"));

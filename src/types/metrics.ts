@@ -24,11 +24,11 @@ export interface WorkflowRun {
 
 // Computed metrics for Public Stats page (/)
 export interface PublicMetrics {
-  totalIssuesProcessed: number; // 유니크 이슈 수
-  avgResponseTimeSeconds: number; // 평균 응답 시간
-  autoResolutionRate: number; // 자동 해결율 (%)
-  costPerIssueUSD: number; // 건당 AI 비용
-  monthlyTrend: TrendData[]; // 월별 추이
+  totalIssuesProcessed: number; // Unique issue count
+  avgResponseTimeSeconds: number; // Average response time
+  autoResolutionRate: number; // Auto resolution rate (%)
+  costPerIssueUSD: number; // AI cost per issue
+  monthlyTrend: TrendData[]; // Monthly trend
 }
 
 // Computed metrics for Dashboard page (/dashboard)
@@ -45,31 +45,31 @@ export interface DashboardMetrics {
   costPerIssueUSD: number;
 
   // Charts data
-  trendData: TrendData[]; // 추이 차트 데이터
-  costTrendData: CostTrendData[]; // 비용 추이 차트 데이터
-  resolutionDistribution: ResolutionDistribution; // 결과 분포 (자동해결/수동필요)
+  trendData: TrendData[]; // Trend chart data
+  costTrendData: CostTrendData[]; // Cost trend chart data
+  resolutionDistribution: ResolutionDistribution; // Resolution distribution (auto-resolved/manual-required)
 }
 
-// 추이 차트 데이터 (Stacked Bar + Line)
+// Trend chart data (Stacked Bar + Line)
 export interface TrendData {
-  period: string; // 날짜 또는 월 (e.g., "2025-01" or "2025-01-15")
-  autoResolved: number; // 자동 해결 건수
-  manualRequired: number; // 수동 필요 건수
-  autoResolutionRate: number; // 자동 해결율 (%)
+  period: string; // Date or month (e.g., "2025-01" or "2025-01-15")
+  autoResolved: number; // Auto-resolved count
+  manualRequired: number; // Manual required count
+  autoResolutionRate: number; // Auto resolution rate (%)
 }
 
-// 비용 추이 차트 데이터 (Stacked Bar)
+// Cost trend chart data (Stacked Bar)
 export interface CostTrendData {
-  period: string; // 날짜 또는 월 (e.g., "2025-01" or "2025-01-15")
-  inputCost: number; // Input tokens 비용
-  outputCost: number; // Output tokens 비용
-  totalCost: number; // 총 비용
+  period: string; // Date or month (e.g., "2025-01" or "2025-01-15")
+  inputCost: number; // Input tokens cost
+  outputCost: number; // Output tokens cost
+  totalCost: number; // Total cost
 }
 
-// 결과 분포 (2분류)
+// Resolution distribution (2 categories)
 export interface ResolutionDistribution {
-  autoResolved: number; // 자동 해결
-  manualRequired: number; // 수동 필요
+  autoResolved: number; // Auto-resolved
+  manualRequired: number; // Manual required
 }
 
 // Period filter type

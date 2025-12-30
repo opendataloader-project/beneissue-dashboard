@@ -5,12 +5,12 @@ import type {
 } from "@/types/roi";
 
 /**
- * 한국SW협회 2025년 SW기술자 평균임금
- * 출처: https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=304&bcIdx=57938
+ * Korea SW Association 2025 SW Engineer Average Wages
+ * Source: https://www.sw.or.kr/site/sw/ex/board/View.do?cbIdx=304&bcIdx=57938
  *
- * 인건비 = 기본급 + 제수당 + 상여금 + 퇴직급여충당금 + 4대보험 포함
- * 시간평균임금 = 일평균임금 ÷ 8시간
- * 일평균임금 = 월평균임금 ÷ 20.6일 (2024년 평균근무일수)
+ * Labor cost = Base salary + Allowances + Bonuses + Retirement fund + Social insurance
+ * Hourly wage = Daily wage / 8 hours
+ * Daily wage = Monthly wage / 20.6 days (2024 average working days)
  */
 export const DEVELOPER_RATES: Record<DeveloperRole, DeveloperRate> = {
   application_developer: {
@@ -51,16 +51,16 @@ export const DEVELOPER_RATES: Record<DeveloperRole, DeveloperRate> = {
 };
 
 /**
- * Story Points → 작업 시간 변환 매핑
+ * Story Points to Work Hours Mapping
  *
- * 기준:
- * - 1 SP: <1일 (매우 간단한 작업)
- * - 2 SP: 1-2일 (간단한 작업) - 기본값
- * - 3 SP: 3-5일 (일반적인 작업)
- * - 5 SP: 6-10일 (큰 작업, 복잡도 있음)
- * - 8 SP: 10일+ (매우 복잡한 작업)
+ * Criteria:
+ * - 1 SP: <1 day (very simple task)
+ * - 2 SP: 1-2 days (simple task) - default
+ * - 3 SP: 3-5 days (typical task)
+ * - 5 SP: 6-10 days (large task with complexity)
+ * - 8 SP: 10+ days (very complex task)
  *
- * avgHours = 1일 8시간 기준 중간값 계산
+ * avgHours = median value based on 8 hours per day
  */
 export const STORY_POINT_MAPPINGS: StoryPointMapping[] = [
   {
@@ -105,13 +105,13 @@ export const STORY_POINT_MAPPINGS: StoryPointMapping[] = [
   },
 ];
 
-// Story Points NULL일 때 기본값
+// Default value when Story Points is NULL
 export const DEFAULT_STORY_POINTS = 2;
 
-// USD → KRW 환율 (기본값)
+// USD to KRW exchange rate (default)
 export const DEFAULT_USD_TO_KRW = 1400;
 
-// 개발자 역할 목록 (드롭다운용)
+// Developer role list (for dropdown)
 export const DEVELOPER_ROLE_OPTIONS: DeveloperRole[] = [
   "application_developer",
   "system_developer",
@@ -121,13 +121,13 @@ export const DEVELOPER_ROLE_OPTIONS: DeveloperRole[] = [
 ];
 
 /**
- * Story Points로 평균 시간(hours) 반환
+ * Returns average hours from Story Points
  */
 export function getHoursFromStoryPoints(storyPoints: number): number {
   const mapping = STORY_POINT_MAPPINGS.find((m) => m.points === storyPoints);
   if (mapping) {
     return mapping.avgHours;
   }
-  // 매핑에 없는 경우 기본값(2SP) 사용
+  // Use default value (2SP) if mapping not found
   return STORY_POINT_MAPPINGS[1].avgHours;
 }

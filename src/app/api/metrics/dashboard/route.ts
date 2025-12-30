@@ -153,10 +153,10 @@ function getTrendData(
   customStartDate?: string,
   customEndDate?: string
 ): TrendData[] {
-  // 기간에 따라 일별 또는 월별 추이 결정
-  // 1주, 1달: 일별
-  // 90일, 1년, 전체: 월별
-  // custom: 기간 길이에 따라 자동 결정
+  // Determine daily or monthly trend based on period
+  // 1 week, 1 month: daily
+  // 90 days, 1 year, all: monthly
+  // custom: auto-determine based on duration
   if (period === "1week") {
     return calculateDailyTrend(runs, 7);
   } else if (period === "1month") {
@@ -191,7 +191,7 @@ function getCostTrendData(
   customStartDate?: string,
   customEndDate?: string
 ): CostTrendData[] {
-  // 기간에 따라 일별 또는 월별 비용 추이 결정
+  // Determine daily or monthly cost trend based on period
   if (period === "1week") {
     return calculateDailyCostTrend(runs, 7);
   } else if (period === "1month") {

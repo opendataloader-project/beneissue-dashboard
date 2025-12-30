@@ -1,7 +1,7 @@
 import type { WorkflowRun } from "@/types/metrics";
 import { calculateDelta, calculateROIMetrics } from "@/lib/roi-calculator";
 
-// Helper: 기본 WorkflowRun 생성
+// Helper: Create default WorkflowRun
 function createMockRun(overrides: Partial<WorkflowRun> = {}): WorkflowRun {
   return {
     id: "test-id",

@@ -43,7 +43,7 @@ function CustomTooltip({
   if (!active || !payload || !payload.length) return null;
 
   const formatLabel = (periodStr: string) => {
-    // 월별 데이터인 경우 (YYYY-MM)
+    // Monthly data (YYYY-MM)
     if (periodStr.length === 7) {
       const [year, month] = periodStr.split("-");
       if (language === "ko") {
@@ -55,7 +55,7 @@ function CustomTooltip({
         month: "short",
       });
     }
-    // 일별 데이터인 경우 (YYYY-MM-DD)
+    // Daily data (YYYY-MM-DD)
     const date = new Date(periodStr);
     if (language === "ko") {
       return `${date.getMonth() + 1}월 ${date.getDate()}일`;
@@ -134,10 +134,10 @@ export function CostTrendChart({
     return () => observer.disconnect();
   }, []);
 
-  // 월별인지 일별인지 판단
+  // Determine if monthly or daily
   const isMonthly = data.length > 0 && data[0].period.length === 7;
 
-  // 표시할 tick 계산 (처음과 마지막은 항상 포함, 중간은 동적)
+  // Calculate ticks to display (first and last always included, middle is dynamic)
   const getXAxisTicks = () => {
     const count = data.length;
     if (count === 0) return [];
@@ -147,10 +147,10 @@ export function CostTrendChart({
     const firstPeriod = data[0].period;
     const lastPeriod = data[count - 1].period;
 
-    // 원하는 중간 라벨 개수 결정
+    // Determine desired number of middle labels
     let midCount: number;
     if (isMonthly) {
-      // 12개월 이하일 경우 모든 라벨 표시
+      // Show all labels if 12 months or less
       midCount =
         count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
     } else if (count <= 7) {
@@ -166,7 +166,7 @@ export function CostTrendChart({
     const ticks: string[] = [firstPeriod];
 
     if (midCount > 0) {
-      // 중간 라벨을 균등하게 배치
+      // Evenly distribute middle labels
       const step = (count - 1) / (midCount + 1);
       for (let i = 1; i <= midCount; i++) {
         const idx = Math.round(step * i);
@@ -189,7 +189,7 @@ export function CostTrendChart({
       const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
       return date.toLocaleDateString("en-US", { month: "short" });
     }
-    // 일별
+    // Daily
     const date = new Date(periodStr);
     if (language === "ko") {
       return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -200,7 +200,7 @@ export function CostTrendChart({
     });
   };
 
-  // Y축 최대값 계산
+  // Calculate Y-axis max
   const maxTotal = Math.max(...data.map((d) => d.totalCost));
 
   return (
@@ -249,7 +249,7 @@ export function CostTrendChart({
               ticks={getXAxisTicks()}
             />
 
-            {/* Y축: 비용 ($) */}
+            {/* Y-axis: Cost ($) */}
             <YAxis
               axisLine={false}
               tickLine={false}
@@ -271,7 +271,7 @@ export function CostTrendChart({
               cursor={{ fill: "oklch(0.5 0 0 / 0.1)" }}
             />
 
-            {/* Stacked Bar: Input Cost (하단) */}
+            {/* Stacked Bar: Input Cost (bottom) */}
             <Bar
               dataKey="inputCost"
               stackId="cost"
@@ -279,7 +279,7 @@ export function CostTrendChart({
               radius={[0, 0, 0, 0]}
               animationDuration={1500}
             />
-            {/* Stacked Bar: Output Cost (상단) */}
+            {/* Stacked Bar: Output Cost (top) */}
             <Bar
               dataKey="outputCost"
               stackId="cost"

@@ -51,7 +51,7 @@ function CustomTooltip({
   if (!active || !payload || !payload.length) return null;
 
   const formatLabel = (periodStr: string) => {
-    // 월별 데이터인 경우 (YYYY-MM)
+    // Monthly data (YYYY-MM)
     if (periodStr.length === 7) {
       const [year, month] = periodStr.split("-");
       if (language === "ko") {
@@ -63,7 +63,7 @@ function CustomTooltip({
         month: "short",
       });
     }
-    // 일별 데이터인 경우 (YYYY-MM-DD)
+    // Daily data (YYYY-MM-DD)
     const date = new Date(periodStr);
     if (language === "ko") {
       return `${date.getMonth() + 1}월 ${date.getDate()}일`;
@@ -148,10 +148,10 @@ export function TrendChart({
     return () => observer.disconnect();
   }, []);
 
-  // 월별인지 일별인지 판단
+  // Determine if monthly or daily
   const isMonthly = data.length > 0 && data[0].period.length === 7;
 
-  // 표시할 tick 계산 (처음과 마지막은 항상 포함, 중간은 동적)
+  // Calculate ticks to display (first and last always included, middle is dynamic)
   const getXAxisTicks = () => {
     const count = data.length;
     if (count === 0) return [];
@@ -161,10 +161,10 @@ export function TrendChart({
     const firstPeriod = data[0].period;
     const lastPeriod = data[count - 1].period;
 
-    // 원하는 중간 라벨 개수 결정
+    // Determine desired number of middle labels
     let midCount: number;
     if (isMonthly) {
-      // 12개월 이하일 경우 모든 라벨 표시
+      // Show all labels if 12 months or less
       midCount =
         count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
     } else if (count <= 7) {
@@ -180,7 +180,7 @@ export function TrendChart({
     const ticks: string[] = [firstPeriod];
 
     if (midCount > 0) {
-      // 중간 라벨을 균등하게 배치
+      // Evenly distribute middle labels
       const step = (count - 1) / (midCount + 1);
       for (let i = 1; i <= midCount; i++) {
         const idx = Math.round(step * i);
@@ -203,7 +203,7 @@ export function TrendChart({
       const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
       return date.toLocaleDateString("en-US", { month: "short" });
     }
-    // 일별
+    // Daily
     const date = new Date(periodStr);
     if (language === "ko") {
       return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -214,7 +214,7 @@ export function TrendChart({
     });
   };
 
-  // Y축 최대값 계산 (자동해결 + 수동필요)
+  // Calculate Y-axis max (auto-resolved + manual-required)
   const maxTotal = Math.max(
     ...data.map((d) => d.autoResolved + d.manualRequired)
   );
@@ -265,7 +265,7 @@ export function TrendChart({
               ticks={getXAxisTicks()}
             />
 
-            {/* 왼쪽 Y축: 건수 */}
+            {/* Left Y-axis: Count */}
             <YAxis
               yAxisId="left"
               axisLine={false}
@@ -275,7 +275,7 @@ export function TrendChart({
               domain={[0, Math.ceil(maxTotal * 1.1)]}
             />
 
-            {/* 오른쪽 Y축: 자동해결율 (%) */}
+            {/* Right Y-axis: Auto resolution rate (%) */}
             <YAxis
               yAxisId="right"
               orientation="right"
@@ -319,7 +319,7 @@ export function TrendChart({
               animationBegin={200}
             />
 
-            {/* Line: 자동해결율 */}
+            {/* Line: Auto resolution rate */}
             <Line
               yAxisId="right"
               type="monotone"

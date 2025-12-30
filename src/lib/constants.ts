@@ -1,5 +1,5 @@
 // Business constants
-export const DEVELOPER_HOURLY_RATE_KRW = 50000; // 5만원/시간
+export const DEVELOPER_HOURLY_RATE_KRW = 50000; // 50,000 KRW/hour
 export const USD_TO_KRW = 1400;
 
 // Time estimates in minutes for each workflow type

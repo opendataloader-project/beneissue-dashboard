@@ -77,7 +77,7 @@ export const translations = {
     duplicate: "중복",
     needsInfo: "정보 필요",
 
-    // Resolution Distribution Chart (2분류)
+    // Resolution Distribution Chart (2 categories)
     resolutionDistTitle: "결과 분포",
     resolutionDistDesc: "자동 해결 vs 수동 필요 비율",
     autoResolved: "자동 해결",
@@ -101,7 +101,7 @@ export const translations = {
     processedLabel: "처리량",
     processedIssues: "처리된 이슈",
 
-    // Period Filter (기획서)
+    // Period Filter (spec)
     oneWeek: "1주",
     oneMonth: "1달",
     ninetyDays: "90일",
@@ -238,7 +238,7 @@ export const translations = {
     duplicate: "Duplicate",
     needsInfo: "Needs Info",
 
-    // Resolution Distribution Chart (2分類)
+    // Resolution Distribution Chart (2 categories)
     resolutionDistTitle: "Resolution Distribution",
     resolutionDistDesc: "Auto-resolved vs Manual required ratio",
     autoResolved: "Auto Resolved",

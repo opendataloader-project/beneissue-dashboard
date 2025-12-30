@@ -68,16 +68,16 @@ export async function fetchDistinctRepos(): Promise<string[]> {
 }
 
 /**
- * 자동 해결 조건 체크
- * 자동 해결 = fix_decision이 'manual_required'가 아닌 경우
- * 수동 필요 = fix_decision이 'manual_required'인 경우
+ * Check auto-resolution condition
+ * Auto-resolved = fix_decision is NOT 'manual_required'
+ * Manual required = fix_decision is 'manual_required'
  */
 function isAutoResolved(run: WorkflowRun): boolean {
   return run.fix_decision !== "manual_required";
 }
 
 /**
- * 유니크 이슈 키 생성
+ * Generate unique issue key
  */
 function getUniqueIssueKey(run: WorkflowRun): string {
   return `${run.repo}:${run.issue_number}`;
@@ -121,8 +121,8 @@ export async function fetchWorkflowRuns(
 }
 
 /**
- * 유니크 이슈별 메트릭 계산
- * 동일 (repo, issue_number) 조합은 1건으로 카운트
+ * Calculate metrics per unique issue
+ * Same (repo, issue_number) combination counts as 1
  */
 export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
   const issueMap = new Map<
@@ -135,7 +135,7 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
     }
   >();
 
-  // 이슈별로 그룹화
+  // Group by issue
   for (const run of runs) {
     const key = getUniqueIssueKey(run);
 
@@ -152,12 +152,12 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
     issue.runs.push(run);
     issue.totalCost += calculateRunCost(run).totalCost;
 
-    // 자동 해결 여부 (하나라도 자동 해결 조건 만족하면 자동 해결)
+    // Auto-resolution status (auto-resolved if any run meets condition)
     if (isAutoResolved(run)) {
       issue.isAutoResolved = true;
     }
 
-    // 첫 응답 시간 계산 (이슈 생성 시점 ~ 첫 워크플로우 시작 시점)
+    // Calculate first response time (issue creation to first workflow start)
     if (run.issue_created_at && run.workflow_started_at) {
       const issueCreated = new Date(run.issue_created_at).getTime();
       const workflowStarted = new Date(run.workflow_started_at).getTime();
@@ -172,7 +172,7 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
     }
   }
 
-  // 메트릭 계산
+  // Calculate metrics
   const uniqueIssues = issueMap.size;
   let autoResolvedCount = 0;
   let totalResponseSeconds = 0;
@@ -209,7 +209,7 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
 }
 
 /**
- * 월별 추이 데이터 생성
+ * Generate monthly trend data
  */
 export function calculateMonthlyTrend(
   runs: WorkflowRun[],
@@ -218,14 +218,14 @@ export function calculateMonthlyTrend(
   const now = new Date();
   const monthlyData: Map<string, WorkflowRun[]> = new Map();
 
-  // 최근 N개월 초기화
+  // Initialize last N months
   for (let i = months - 1; i >= 0; i--) {
     const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthKey = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, "0")}`;
     monthlyData.set(monthKey, []);
   }
 
-  // 데이터 분류
+  // Classify data
   for (const run of runs) {
     const date = new Date(run.workflow_started_at);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
@@ -235,7 +235,7 @@ export function calculateMonthlyTrend(
     }
   }
 
-  // 월별 메트릭 계산
+  // Calculate monthly metrics
   const trend: TrendData[] = [];
   for (const [month, monthRuns] of monthlyData) {
     const metrics = calculateUniqueIssueMetrics(monthRuns);
@@ -251,7 +251,7 @@ export function calculateMonthlyTrend(
 }
 
 /**
- * 일별 추이 데이터 생성
+ * Generate daily trend data
  */
 export function calculateDailyTrend(
   runs: WorkflowRun[],
@@ -260,7 +260,7 @@ export function calculateDailyTrend(
   const now = new Date();
   const dailyData: Map<string, WorkflowRun[]> = new Map();
 
-  // 최근 N일 초기화
+  // Initialize last N days
   for (let i = days - 1; i >= 0; i--) {
     const targetDate = new Date(now);
     targetDate.setDate(now.getDate() - i);
@@ -268,7 +268,7 @@ export function calculateDailyTrend(
     dailyData.set(dateKey, []);
   }
 
-  // 데이터 분류
+  // Classify data
   for (const run of runs) {
     const dateKey = run.workflow_started_at.split("T")[0];
 
@@ -277,7 +277,7 @@ export function calculateDailyTrend(
     }
   }
 
-  // 일별 메트릭 계산
+  // Calculate daily metrics
   const trend: TrendData[] = [];
   for (const [date, dayRuns] of dailyData) {
     const metrics = calculateUniqueIssueMetrics(dayRuns);
@@ -293,7 +293,7 @@ export function calculateDailyTrend(
 }
 
 /**
- * 결과 분포 계산
+ * Calculate resolution distribution
  */
 export function calculateResolutionDistribution(
   runs: WorkflowRun[]
@@ -306,7 +306,7 @@ export function calculateResolutionDistribution(
 }
 
 /**
- * 월별 비용 추이 데이터 생성
+ * Generate monthly cost trend data
  */
 export function calculateMonthlyCostTrend(
   runs: WorkflowRun[],
@@ -315,14 +315,14 @@ export function calculateMonthlyCostTrend(
   const now = new Date();
   const monthlyData: Map<string, WorkflowRun[]> = new Map();
 
-  // 최근 N개월 초기화
+  // Initialize last N months
   for (let i = months - 1; i >= 0; i--) {
     const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const monthKey = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, "0")}`;
     monthlyData.set(monthKey, []);
   }
 
-  // 데이터 분류
+  // Classify data
   for (const run of runs) {
     const date = new Date(run.workflow_started_at);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
@@ -332,7 +332,7 @@ export function calculateMonthlyCostTrend(
     }
   }
 
-  // 월별 비용 계산
+  // Calculate monthly cost
   const trend: CostTrendData[] = [];
   for (const [month, monthRuns] of monthlyData) {
     let inputCost = 0;
@@ -356,7 +356,7 @@ export function calculateMonthlyCostTrend(
 }
 
 /**
- * 일별 비용 추이 데이터 생성
+ * Generate daily cost trend data
  */
 export function calculateDailyCostTrend(
   runs: WorkflowRun[],
@@ -365,7 +365,7 @@ export function calculateDailyCostTrend(
   const now = new Date();
   const dailyData: Map<string, WorkflowRun[]> = new Map();
 
-  // 최근 N일 초기화
+  // Initialize last N days
   for (let i = days - 1; i >= 0; i--) {
     const targetDate = new Date(now);
     targetDate.setDate(now.getDate() - i);
@@ -373,7 +373,7 @@ export function calculateDailyCostTrend(
     dailyData.set(dateKey, []);
   }
 
-  // 데이터 분류
+  // Classify data
   for (const run of runs) {
     const dateKey = run.workflow_started_at.split("T")[0];
 
@@ -382,7 +382,7 @@ export function calculateDailyCostTrend(
     }
   }
 
-  // 일별 비용 계산
+  // Calculate daily cost
   const trend: CostTrendData[] = [];
   for (const [date, dayRuns] of dailyData) {
     let inputCost = 0;
