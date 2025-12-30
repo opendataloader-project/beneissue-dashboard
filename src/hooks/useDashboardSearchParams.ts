@@ -15,7 +15,7 @@ const periodOptions = [
 
 export function useDashboardSearchParams() {
   const [params, setParams] = useQueryStates({
-    period: parseAsStringLiteral(periodOptions).withDefault("1month"),
+    period: parseAsStringLiteral(periodOptions).withDefault("1year"),
     repo: parseAsString,
     startDate: parseAsString,
     endDate: parseAsString,
