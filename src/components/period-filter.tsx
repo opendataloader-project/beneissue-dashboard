@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { endOfDay, format, isValid, parse, startOfDay } from "date-fns";
 import { Calendar } from "lucide-react";
-import { format, parse, isValid, startOfDay, endOfDay } from "date-fns";
 
-import type { PeriodFilter, DateRange } from "@/types/metrics";
+import type { DateRange, PeriodFilter } from "@/types/metrics";
+import { cn } from "@/lib/utils";
 import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 interface PeriodFilterProps {
   value: PeriodFilter;

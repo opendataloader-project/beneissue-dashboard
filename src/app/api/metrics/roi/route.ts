@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { PeriodFilter } from "@/types/metrics";
 import type { DeveloperRole, ROIMetrics } from "@/types/roi";
 import { fetchWorkflowRuns } from "@/lib/db";
-import { calculateROIMetrics, calculateDelta } from "@/lib/roi-calculator";
+import { calculateDelta, calculateROIMetrics } from "@/lib/roi-calculator";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
 function getDateRange(period: PeriodFilter): {

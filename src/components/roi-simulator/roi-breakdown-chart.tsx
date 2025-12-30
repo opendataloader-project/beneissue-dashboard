@@ -12,8 +12,8 @@ import {
 } from "recharts";
 
 import type { SavingsBreakdownData } from "@/types/roi";
-import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ROIBreakdownChartProps {
   data: SavingsBreakdownData[];
@@ -32,12 +32,14 @@ function formatUSD(value: number): string {
 function CustomTooltip({
   active,
   payload,
-  label,
   language,
 }: {
   active?: boolean;
-  payload?: Array<{ value: number; dataKey: string; payload: SavingsBreakdownData }>;
-  label?: string;
+  payload?: Array<{
+    value: number;
+    dataKey: string;
+    payload: SavingsBreakdownData;
+  }>;
   language: string;
 }) {
   if (!active || !payload || !payload.length) return null;

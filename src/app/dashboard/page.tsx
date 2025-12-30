@@ -6,9 +6,9 @@ import { Clock, DollarSign, FileCheck, Sparkles } from "lucide-react";
 import { useDashboardSearchParams } from "@/hooks/useDashboardSearchParams";
 import { useDashboardMetrics, useRepos } from "@/hooks/useMetrics";
 import { useTranslation } from "@/hooks/useTranslation";
-import { TrendChart } from "@/components/charts/trend-chart";
 import { CostTrendChart } from "@/components/charts/cost-trend-chart";
 import { ResolutionDistributionChart } from "@/components/charts/resolution-distribution";
+import { TrendChart } from "@/components/charts/trend-chart";
 import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { PeriodFilterSelect } from "@/components/period-filter";
@@ -16,8 +16,13 @@ import { RepoFilter } from "@/components/repo-filter";
 import { KPICard } from "@/components/stats/kpi-card";
 
 function DashboardContent() {
-  const { period, repo, customRange, setPeriod, setRepo, setCustomRange } = useDashboardSearchParams();
-  const { data: metrics, isLoading } = useDashboardMetrics({ period, customRange, repo });
+  const { period, repo, customRange, setPeriod, setRepo, setCustomRange } =
+    useDashboardSearchParams();
+  const { data: metrics, isLoading } = useDashboardMetrics({
+    period,
+    customRange,
+    repo,
+  });
   const { repos, isLoading: reposLoading } = useRepos();
   const { t } = useTranslation();
 
@@ -86,7 +91,11 @@ function DashboardContent() {
               icon={DollarSign}
               accentColor="amber"
               animationDelay={400}
-              subtitle={metrics ? `${t("perIssue")} $${metrics.costPerIssueUSD.toFixed(2)}` : undefined}
+              subtitle={
+                metrics
+                  ? `${t("perIssue")} $${metrics.costPerIssueUSD.toFixed(2)}`
+                  : undefined
+              }
               isLoading={isLoading}
             />
           </div>
@@ -112,7 +121,9 @@ function DashboardContent() {
           {/* 결과 분포 */}
           {metrics && (
             <div className="mb-8">
-              <ResolutionDistributionChart data={metrics.resolutionDistribution} />
+              <ResolutionDistributionChart
+                data={metrics.resolutionDistribution}
+              />
             </div>
           )}
         </>

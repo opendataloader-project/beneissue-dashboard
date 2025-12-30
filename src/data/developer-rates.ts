@@ -1,4 +1,8 @@
-import type { DeveloperRate, DeveloperRole, StoryPointMapping } from "@/types/roi";
+import type {
+  DeveloperRate,
+  DeveloperRole,
+  StoryPointMapping,
+} from "@/types/roi";
 
 /**
  * 한국SW협회 2025년 SW기술자 평균임금

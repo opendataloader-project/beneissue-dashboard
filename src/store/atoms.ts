@@ -24,7 +24,8 @@ export const dateRangeAtom = atom<{ start: string; end: string } | null>(null);
 
 // Metrics data atoms (initialized with mock data)
 export const publicMetricsAtom = atom<PublicMetrics>(mockPublicMetrics);
-export const dashboardMetricsAtom = atom<DashboardMetrics>(mockDashboardMetrics);
+export const dashboardMetricsAtom =
+  atom<DashboardMetrics>(mockDashboardMetrics);
 
 // Loading states
 export const isLoadingAtom = atom<boolean>(false);

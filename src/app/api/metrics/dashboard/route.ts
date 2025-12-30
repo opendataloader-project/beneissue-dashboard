@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import type { DashboardMetrics, PeriodFilter, TrendData, CostTrendData } from "@/types/metrics";
+import type {
+  CostTrendData,
+  DashboardMetrics,
+  PeriodFilter,
+  TrendData,
+} from "@/types/metrics";
 import {
-  fetchWorkflowRuns,
-  calculateUniqueIssueMetrics,
-  calculateDailyTrend,
-  calculateMonthlyTrend,
   calculateDailyCostTrend,
+  calculateDailyTrend,
   calculateMonthlyCostTrend,
+  calculateMonthlyTrend,
   calculateResolutionDistribution,
+  calculateUniqueIssueMetrics,
+  fetchWorkflowRuns,
 } from "@/lib/db";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
@@ -139,7 +144,8 @@ function calculateDelta(current: number, previous: number): number {
   return ((current - previous) / previous) * 100;
 }
 
-type WorkflowRunsResult = ReturnType<typeof fetchWorkflowRuns> extends Promise<infer T> ? T : never;
+type WorkflowRunsResult =
+  ReturnType<typeof fetchWorkflowRuns> extends Promise<infer T> ? T : never;
 
 function getTrendData(
   runs: WorkflowRunsResult,
@@ -163,7 +169,9 @@ function getTrendData(
     // Calculate days in custom range
     const start = new Date(customStartDate);
     const end = new Date(customEndDate);
-    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
     // Use daily for ranges <= 60 days, monthly for longer
     if (days <= 60) {
       return calculateDailyTrend(runs, days);
@@ -195,7 +203,9 @@ function getCostTrendData(
   } else if (period === "custom" && customStartDate && customEndDate) {
     const start = new Date(customStartDate);
     const end = new Date(customEndDate);
-    const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+    );
     if (days <= 60) {
       return calculateDailyCostTrend(runs, days);
     } else {
@@ -261,7 +271,12 @@ export async function GET(request: NextRequest) {
     const trendData = getTrendData(currentRuns, period, startDate, endDate);
 
     // Get cost trend data
-    const costTrendData = getCostTrendData(currentRuns, period, startDate, endDate);
+    const costTrendData = getCostTrendData(
+      currentRuns,
+      period,
+      startDate,
+      endDate
+    );
 
     // Get resolution distribution
     const resolutionDistribution = calculateResolutionDistribution(currentRuns);
@@ -274,12 +289,14 @@ export async function GET(request: NextRequest) {
       autoResolutionRate: Math.round(current.autoResolutionRate * 10) / 10,
       autoResolutionDelta:
         Math.round(
-          calculateDelta(current.autoResolutionRate, prev.autoResolutionRate) * 10
+          calculateDelta(current.autoResolutionRate, prev.autoResolutionRate) *
+            10
         ) / 10,
       avgResponseTimeSeconds: Math.round(current.avgResponseSeconds),
       avgResponseTimeDelta:
         Math.round(
-          calculateDelta(current.avgResponseSeconds, prev.avgResponseSeconds) * 10
+          calculateDelta(current.avgResponseSeconds, prev.avgResponseSeconds) *
+            10
         ) / 10,
       totalCostUSD: Math.round(current.totalCost * 100) / 100,
       totalCostDelta:

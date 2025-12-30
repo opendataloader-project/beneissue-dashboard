@@ -85,7 +85,9 @@ export default function Home() {
                 />
                 <StatCard
                   title={t("costPerIssue")}
-                  value={metrics ? `$${metrics.costPerIssueUSD.toFixed(2)}` : "$0.00"}
+                  value={
+                    metrics ? `$${metrics.costPerIssueUSD.toFixed(2)}` : "$0.00"
+                  }
                   icon={DollarSign}
                   description={t("totalAPICost")}
                   accentColor="amber"

@@ -50,7 +50,10 @@ function CustomTooltip({
         return `${year}년 ${Number.parseInt(month)}월`;
       }
       const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
-      return date.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
     }
     // 일별 데이터인 경우 (YYYY-MM-DD)
     const date = new Date(periodStr);
@@ -62,8 +65,7 @@ function CustomTooltip({
 
   const inputCost = payload.find((p) => p.dataKey === "inputCost");
   const outputCost = payload.find((p) => p.dataKey === "outputCost");
-  const totalCost =
-    (inputCost?.value || 0) + (outputCost?.value || 0);
+  const totalCost = (inputCost?.value || 0) + (outputCost?.value || 0);
 
   return (
     <div className="px-4 py-3 rounded-lg border bg-card/95 backdrop-blur-sm border-border shadow-xl">
@@ -104,7 +106,12 @@ function CustomTooltip({
   );
 }
 
-export function CostTrendChart({ data, className, title, description }: CostTrendChartProps) {
+export function CostTrendChart({
+  data,
+  className,
+  title,
+  description,
+}: CostTrendChartProps) {
   const [isVisible, setIsVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
   const { t, language } = useTranslation();
@@ -144,7 +151,8 @@ export function CostTrendChart({ data, className, title, description }: CostTren
     let midCount: number;
     if (isMonthly) {
       // 12개월 이하일 경우 모든 라벨 표시
-      midCount = count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
+      midCount =
+        count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
     } else if (count <= 7) {
       midCount = count - 2;
     } else if (count <= 14) {
@@ -186,7 +194,10 @@ export function CostTrendChart({ data, className, title, description }: CostTren
     if (language === "ko") {
       return `${date.getMonth() + 1}/${date.getDate()}`;
     }
-    return date.toLocaleDateString("en-US", { month: "numeric", day: "numeric" });
+    return date.toLocaleDateString("en-US", {
+      month: "numeric",
+      day: "numeric",
+    });
   };
 
   // Y축 최대값 계산
@@ -285,11 +296,15 @@ export function CostTrendChart({ data, className, title, description }: CostTren
       <div className="mt-4 flex flex-wrap items-center justify-center gap-4 md:gap-6">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded bg-[oklch(0.70_0.15_160)]" />
-          <span className="text-sm text-muted-foreground">{t("inputCost")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("inputCost")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded bg-[oklch(0.78_0.16_75)]" />
-          <span className="text-sm text-muted-foreground">{t("outputCost")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("outputCost")}
+          </span>
         </div>
       </div>
     </div>

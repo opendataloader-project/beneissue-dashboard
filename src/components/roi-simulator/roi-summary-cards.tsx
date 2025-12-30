@@ -29,10 +29,15 @@ function formatROI(value: number): string {
   return value.toFixed(0);
 }
 
-export function ROISummaryCards({ data, isLoading = false }: ROISummaryCardsProps) {
+export function ROISummaryCards({
+  data,
+  isLoading = false,
+}: ROISummaryCardsProps) {
   const { t, language } = useTranslation();
 
-  const totalSavingsValue = data ? `$${formatUSD(data.totalHumanCostSaved)}` : "$0.00";
+  const totalSavingsValue = data
+    ? `$${formatUSD(data.totalHumanCostSaved)}`
+    : "$0.00";
   const aiCostValue = data ? `$${formatUSD(data.totalAICost)}` : "$0.00";
   const netSavingsValue = data ? `$${formatUSD(data.netSavings)}` : "$0.00";
   const roiValue = data ? formatROI(data.roiPercentage) : "0";

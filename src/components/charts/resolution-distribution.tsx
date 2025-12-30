@@ -22,7 +22,8 @@ export function ResolutionDistributionChart({
 
   const total = data.autoResolved + data.manualRequired;
   const autoResolvedPercent = total > 0 ? (data.autoResolved / total) * 100 : 0;
-  const manualRequiredPercent = total > 0 ? (data.manualRequired / total) * 100 : 0;
+  const manualRequiredPercent =
+    total > 0 ? (data.manualRequired / total) * 100 : 0;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -118,7 +119,9 @@ export function ResolutionDistributionChart({
           <div className="p-4 rounded-lg border bg-background/50">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-3 h-3 rounded bg-[oklch(0.70_0.15_160)]" />
-              <span className="text-sm text-muted-foreground">{t("autoResolved")}</span>
+              <span className="text-sm text-muted-foreground">
+                {t("autoResolved")}
+              </span>
             </div>
             <p
               className="text-2xl font-bold tabular-nums"
@@ -127,7 +130,8 @@ export function ResolutionDistributionChart({
                 color: "oklch(0.70 0.15 160)",
               }}
             >
-              {formatNumber(data.autoResolved)}{t("countUnit")}
+              {formatNumber(data.autoResolved)}
+              {t("countUnit")}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
               {formatPercent(autoResolvedPercent)}
@@ -138,7 +142,9 @@ export function ResolutionDistributionChart({
           <div className="p-4 rounded-lg border bg-background/50">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-3 h-3 rounded bg-[oklch(0.65_0.12_260)]" />
-              <span className="text-sm text-muted-foreground">{t("manualRequired")}</span>
+              <span className="text-sm text-muted-foreground">
+                {t("manualRequired")}
+              </span>
             </div>
             <p
               className="text-2xl font-bold tabular-nums"
@@ -147,7 +153,8 @@ export function ResolutionDistributionChart({
                 color: "oklch(0.65 0.12 260)",
               }}
             >
-              {formatNumber(data.manualRequired)}{t("countUnit")}
+              {formatNumber(data.manualRequired)}
+              {t("countUnit")}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
               {formatPercent(manualRequiredPercent)}
@@ -158,7 +165,10 @@ export function ResolutionDistributionChart({
         {/* Investor Message */}
         <div className="p-4 rounded-lg bg-[oklch(0.70_0.15_160_/_0.1)] border border-[oklch(0.70_0.15_160_/_0.2)]">
           <p className="text-sm text-center">
-            <span className="font-semibold" style={{ color: "oklch(0.70 0.15 160)" }}>
+            <span
+              className="font-semibold"
+              style={{ color: "oklch(0.70 0.15 160)" }}
+            >
               {formatPercent(autoResolvedPercent)}
             </span>
             <span className="text-muted-foreground ml-1">

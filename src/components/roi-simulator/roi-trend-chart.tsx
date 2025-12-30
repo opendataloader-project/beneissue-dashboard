@@ -13,8 +13,8 @@ import {
 } from "recharts";
 
 import type { ROITrendData } from "@/types/roi";
-import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface ROITrendChartProps {
   data: ROITrendData[];
@@ -50,7 +50,10 @@ function CustomTooltip({
         return `${year}년 ${Number.parseInt(month)}월`;
       }
       const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
-      return date.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
     }
     const date = new Date(periodStr);
     if (language === "ko") {
@@ -77,14 +80,18 @@ function CustomTooltip({
           <p className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[oklch(0.70_0.20_145)]" />
             <span className="text-muted-foreground">{savingsLabel}:</span>
-            <span className="font-medium tabular-nums">${formatUSD(savings.value)}</span>
+            <span className="font-medium tabular-nums">
+              ${formatUSD(savings.value)}
+            </span>
           </p>
         )}
         {aiCost && (
           <p className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[oklch(0.78_0.16_75)]" />
             <span className="text-muted-foreground">{aiCostLabel}:</span>
-            <span className="font-medium tabular-nums">${formatUSD(aiCost.value)}</span>
+            <span className="font-medium tabular-nums">
+              ${formatUSD(aiCost.value)}
+            </span>
           </p>
         )}
         {netSavings && (
@@ -100,7 +107,9 @@ function CustomTooltip({
           <p className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[oklch(0.65_0.22_265)]" />
             <span className="text-muted-foreground">{roiLabel}:</span>
-            <span className="font-medium tabular-nums">{roi.value.toLocaleString()}%</span>
+            <span className="font-medium tabular-nums">
+              {roi.value.toLocaleString()}%
+            </span>
           </p>
         )}
       </div>
@@ -174,7 +183,9 @@ export function ROITrendChart({ data, className }: ROITrendChartProps) {
       {/* Header */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold">{t("roiTrend")}</h3>
-        <p className="text-sm text-muted-foreground mt-1">{t("roiTrendDesc")}</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t("roiTrendDesc")}
+        </p>
       </div>
 
       {/* Chart */}
@@ -266,7 +277,9 @@ export function ROITrendChart({ data, className }: ROITrendChartProps) {
       <div className="mt-4 flex flex-wrap items-center justify-center gap-4 md:gap-6">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded bg-[oklch(0.70_0.20_145)]" />
-          <span className="text-sm text-muted-foreground">{t("costSaved")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("costSaved")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-0.5 bg-[oklch(0.65_0.22_265)]" />

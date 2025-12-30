@@ -90,7 +90,8 @@ export function StatCard({
 
     // For string values, just update directly
     if (typeof value !== "number") {
-      setDisplayValue(value);
+      // Use requestAnimationFrame to avoid synchronous setState in effect
+      requestAnimationFrame(() => setDisplayValue(value));
       return;
     }
 

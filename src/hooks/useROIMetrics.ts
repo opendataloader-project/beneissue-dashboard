@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { mockROIMetrics } from "@/data/mock";
+import { dataModeAtom } from "@/store/atoms";
 import { useAtomValue } from "jotai";
 
 import type { DateRange, PeriodFilter } from "@/types/metrics";
 import type { DeveloperRole, ROIMetrics } from "@/types/roi";
-import { dataModeAtom } from "@/store/atoms";
-import { mockROIMetrics } from "@/data/mock";
 
 interface UseROIMetricsResult {
   data: ROIMetrics | null;

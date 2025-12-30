@@ -247,7 +247,8 @@ export const translations = {
 
     // Trend Chart
     trendChartTitle: "Processing Trend",
-    trendChartDesc: "Auto-resolved / Manual required counts and auto-resolution rate",
+    trendChartDesc:
+      "Auto-resolved / Manual required counts and auto-resolution rate",
 
     // Cost Trend Chart
     costTrendChartTitle: "Cost Trend",
@@ -317,7 +318,8 @@ export const translations = {
     avgHours: "Avg Hours",
     description: "Description",
     defaultValue: "Default",
-    storyPointsNote: "Issues without Story Points will use the default value (2 SP).",
+    storyPointsNote:
+      "Issues without Story Points will use the default value (2 SP).",
     developerRatesReference: "Developer Rates Reference",
     role: "Role",
   },

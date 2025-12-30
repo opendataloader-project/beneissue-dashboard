@@ -1,10 +1,10 @@
 "use client";
 
-import { GitBranch, ChevronDown, Check } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Check, ChevronDown, GitBranch } from "lucide-react";
 
-import { useTranslation } from "@/hooks/useTranslation";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface RepoFilterProps {
   repos: string[];
@@ -13,7 +13,12 @@ interface RepoFilterProps {
   isLoading?: boolean;
 }
 
-export function RepoFilter({ repos, value, onChange, isLoading }: RepoFilterProps) {
+export function RepoFilter({
+  repos,
+  value,
+  onChange,
+  isLoading,
+}: RepoFilterProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -21,7 +26,10 @@ export function RepoFilter({ repos, value, onChange, isLoading }: RepoFilterProp
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -38,9 +46,7 @@ export function RepoFilter({ repos, value, onChange, isLoading }: RepoFilterProp
   const selectedLabel = value ? getDisplayName(value) : t("allRepos");
 
   if (isLoading) {
-    return (
-      <div className="h-9 w-32 bg-muted/50 rounded-lg animate-pulse" />
-    );
+    return <div className="h-9 w-32 bg-muted/50 rounded-lg animate-pulse" />;
   }
 
   if (repos.length === 0) {
@@ -60,10 +66,12 @@ export function RepoFilter({ repos, value, onChange, isLoading }: RepoFilterProp
       >
         <GitBranch className="w-4 h-4 text-muted-foreground shrink-0" />
         <span className="flex-1 text-left truncate">{selectedLabel}</span>
-        <ChevronDown className={cn(
-          "w-4 h-4 text-muted-foreground transition-transform",
-          isOpen && "rotate-180"
-        )} />
+        <ChevronDown
+          className={cn(
+            "w-4 h-4 text-muted-foreground transition-transform",
+            isOpen && "rotate-180"
+          )}
+        />
       </button>
 
       {isOpen && (
@@ -80,10 +88,12 @@ export function RepoFilter({ repos, value, onChange, isLoading }: RepoFilterProp
               value === null && "bg-muted/50 font-medium"
             )}
           >
-            <Check className={cn(
-              "w-4 h-4",
-              value === null ? "opacity-100" : "opacity-0"
-            )} />
+            <Check
+              className={cn(
+                "w-4 h-4",
+                value === null ? "opacity-100" : "opacity-0"
+              )}
+            />
             <span>{t("allRepos")}</span>
           </button>
 
@@ -103,11 +113,15 @@ export function RepoFilter({ repos, value, onChange, isLoading }: RepoFilterProp
                 value === repo && "bg-muted/50 font-medium"
               )}
             >
-              <Check className={cn(
-                "w-4 h-4",
-                value === repo ? "opacity-100" : "opacity-0"
-              )} />
-              <span className="truncate" title={repo}>{repo}</span>
+              <Check
+                className={cn(
+                  "w-4 h-4",
+                  value === repo ? "opacity-100" : "opacity-0"
+                )}
+              />
+              <span className="truncate" title={repo}>
+                {repo}
+              </span>
             </button>
           ))}
         </div>

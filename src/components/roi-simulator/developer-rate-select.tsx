@@ -1,12 +1,15 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import {
+  DEVELOPER_RATES,
+  DEVELOPER_ROLE_OPTIONS,
+} from "@/data/developer-rates";
 import { ChevronDown, ExternalLink, User } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
 
 import type { DeveloperRole } from "@/types/roi";
-import { useTranslation } from "@/hooks/useTranslation";
-import { DEVELOPER_RATES, DEVELOPER_ROLE_OPTIONS } from "@/data/developer-rates";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface DeveloperRateSelectProps {
   value: DeveloperRole;

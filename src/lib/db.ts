@@ -1,14 +1,20 @@
-import type { WorkflowRun, TrendData, CostTrendData, ResolutionDistribution } from "@/types/metrics";
+import type {
+  CostTrendData,
+  ResolutionDistribution,
+  TrendData,
+  WorkflowRun,
+} from "@/types/metrics";
+
 import { isSupabaseConfigured, supabase } from "./supabase";
 
 // Token pricing per million tokens (MTok)
 const PRICING = {
   "claude-haiku-4-5": {
-    input: 1,   // $1 / MTok
-    output: 5,  // $5 / MTok
+    input: 1, // $1 / MTok
+    output: 5, // $5 / MTok
   },
   "claude-sonnet-4-5": {
-    input: 3,   // $3 / MTok
+    input: 3, // $3 / MTok
     output: 15, // $15 / MTok
   },
 } as const;
@@ -18,10 +24,15 @@ const PRICING = {
  * triage -> claude-haiku-4-5
  * analyze/fix -> claude-sonnet-4-5
  */
-function calculateRunCost(run: WorkflowRun): { inputCost: number; outputCost: number; totalCost: number } {
-  const pricing = run.workflow_type === "triage"
-    ? PRICING["claude-haiku-4-5"]
-    : PRICING["claude-sonnet-4-5"];
+function calculateRunCost(run: WorkflowRun): {
+  inputCost: number;
+  outputCost: number;
+  totalCost: number;
+} {
+  const pricing =
+    run.workflow_type === "triage"
+      ? PRICING["claude-haiku-4-5"]
+      : PRICING["claude-sonnet-4-5"];
 
   const inputCost = (run.input_tokens / 1_000_000) * pricing.input;
   const outputCost = (run.output_tokens / 1_000_000) * pricing.output;
@@ -114,12 +125,15 @@ export async function fetchWorkflowRuns(
  * 동일 (repo, issue_number) 조합은 1건으로 카운트
  */
 export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
-  const issueMap = new Map<string, {
-    runs: WorkflowRun[];
-    firstResponseSeconds: number | null;
-    totalCost: number;
-    isAutoResolved: boolean;
-  }>();
+  const issueMap = new Map<
+    string,
+    {
+      runs: WorkflowRun[];
+      firstResponseSeconds: number | null;
+      totalCost: number;
+      isAutoResolved: boolean;
+    }
+  >();
 
   // 이슈별로 그룹화
   for (const run of runs) {
@@ -149,7 +163,10 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
       const workflowStarted = new Date(run.workflow_started_at).getTime();
       const responseSeconds = (workflowStarted - issueCreated) / 1000;
 
-      if (issue.firstResponseSeconds === null || responseSeconds < issue.firstResponseSeconds) {
+      if (
+        issue.firstResponseSeconds === null ||
+        responseSeconds < issue.firstResponseSeconds
+      ) {
         issue.firstResponseSeconds = responseSeconds;
       }
     }
@@ -174,8 +191,10 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
   }
 
   const manualRequiredCount = uniqueIssues - autoResolvedCount;
-  const autoResolutionRate = uniqueIssues > 0 ? (autoResolvedCount / uniqueIssues) * 100 : 0;
-  const avgResponseSeconds = responseCount > 0 ? totalResponseSeconds / responseCount : 0;
+  const autoResolutionRate =
+    uniqueIssues > 0 ? (autoResolvedCount / uniqueIssues) * 100 : 0;
+  const avgResponseSeconds =
+    responseCount > 0 ? totalResponseSeconds / responseCount : 0;
   const costPerIssue = uniqueIssues > 0 ? totalCost / uniqueIssues : 0;
 
   return {
@@ -192,7 +211,10 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
 /**
  * 월별 추이 데이터 생성
  */
-export function calculateMonthlyTrend(runs: WorkflowRun[], months: number = 6): TrendData[] {
+export function calculateMonthlyTrend(
+  runs: WorkflowRun[],
+  months: number = 6
+): TrendData[] {
   const now = new Date();
   const monthlyData: Map<string, WorkflowRun[]> = new Map();
 
@@ -231,7 +253,10 @@ export function calculateMonthlyTrend(runs: WorkflowRun[], months: number = 6): 
 /**
  * 일별 추이 데이터 생성
  */
-export function calculateDailyTrend(runs: WorkflowRun[], days: number = 14): TrendData[] {
+export function calculateDailyTrend(
+  runs: WorkflowRun[],
+  days: number = 14
+): TrendData[] {
   const now = new Date();
   const dailyData: Map<string, WorkflowRun[]> = new Map();
 
@@ -270,7 +295,9 @@ export function calculateDailyTrend(runs: WorkflowRun[], days: number = 14): Tre
 /**
  * 결과 분포 계산
  */
-export function calculateResolutionDistribution(runs: WorkflowRun[]): ResolutionDistribution {
+export function calculateResolutionDistribution(
+  runs: WorkflowRun[]
+): ResolutionDistribution {
   const metrics = calculateUniqueIssueMetrics(runs);
   return {
     autoResolved: metrics.autoResolvedCount,
@@ -281,7 +308,10 @@ export function calculateResolutionDistribution(runs: WorkflowRun[]): Resolution
 /**
  * 월별 비용 추이 데이터 생성
  */
-export function calculateMonthlyCostTrend(runs: WorkflowRun[], months: number = 6): CostTrendData[] {
+export function calculateMonthlyCostTrend(
+  runs: WorkflowRun[],
+  months: number = 6
+): CostTrendData[] {
   const now = new Date();
   const monthlyData: Map<string, WorkflowRun[]> = new Map();
 
@@ -328,7 +358,10 @@ export function calculateMonthlyCostTrend(runs: WorkflowRun[], months: number = 
 /**
  * 일별 비용 추이 데이터 생성
  */
-export function calculateDailyCostTrend(runs: WorkflowRun[], days: number = 14): CostTrendData[] {
+export function calculateDailyCostTrend(
+  runs: WorkflowRun[],
+  days: number = 14
+): CostTrendData[] {
   const now = new Date();
   const dailyData: Map<string, WorkflowRun[]> = new Map();
 
@@ -393,7 +426,10 @@ export async function fetchTotalMetrics() {
 /**
  * Fetch metrics for a specific date range
  */
-export async function fetchMetricsForPeriod(startDate: string, endDate: string) {
+export async function fetchMetricsForPeriod(
+  startDate: string,
+  endDate: string
+) {
   const runs = await fetchWorkflowRuns(startDate, endDate);
   if (runs.length === 0) {
     return null;
@@ -405,7 +441,9 @@ export async function fetchMetricsForPeriod(startDate: string, endDate: string) 
 /**
  * Fetch daily trend for the dashboard
  */
-export async function fetchDailyTrendData(days: number = 14): Promise<TrendData[]> {
+export async function fetchDailyTrendData(
+  days: number = 14
+): Promise<TrendData[]> {
   const now = new Date();
   const startDate = new Date(now);
   startDate.setDate(now.getDate() - days);
@@ -417,7 +455,9 @@ export async function fetchDailyTrendData(days: number = 14): Promise<TrendData[
 /**
  * Fetch monthly trend for the public page
  */
-export async function fetchMonthlyTrendData(months: number = 6): Promise<TrendData[]> {
+export async function fetchMonthlyTrendData(
+  months: number = 6
+): Promise<TrendData[]> {
   const now = new Date();
   const startDate = new Date(now.getFullYear(), now.getMonth() - months + 1, 1);
 

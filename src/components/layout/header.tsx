@@ -82,10 +82,12 @@ export function Header({ className }: HeaderProps) {
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
               )}
             >
-              <LayoutDashboard className={cn(
-                "w-4 h-4 transition-transform duration-200",
-                !isOnDashboard && "group-hover:scale-110"
-              )} />
+              <LayoutDashboard
+                className={cn(
+                  "w-4 h-4 transition-transform duration-200",
+                  !isOnDashboard && "group-hover:scale-110"
+                )}
+              />
               {t("dashboard")}
             </Link>
 
@@ -98,10 +100,12 @@ export function Header({ className }: HeaderProps) {
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
               )}
             >
-              <Calculator className={cn(
-                "w-4 h-4 transition-transform duration-200",
-                !isOnROISimulator && "group-hover:scale-110"
-              )} />
+              <Calculator
+                className={cn(
+                  "w-4 h-4 transition-transform duration-200",
+                  !isOnROISimulator && "group-hover:scale-110"
+                )}
+              />
               {t("roiSimulator")}
             </Link>
           </nav>

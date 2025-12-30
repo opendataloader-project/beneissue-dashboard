@@ -1,22 +1,29 @@
 "use client";
 
+import {
+  DEVELOPER_RATES,
+  DEVELOPER_ROLE_OPTIONS,
+} from "@/data/developer-rates";
 import { ExternalLink } from "lucide-react";
 
-import { useTranslation } from "@/hooks/useTranslation";
-import { DEVELOPER_RATES, DEVELOPER_ROLE_OPTIONS } from "@/data/developer-rates";
-import { cn } from "@/lib/utils";
 import type { DeveloperRole } from "@/types/roi";
+import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface DeveloperRatesTableProps {
   selectedRole?: DeveloperRole;
 }
 
-export function DeveloperRatesTable({ selectedRole }: DeveloperRatesTableProps) {
+export function DeveloperRatesTable({
+  selectedRole,
+}: DeveloperRatesTableProps) {
   const { t, language } = useTranslation();
 
   return (
     <div className="rounded-xl border bg-card/50 backdrop-blur-sm p-6">
-      <h3 className="text-lg font-semibold mb-4">{t("developerRatesReference")}</h3>
+      <h3 className="text-lg font-semibold mb-4">
+        {t("developerRatesReference")}
+      </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -48,7 +55,9 @@ export function DeveloperRatesTable({ selectedRole }: DeveloperRatesTableProps) 
                       {isSelected && (
                         <span className="w-2 h-2 rounded-full bg-primary" />
                       )}
-                      <span className={cn(isSelected && "font-medium text-primary")}>
+                      <span
+                        className={cn(isSelected && "font-medium text-primary")}
+                      >
                         {label}
                       </span>
                     </div>

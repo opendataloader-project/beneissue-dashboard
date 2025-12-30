@@ -2,20 +2,20 @@
 
 import { Suspense } from "react";
 
-import { useROISearchParams } from "@/hooks/useROISearchParams";
-import { useROIMetrics } from "@/hooks/useROIMetrics";
 import { useRepos } from "@/hooks/useMetrics";
+import { useROIMetrics } from "@/hooks/useROIMetrics";
+import { useROISearchParams } from "@/hooks/useROISearchParams";
 import { useTranslation } from "@/hooks/useTranslation";
+import { EmptyState } from "@/components/empty-state";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { PeriodFilterSelect } from "@/components/period-filter";
 import { RepoFilter } from "@/components/repo-filter";
-import { EmptyState } from "@/components/empty-state";
 import { DeveloperRateSelect } from "@/components/roi-simulator/developer-rate-select";
-import { ROISummaryCards } from "@/components/roi-simulator/roi-summary-cards";
+import { DeveloperRatesTable } from "@/components/roi-simulator/developer-rates-table";
 import { ROIBreakdownChart } from "@/components/roi-simulator/roi-breakdown-chart";
+import { ROISummaryCards } from "@/components/roi-simulator/roi-summary-cards";
 import { ROITrendChart } from "@/components/roi-simulator/roi-trend-chart";
 import { StoryPointsTable } from "@/components/roi-simulator/story-points-table";
-import { DeveloperRatesTable } from "@/components/roi-simulator/developer-rates-table";
 
 function ROISimulatorContent() {
   const {

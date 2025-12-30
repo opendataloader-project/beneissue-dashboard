@@ -35,7 +35,12 @@ function CustomTooltip({
   language,
 }: {
   active?: boolean;
-  payload?: Array<{ value: number; dataKey: string; fill?: string; stroke?: string }>;
+  payload?: Array<{
+    value: number;
+    dataKey: string;
+    fill?: string;
+    stroke?: string;
+  }>;
   label?: string;
   autoResolvedLabel: string;
   manualRequiredLabel: string;
@@ -53,7 +58,10 @@ function CustomTooltip({
         return `${year}년 ${Number.parseInt(month)}월`;
       }
       const date = new Date(Number.parseInt(year), Number.parseInt(month) - 1);
-      return date.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
     }
     // 일별 데이터인 경우 (YYYY-MM-DD)
     const date = new Date(periodStr);
@@ -81,23 +89,29 @@ function CustomTooltip({
             <span className="w-2 h-2 rounded-full bg-[oklch(0.70_0.15_160)]" />
             <span className="text-muted-foreground">{autoResolvedLabel}:</span>
             <span className="font-medium tabular-nums">
-              {formatNumber(autoResolved.value)}{countUnit}
+              {formatNumber(autoResolved.value)}
+              {countUnit}
             </span>
           </p>
         )}
         {manualRequired && (
           <p className="text-sm flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[oklch(0.65_0.12_260)]" />
-            <span className="text-muted-foreground">{manualRequiredLabel}:</span>
+            <span className="text-muted-foreground">
+              {manualRequiredLabel}:
+            </span>
             <span className="font-medium tabular-nums">
-              {formatNumber(manualRequired.value)}{countUnit}
+              {formatNumber(manualRequired.value)}
+              {countUnit}
             </span>
           </p>
         )}
         {rate && (
           <p className="text-sm flex items-center gap-2 pt-1 border-t border-border/50">
             <span className="w-2 h-2 rounded-full bg-[oklch(0.75_0.18_75)]" />
-            <span className="text-muted-foreground">{autoResolutionRateLabel}:</span>
+            <span className="text-muted-foreground">
+              {autoResolutionRateLabel}:
+            </span>
             <span className="font-medium tabular-nums">{rate.value}%</span>
           </p>
         )}
@@ -106,7 +120,12 @@ function CustomTooltip({
   );
 }
 
-export function TrendChart({ data, className, title, description }: TrendChartProps) {
+export function TrendChart({
+  data,
+  className,
+  title,
+  description,
+}: TrendChartProps) {
   const [isVisible, setIsVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
   const { t, language } = useTranslation();
@@ -146,7 +165,8 @@ export function TrendChart({ data, className, title, description }: TrendChartPr
     let midCount: number;
     if (isMonthly) {
       // 12개월 이하일 경우 모든 라벨 표시
-      midCount = count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
+      midCount =
+        count <= 12 ? count - 2 : Math.min(10, Math.floor(count / 2) - 1);
     } else if (count <= 7) {
       midCount = count - 2;
     } else if (count <= 14) {
@@ -188,11 +208,16 @@ export function TrendChart({ data, className, title, description }: TrendChartPr
     if (language === "ko") {
       return `${date.getMonth() + 1}/${date.getDate()}`;
     }
-    return date.toLocaleDateString("en-US", { month: "numeric", day: "numeric" });
+    return date.toLocaleDateString("en-US", {
+      month: "numeric",
+      day: "numeric",
+    });
   };
 
   // Y축 최대값 계산 (자동해결 + 수동필요)
-  const maxTotal = Math.max(...data.map((d) => d.autoResolved + d.manualRequired));
+  const maxTotal = Math.max(
+    ...data.map((d) => d.autoResolved + d.manualRequired)
+  );
 
   return (
     <div
@@ -324,15 +349,21 @@ export function TrendChart({ data, className, title, description }: TrendChartPr
       <div className="mt-4 flex flex-wrap items-center justify-center gap-4 md:gap-6">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded bg-[oklch(0.70_0.15_160)]" />
-          <span className="text-sm text-muted-foreground">{t("autoResolved")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("autoResolved")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded bg-[oklch(0.65_0.12_260)]" />
-          <span className="text-sm text-muted-foreground">{t("manualRequired")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("manualRequired")}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-0.5 bg-[oklch(0.75_0.18_75)]" />
-          <span className="text-sm text-muted-foreground">{t("autoResolutionRate")}</span>
+          <span className="text-sm text-muted-foreground">
+            {t("autoResolutionRate")}
+          </span>
         </div>
       </div>
     </div>

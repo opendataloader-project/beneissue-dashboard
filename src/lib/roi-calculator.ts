@@ -1,3 +1,9 @@
+import {
+  DEFAULT_STORY_POINTS,
+  DEVELOPER_RATES,
+  getHoursFromStoryPoints,
+} from "@/data/developer-rates";
+
 import type { WorkflowRun } from "@/types/metrics";
 import type {
   DeveloperRole,
@@ -5,11 +11,6 @@ import type {
   ROITrendData,
   SavingsBreakdownData,
 } from "@/types/roi";
-import {
-  DEVELOPER_RATES,
-  DEFAULT_STORY_POINTS,
-  getHoursFromStoryPoints,
-} from "@/data/developer-rates";
 
 // Token pricing per million tokens (MTok) - mirrored from db.ts
 const PRICING = {
@@ -146,7 +147,8 @@ function calculateMonthlyROITrend(
   const trend: ROITrendData[] = [];
   for (const [period, data] of monthlyData) {
     const netSavings = data.humanCostUSD - data.aiCostUSD;
-    const roiPercentage = data.aiCostUSD > 0 ? (netSavings / data.aiCostUSD) * 100 : 0;
+    const roiPercentage =
+      data.aiCostUSD > 0 ? (netSavings / data.aiCostUSD) * 100 : 0;
 
     trend.push({
       period,
@@ -253,9 +255,13 @@ export function calculateROIMetrics(
     netSavings: Math.round(netSavingsUSD * 100) / 100,
     roiPercentage: Math.round(roiPercentage * 10) / 10,
     avgSavingsPerIssue:
-      issueCount > 0 ? Math.round((totalHumanCostSavedUSD / issueCount) * 100) / 100 : 0,
+      issueCount > 0
+        ? Math.round((totalHumanCostSavedUSD / issueCount) * 100) / 100
+        : 0,
     avgAICostPerIssue:
-      issueCount > 0 ? Math.round((totalAICostUSD / issueCount) * 100) / 100 : 0,
+      issueCount > 0
+        ? Math.round((totalAICostUSD / issueCount) * 100) / 100
+        : 0,
     monthlyTrend: calculateMonthlyROITrend(issues, hourlyRateUSD),
     savingsBreakdown: calculateSavingsBreakdown(issues, hourlyRateUSD),
   };

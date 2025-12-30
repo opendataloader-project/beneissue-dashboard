@@ -3,7 +3,12 @@ import { mockDashboardMetrics, mockPublicMetrics } from "@/data/mock";
 import { dataModeAtom } from "@/store/atoms";
 import { useAtomValue } from "jotai";
 
-import type { DashboardMetrics, DateRange, PeriodFilter, PublicMetrics } from "@/types/metrics";
+import type {
+  DashboardMetrics,
+  DateRange,
+  PeriodFilter,
+  PublicMetrics,
+} from "@/types/metrics";
 
 interface UseMetricsResult<T> {
   data: T | null;

@@ -1,15 +1,21 @@
 "use client";
 
-import { useTranslation } from "@/hooks/useTranslation";
-import { STORY_POINT_MAPPINGS, DEFAULT_STORY_POINTS } from "@/data/developer-rates";
+import {
+  DEFAULT_STORY_POINTS,
+  STORY_POINT_MAPPINGS,
+} from "@/data/developer-rates";
+
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export function StoryPointsTable() {
   const { t, language } = useTranslation();
 
   return (
     <div className="rounded-xl border bg-card/50 backdrop-blur-sm p-6">
-      <h3 className="text-lg font-semibold mb-4">{t("storyPointsReference")}</h3>
+      <h3 className="text-lg font-semibold mb-4">
+        {t("storyPointsReference")}
+      </h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
