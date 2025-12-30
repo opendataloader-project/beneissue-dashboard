@@ -133,6 +133,31 @@ export const translations = {
     // Common
     loading: "로딩 중...",
     error: "오류",
+
+    // ROI Simulator
+    roiSimulator: "ROI 시뮬레이터",
+    roiSimulatorDesc: "AI 이슈 자동화로 인한 실제 비용 절감 효과",
+    totalCostSavings: "총 비용 절감",
+    aiCost: "AI 비용",
+    netSavings: "순 절감액",
+    roi: "ROI",
+    returnOnInvestment: "투자 대비 수익률",
+    hourlyRate: "시급",
+    developerRateSource: "출처: 한국SW협회 2025년 SW기술자 평균임금",
+    savingsBreakdown: "SP별 절감 분포",
+    savingsBreakdownDesc: "스토리 포인트별 비용 절감 내역",
+    roiTrend: "ROI 추이",
+    roiTrendDesc: "월별 비용 절감 및 ROI 변화",
+    costSaved: "비용 절감",
+    storyPointsReference: "스토리 포인트 참조",
+    storyPoints: "스토리 포인트",
+    timeEstimate: "예상 소요",
+    avgHours: "평균 시간",
+    description: "설명",
+    defaultValue: "기본값",
+    storyPointsNote: "Story Points가 없는 이슈는 기본값(2 SP)이 적용됩니다.",
+    developerRatesReference: "인건비 참조",
+    role: "직무",
   },
   en: {
     // Header
@@ -270,6 +295,31 @@ export const translations = {
     // Common
     loading: "Loading...",
     error: "Error",
+
+    // ROI Simulator
+    roiSimulator: "ROI Simulator",
+    roiSimulatorDesc: "Actual cost savings from AI issue automation",
+    totalCostSavings: "Total Cost Savings",
+    aiCost: "AI Cost",
+    netSavings: "Net Savings",
+    roi: "ROI",
+    returnOnInvestment: "Return on Investment",
+    hourlyRate: "Hourly Rate",
+    developerRateSource: "Source: Korea SW Association 2025 Average Wages",
+    savingsBreakdown: "Savings by SP",
+    savingsBreakdownDesc: "Cost savings breakdown by story points",
+    roiTrend: "ROI Trend",
+    roiTrendDesc: "Monthly cost savings and ROI changes",
+    costSaved: "Cost Saved",
+    storyPointsReference: "Story Points Reference",
+    storyPoints: "Story Points",
+    timeEstimate: "Time Estimate",
+    avgHours: "Avg Hours",
+    description: "Description",
+    defaultValue: "Default",
+    storyPointsNote: "Issues without Story Points will use the default value (2 SP).",
+    developerRatesReference: "Developer Rates Reference",
+    role: "Role",
   },
 } as const;
 

@@ -7,6 +7,7 @@ import { dataModeAtom } from "@/store/atoms";
 import { useAtom } from "jotai";
 import {
   Activity,
+  Calculator,
   Database,
   FlaskConical,
   Globe,
@@ -29,6 +30,7 @@ export function Header({ className }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const isOnDashboard = pathname === "/dashboard";
+  const isOnROISimulator = pathname === "/roi-simulator";
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -81,6 +83,20 @@ export function Header({ className }: HeaderProps) {
           >
             <LayoutDashboard className="w-4 h-4" />
             {t("dashboard")}
+          </Link>
+
+          {/* ROI Simulator Link */}
+          <Link
+            href="/roi-simulator"
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+              isOnROISimulator
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+            )}
+          >
+            <Calculator className="w-4 h-4" />
+            {t("roiSimulator")}
           </Link>
         </div>
 

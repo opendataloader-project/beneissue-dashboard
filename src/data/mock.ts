@@ -4,6 +4,7 @@ import type {
   TrendData,
   CostTrendData,
 } from "@/types/metrics";
+import type { ROIMetrics, ROITrendData, SavingsBreakdownData } from "@/types/roi";
 
 // 기획서 정의에 따른 Mock 데이터
 // 자동 해결: triage_decision IN ('invalid', 'duplicate', 'needs_info')
@@ -126,4 +127,39 @@ export const mockDashboardMetrics: DashboardMetrics = {
     autoResolved: latestAutoResolved,
     manualRequired: latestManualRequired,
   },
+};
+
+// ROI Simulator Mock Data (/roi-simulator)
+// 기준: 응용SW개발자 시급 $30.09 (USD), all values in USD
+const mockROITrendData: ROITrendData[] = [
+  { period: "2025-07", humanCostSaved: 4263.54, aiCost: 16.52, netSavings: 4247.02, roiPercentage: 25610.5, issueCount: 118 },
+  { period: "2025-08", humanCostSaved: 3902.33, aiCost: 15.2, netSavings: 3887.13, roiPercentage: 25476.4, issueCount: 108 },
+  { period: "2025-09", humanCostSaved: 3685.59, aiCost: 14.36, netSavings: 3671.23, roiPercentage: 25466.2, issueCount: 102 },
+  { period: "2025-10", humanCostSaved: 3432.61, aiCost: 13.38, netSavings: 3419.23, roiPercentage: 25460.8, issueCount: 95 },
+  { period: "2025-11", humanCostSaved: 3179.63, aiCost: 12.4, netSavings: 3167.23, roiPercentage: 25437.1, issueCount: 88 },
+  { period: "2025-12", humanCostSaved: 5348.29, aiCost: 20.84, netSavings: 5327.45, roiPercentage: 25463.7, issueCount: 148 },
+];
+
+const mockSavingsBreakdown: SavingsBreakdownData[] = [
+  { storyPoints: 1, issueCount: 45, totalHours: 180, totalSavings: 5416.2, percentage: 8.2 },
+  { storyPoints: 2, issueCount: 312, totalHours: 3744, totalSavings: 112675.68, percentage: 56.4 },
+  { storyPoints: 3, issueCount: 156, totalHours: 4992, totalSavings: 150209.28, percentage: 22.8 },
+  { storyPoints: 5, issueCount: 42, totalHours: 2688, totalSavings: 80882.08, percentage: 10.1 },
+  { storyPoints: 8, issueCount: 12, totalHours: 1152, totalSavings: 34663.68, percentage: 2.5 },
+];
+
+export const mockROIMetrics: ROIMetrics = {
+  totalAutoResolvedIssues: 659,
+  totalStoryPoints: 1318,
+  totalEstimatedHours: 12756,
+  totalHumanCostSaved: 383891.48,
+  totalAICost: 92.7,
+  netSavings: 383798.78,
+  roiPercentage: 413921.8,
+  avgSavingsPerIssue: 582.54,
+  avgAICostPerIssue: 0.14,
+  monthlyTrend: mockROITrendData,
+  savingsBreakdown: mockSavingsBreakdown,
+  savingsDelta: 12.3,
+  roiDelta: 5.2,
 };

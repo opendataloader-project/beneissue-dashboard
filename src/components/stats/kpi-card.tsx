@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface KPICardProps {
   title: string;
   value: string | number;
+  prefix?: string;
   suffix?: string;
   subtitle?: string;
   delta?: number;
@@ -26,6 +27,7 @@ interface KPICardProps {
 export function KPICard({
   title,
   value,
+  prefix,
   suffix,
   subtitle,
   delta,
@@ -195,6 +197,11 @@ export function KPICard({
           <Skeleton className="h-10 w-24" />
         ) : (
           <>
+            {prefix && (
+              <span className="text-lg text-muted-foreground font-medium">
+                {prefix}
+              </span>
+            )}
             <span
               className={cn(
                 "text-4xl font-bold tracking-tight tabular-nums",
