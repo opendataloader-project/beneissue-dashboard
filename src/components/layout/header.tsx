@@ -54,7 +54,7 @@ export function Header({ className }: HeaderProps) {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo & Navigation */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative">
@@ -71,33 +71,40 @@ export function Header({ className }: HeaderProps) {
             </span>
           </Link>
 
-          {/* Dashboard Link */}
-          <Link
-            href="/dashboard"
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
-              isOnDashboard
-                ? "bg-primary/10 text-primary"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-            )}
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            {t("dashboard")}
-          </Link>
+          {/* Navigation Links */}
+          <nav className="flex items-center gap-1">
+            <Link
+              href="/dashboard"
+              className={cn(
+                "group flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                isOnDashboard
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+              )}
+            >
+              <LayoutDashboard className={cn(
+                "w-4 h-4 transition-transform duration-200",
+                !isOnDashboard && "group-hover:scale-110"
+              )} />
+              {t("dashboard")}
+            </Link>
 
-          {/* ROI Simulator Link */}
-          <Link
-            href="/roi-simulator"
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
-              isOnROISimulator
-                ? "bg-primary/10 text-primary"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-            )}
-          >
-            <Calculator className="w-4 h-4" />
-            {t("roiSimulator")}
-          </Link>
+            <Link
+              href="/roi-simulator"
+              className={cn(
+                "group flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                isOnROISimulator
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/80"
+              )}
+            >
+              <Calculator className={cn(
+                "w-4 h-4 transition-transform duration-200",
+                !isOnROISimulator && "group-hover:scale-110"
+              )} />
+              {t("roiSimulator")}
+            </Link>
+          </nav>
         </div>
 
         {/* Menu */}
