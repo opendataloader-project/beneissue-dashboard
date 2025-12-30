@@ -19,8 +19,6 @@ export interface WorkflowRun {
   fix_error: string | null;
   input_tokens: number;
   output_tokens: number;
-  input_cost: number;
-  output_cost: number;
   created_at: string;
 }
 

@@ -1,6 +1,38 @@
 import type { WorkflowRun, TrendData, CostTrendData, ResolutionDistribution } from "@/types/metrics";
 import { isSupabaseConfigured, supabase } from "./supabase";
 
+// Token pricing per million tokens (MTok)
+const PRICING = {
+  "claude-haiku-4-5": {
+    input: 1,   // $1 / MTok
+    output: 5,  // $5 / MTok
+  },
+  "claude-sonnet-4-5": {
+    input: 3,   // $3 / MTok
+    output: 15, // $15 / MTok
+  },
+} as const;
+
+/**
+ * Calculate cost based on workflow_type and token counts
+ * triage -> claude-haiku-4-5
+ * analyze/fix -> claude-sonnet-4-5
+ */
+function calculateRunCost(run: WorkflowRun): { inputCost: number; outputCost: number; totalCost: number } {
+  const pricing = run.workflow_type === "triage"
+    ? PRICING["claude-haiku-4-5"]
+    : PRICING["claude-sonnet-4-5"];
+
+  const inputCost = (run.input_tokens / 1_000_000) * pricing.input;
+  const outputCost = (run.output_tokens / 1_000_000) * pricing.output;
+
+  return {
+    inputCost,
+    outputCost,
+    totalCost: inputCost + outputCost,
+  };
+}
+
 /**
  * Fetch distinct repo names from workflow_runs
  */
@@ -104,7 +136,7 @@ export function calculateUniqueIssueMetrics(runs: WorkflowRun[]) {
 
     const issue = issueMap.get(key)!;
     issue.runs.push(run);
-    issue.totalCost += (run.input_cost || 0) + (run.output_cost || 0);
+    issue.totalCost += calculateRunCost(run).totalCost;
 
     // 자동 해결 여부 (하나라도 자동 해결 조건 만족하면 자동 해결)
     if (isAutoResolved(run)) {
@@ -277,8 +309,9 @@ export function calculateMonthlyCostTrend(runs: WorkflowRun[], months: number = 
     let outputCost = 0;
 
     for (const run of monthRuns) {
-      inputCost += run.input_cost || 0;
-      outputCost += run.output_cost || 0;
+      const cost = calculateRunCost(run);
+      inputCost += cost.inputCost;
+      outputCost += cost.outputCost;
     }
 
     trend.push({
@@ -323,8 +356,9 @@ export function calculateDailyCostTrend(runs: WorkflowRun[], days: number = 14):
     let outputCost = 0;
 
     for (const run of dayRuns) {
-      inputCost += run.input_cost || 0;
-      outputCost += run.output_cost || 0;
+      const cost = calculateRunCost(run);
+      inputCost += cost.inputCost;
+      outputCost += cost.outputCost;
     }
 
     trend.push({
